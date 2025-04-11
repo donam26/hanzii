@@ -1,0 +1,362 @@
+@extends('layouts.dashboard')
+
+@section('title', 'Chỉnh sửa bài tập')
+@section('page-heading', 'Chỉnh sửa bài tập')
+
+@php
+    $active = 'bai-tap';
+    $role = 'giao_vien';
+@endphp
+
+@section('content')
+    <div class="mb-6">
+        <div class="flex items-center mb-4">
+            <a href="{{ route('giao-vien.bai-tap.show', $baiTap->id) }}" class="text-red-600 hover:text-red-800 mr-2">
+                <i class="fas fa-arrow-left"></i> Quay lại chi tiết bài tập
+            </a>
+        </div>
+
+        @if(session('error'))
+            <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                <p class="font-bold">Lỗi!</p>
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    <i class="fas fa-edit mr-2"></i> Chỉnh sửa bài tập
+                </h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    Thông tin bài tập cho bài học "{{ $baiTap->baiHoc->tieu_de }}"
+                </p>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                    Lớp học: {{ $lopHoc->ten }} ({{ $lopHoc->ma_lop }})
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <form action="{{ route('giao-vien.bai-tap.update', $baiTap->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="bai_hoc_id" value="{{ $baiTap->bai_hoc_id }}">
+                
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="grid grid-cols-1 gap-6">
+                        <div>
+                            <label for="tieu_de" class="block text-sm font-medium text-gray-700">Tiêu đề bài tập <span class="text-red-600">*</span></label>
+                            <input type="text" name="tieu_de" id="tieu_de" value="{{ old('tieu_de', $baiTap->tieu_de) }}" class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            @error('tieu_de')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="loai" class="block text-sm font-medium text-gray-700">Loại bài tập <span class="text-red-600">*</span></label>
+                            <select name="loai" id="loai" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                                <option value="tu_luan" {{ old('loai', $baiTap->loai) == 'tu_luan' ? 'selected' : '' }}>Tự luận</option>
+                                <option value="trac_nghiem" {{ old('loai', $baiTap->loai) == 'trac_nghiem' ? 'selected' : '' }}>Trắc nghiệm</option>
+                                <option value="file" {{ old('loai', $baiTap->loai) == 'file' ? 'selected' : '' }}>File</option>
+                            </select>
+                            @error('loai')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="diem_toi_da" class="block text-sm font-medium text-gray-700">Điểm tối đa <span class="text-red-600">*</span></label>
+                            <input type="number" name="diem_toi_da" id="diem_toi_da" value="{{ old('diem_toi_da', $baiTap->diem_toi_da) }}" min="1" max="100" class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            @error('diem_toi_da')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="han_nop" class="block text-sm font-medium text-gray-700">Hạn nộp <span class="text-red-600">*</span></label>
+                            <input type="datetime-local" name="han_nop" id="han_nop" value="{{ old('han_nop', \Carbon\Carbon::parse($baiTap->han_nop)->format('Y-m-d\TH:i')) }}" class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            @error('han_nop')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="file" class="block text-sm font-medium text-gray-700">File đính kèm (tối đa 10MB)</label>
+                            <input type="file" name="file" id="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+                            @if($baiTap->file_dinh_kem)
+                                <div class="mt-2 flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">File hiện tại:</span>
+                                    <a href="{{ asset('storage/' . $baiTap->file_dinh_kem) }}" target="_blank" class="text-sm text-red-600 hover:text-red-800">
+                                        <i class="fas fa-file-download mr-1"></i> {{ $baiTap->ten_file ?: 'Tải xuống file đính kèm' }}
+                                    </a>
+                                </div>
+                                <div class="mt-1">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" name="xoa_file" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50">
+                                        <span class="ml-2 text-sm text-gray-600">Xóa file hiện tại</span>
+                                    </label>
+                                </div>
+                            @endif
+                            @error('file')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Phần câu hỏi trắc nghiệm (hiển thị khi loại bài tập là trắc nghiệm) -->
+                        <div id="trac-nghiem-section" class="border-t pt-4 mt-4 {{ $baiTap->loai != 'trac_nghiem' ? 'hidden' : '' }}">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">Câu hỏi trắc nghiệm</h4>
+                            
+                            <div id="cau-hoi-container">
+                                @if($baiTap->cauHois && $baiTap->cauHois->count() > 0)
+                                    @foreach($baiTap->cauHois as $index => $cauHoi)
+                                        <div class="cau-hoi-item border p-4 rounded-md mb-4">
+                                            <div class="flex justify-between mb-2">
+                                                <h5 class="font-medium">Câu hỏi {{ $index + 1 }}</h5>
+                                                <button type="button" class="text-red-600 hover:text-red-800 delete-cau-hoi" onclick="removeCauHoi(this)">
+                                                    <i class="fas fa-trash"></i> Xóa
+                                                </button>
+                                            </div>
+                                            
+                                            <input type="hidden" name="cau_hoi[{{ $index }}][id]" value="{{ $cauHoi->id }}">
+                                            
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Nội dung câu hỏi <span class="text-red-600">*</span></label>
+                                                <input type="text" name="cau_hoi[{{ $index }}][noi_dung]" value="{{ $cauHoi->noi_dung }}" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Điểm cho câu hỏi</label>
+                                                <input type="number" name="cau_hoi[{{ $index }}][diem]" value="{{ $cauHoi->diem }}" min="0.5" step="0.5" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
+                                            </div>
+                                            
+                                            <div class="mt-3">
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Các đáp án <span class="text-red-600">*</span></label>
+                                                
+                                                <div class="dap-an-container">
+                                                    @foreach($cauHoi->dapAns as $indexDA => $dapAn)
+                                                        <div class="flex items-center mb-2 dap-an-item">
+                                                            <input type="hidden" name="cau_hoi[{{ $index }}][dap_an][{{ $indexDA }}][id]" value="{{ $dapAn->id }}">
+                                                            <input type="radio" name="cau_hoi[{{ $index }}][dap_an_dung]" value="{{ $indexDA }}" id="dap_an_{{ $index }}_{{ $indexDA }}" class="mr-2" {{ $dapAn->la_dap_an_dung ? 'checked' : '' }}>
+                                                            <input type="text" name="cau_hoi[{{ $index }}][dap_an][{{ $indexDA }}][noi_dung]" value="{{ $dapAn->noi_dung }}" placeholder="Đáp án {{ chr(65 + $indexDA) }}" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
+                                                            <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                
+                                                <button type="button" class="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="addDapAn(this, {{ $index }})">
+                                                    <i class="fas fa-plus mr-1"></i> Thêm đáp án
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <!-- Mẫu câu hỏi mặc định nếu bài tập chuyển từ loại khác sang trắc nghiệm -->
+                                    <div class="cau-hoi-item border p-4 rounded-md mb-4">
+                                        <div class="flex justify-between mb-2">
+                                            <h5 class="font-medium">Câu hỏi 1</h5>
+                                            <button type="button" class="text-red-600 hover:text-red-800 delete-cau-hoi" onclick="removeCauHoi(this)">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Nội dung câu hỏi <span class="text-red-600">*</span></label>
+                                            <input type="text" name="cau_hoi[0][noi_dung]" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Điểm cho câu hỏi</label>
+                                            <input type="number" name="cau_hoi[0][diem]" value="1" min="0.5" step="0.5" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Các đáp án <span class="text-red-600">*</span></label>
+                                            
+                                            <div class="dap-an-container">
+                                                <!-- Đáp án A -->
+                                                <div class="flex items-center mb-2 dap-an-item">
+                                                    <input type="radio" name="cau_hoi[0][dap_an_dung]" value="0" id="dap_an_0_0" class="mr-2" checked>
+                                                    <input type="text" name="cau_hoi[0][dap_an][0][noi_dung]" placeholder="Đáp án A" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
+                                                    <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Đáp án B -->
+                                                <div class="flex items-center mb-2 dap-an-item">
+                                                    <input type="radio" name="cau_hoi[0][dap_an_dung]" value="1" id="dap_an_0_1" class="mr-2">
+                                                    <input type="text" name="cau_hoi[0][dap_an][1][noi_dung]" placeholder="Đáp án B" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
+                                                    <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <button type="button" class="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="addDapAn(this, 0)">
+                                                <i class="fas fa-plus mr-1"></i> Thêm đáp án
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <button type="button" id="add-cau-hoi" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-plus mr-1"></i> Thêm câu hỏi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <i class="fas fa-save mr-2"></i> Cập nhật bài tập
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+<script>
+    // Xử lý hiển thị/ẩn phần câu hỏi trắc nghiệm dựa trên loại bài tập
+    document.addEventListener('DOMContentLoaded', function() {
+        const loaiSelect = document.getElementById('loai');
+        const tracNghiemSection = document.getElementById('trac-nghiem-section');
+        
+        // Lắng nghe sự kiện thay đổi
+        loaiSelect.addEventListener('change', function() {
+            if (this.value === 'trac_nghiem') {
+                tracNghiemSection.classList.remove('hidden');
+            } else {
+                tracNghiemSection.classList.add('hidden');
+            }
+        });
+        
+        // Nút thêm câu hỏi
+        document.getElementById('add-cau-hoi').addEventListener('click', function() {
+            addCauHoi();
+        });
+    });
+    
+    // Biến đếm số câu hỏi
+    let cauHoiCount = {{ $baiTap->cauHois->count() ?? 0 }};
+    if (cauHoiCount === 0) cauHoiCount = 1;
+    
+    // Hàm thêm câu hỏi mới
+    function addCauHoi() {
+        const container = document.getElementById('cau-hoi-container');
+        const cauHoiHtml = `
+            <div class="cau-hoi-item border p-4 rounded-md mb-4">
+                <div class="flex justify-between mb-2">
+                    <h5 class="font-medium">Câu hỏi ${cauHoiCount + 1}</h5>
+                    <button type="button" class="text-red-600 hover:text-red-800 delete-cau-hoi" onclick="removeCauHoi(this)">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nội dung câu hỏi <span class="text-red-600">*</span></label>
+                    <input type="text" name="cau_hoi[${cauHoiCount}][noi_dung]" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Điểm cho câu hỏi</label>
+                    <input type="number" name="cau_hoi[${cauHoiCount}][diem]" value="1" min="0.5" step="0.5" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
+                </div>
+                
+                <div class="mt-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Các đáp án <span class="text-red-600">*</span></label>
+                    
+                    <div class="dap-an-container">
+                        <!-- Đáp án A -->
+                        <div class="flex items-center mb-2 dap-an-item">
+                            <input type="radio" name="cau_hoi[${cauHoiCount}][dap_an_dung]" value="0" id="dap_an_${cauHoiCount}_0" class="mr-2" checked>
+                            <input type="text" name="cau_hoi[${cauHoiCount}][dap_an][0][noi_dung]" placeholder="Đáp án A" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
+                            <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Đáp án B -->
+                        <div class="flex items-center mb-2 dap-an-item">
+                            <input type="radio" name="cau_hoi[${cauHoiCount}][dap_an_dung]" value="1" id="dap_an_${cauHoiCount}_1" class="mr-2">
+                            <input type="text" name="cau_hoi[${cauHoiCount}][dap_an][1][noi_dung]" placeholder="Đáp án B" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
+                            <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="addDapAn(this, ${cauHoiCount})">
+                        <i class="fas fa-plus mr-1"></i> Thêm đáp án
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', cauHoiHtml);
+        cauHoiCount++;
+    }
+    
+    // Hàm xóa câu hỏi
+    function removeCauHoi(button) {
+        const cauHoiItem = button.closest('.cau-hoi-item');
+        cauHoiItem.remove();
+        
+        // Cập nhật lại số thứ tự của các câu hỏi
+        document.querySelectorAll('.cau-hoi-item').forEach((item, index) => {
+            item.querySelector('h5').textContent = `Câu hỏi ${index + 1}`;
+        });
+    }
+    
+    // Biến đếm số đáp án cho mỗi câu hỏi
+    const dapAnCounts = {};
+    @if($baiTap->cauHois && $baiTap->cauHois->count() > 0)
+        @foreach($baiTap->cauHois as $index => $cauHoi)
+            dapAnCounts[{{ $index }}] = {{ $cauHoi->dapAns->count() }};
+        @endforeach
+    @else
+        dapAnCounts[0] = 2;
+    @endif
+    
+    // Hàm thêm đáp án mới
+    function addDapAn(button, cauHoiIndex) {
+        const dapAnContainer = button.previousElementSibling;
+        
+        if (typeof dapAnCounts[cauHoiIndex] === 'undefined') {
+            dapAnCounts[cauHoiIndex] = 2;
+        }
+        
+        const dapAnCount = dapAnCounts[cauHoiIndex];
+        const dapAnHtml = `
+            <div class="flex items-center mb-2 dap-an-item">
+                <input type="radio" name="cau_hoi[${cauHoiIndex}][dap_an_dung]" value="${dapAnCount}" id="dap_an_${cauHoiIndex}_${dapAnCount}" class="mr-2">
+                <input type="text" name="cau_hoi[${cauHoiIndex}][dap_an][${dapAnCount}][noi_dung]" placeholder="Đáp án ${String.fromCharCode(65 + dapAnCount)}" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
+                <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        dapAnContainer.insertAdjacentHTML('beforeend', dapAnHtml);
+        dapAnCounts[cauHoiIndex]++;
+    }
+    
+    // Hàm xóa đáp án
+    function removeDapAn(button) {
+        const dapAnItem = button.closest('.dap-an-item');
+        const dapAnContainer = dapAnItem.parentElement;
+        
+        // Chỉ xóa nếu còn ít nhất 2 đáp án
+        if (dapAnContainer.querySelectorAll('.dap-an-item').length > 2) {
+            dapAnItem.remove();
+        } else {
+            alert('Mỗi câu hỏi phải có ít nhất 2 đáp án');
+        }
+    }
+</script>
+@endpush 

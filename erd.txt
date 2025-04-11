@@ -1,0 +1,307 @@
+Table nguoi_dung {
+  id integer [primary key]
+  ho varchar
+  ten varchar
+  email varchar [unique]
+  so_dien_thoai varchar [unique]
+  mat_khau varchar
+  loai_tai_khoan varchar [note: "nhan_vien, hoc_vien"]
+  dia_chi varchar
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table vai_tro {
+  id integer [primary key]
+  ten varchar [note: "quan_tri, giao_vien, tro_giang, hoc_vien"]
+  mo_ta text
+  he_so_luong float [note: "Tỷ lệ lương (%), chỉ áp dụng cho giáo viên và trợ giảng"]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table nhan_vien {
+  id integer [primary key]
+  nguoi_dung_id integer [ref: - nguoi_dung.id]
+  bang_cap text
+  chuyen_mon varchar
+  so_nam_kinh_nghiem integer
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table hoc_vien {
+  id integer [primary key]
+  nguoi_dung_id integer [ref: - nguoi_dung.id]
+  trinh_do_hoc_van varchar
+  ngay_sinh date
+  trang_thai varchar [note: "hoat_dong, khong_hoat_dong"]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table khoa_hoc {  
+  id integer [primary key]  
+  ten varchar  
+  mo_ta text  
+  hoc_phi float  
+  tong_so_bai integer  
+  thoi_gian_hoan_thanh varchar  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}
+
+Table lop_hoc {  
+  id integer [primary key]  
+  ten varchar  
+  ma_lop varchar
+  khoa_hoc_id integer [ref: > khoa_hoc.id]  
+  giao_vien_id integer [ref: > nhan_vien.id]  
+  tro_giang_id integer [ref: > nhan_vien.id]  
+  hinh_thuc_hoc varchar [note: "online, offline"]  
+  lich_hoc text [note: "Lịch học hàng tuần"]  
+  ngay_bat_dau date  
+  ngay_ket_thuc date  
+  trang_thai varchar [note: "dang_hoc, da_hoan_thanh, sap_khai_giang"]  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table dang_ky_hocs {  
+  id integer [primary key]  
+  hoc_vien_id integer [ref: > hoc_vien.id]  
+  lop_hoc_id integer [ref: > lop_hoc.id]  
+  ngay_dang_ky date  
+  trang_thai varchar [note: "cho_xac_nhan, da_thanh_toan, da_xac_nhan"]  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table bai_hoc {  
+  id integer [primary key]  
+  khoa_hoc_id integer [ref: > khoa_hoc.id]  
+  tieu_de varchar  
+  mo_ta text  
+  so_thu_tu integer  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table bai_tap {  
+  id integer [primary key]  
+  bai_hoc_id integer [ref: > bai_hoc.id]  
+  tieu_de varchar  
+  loai varchar [note: "trac_nghiem, tu_luan, file"]  
+  noi_dung text  
+  diem_toi_da float  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table cau_hoi_trac_nghiem {  
+  id integer [primary key]  
+  bai_tap_id integer [ref: > bai_tap.id]  
+  noi_dung text  
+  giai_thich text  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table tai_lieu_bo_tro {  
+  id integer [primary key]  
+  bai_hoc_id integer [ref: > bai_hoc.id]  
+  lop_hoc_id integer [ref: > lop_hoc.id]  
+  tieu_de varchar  
+  mo_ta text  
+  duong_dan_file varchar  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table bai_tu_luan {  
+  id integer [primary key]  
+  hoc_vien_id integer [ref: > hoc_vien.id]  
+  bai_tap_id integer [ref: > bai_tap.id]  
+  lop_hoc_id integer [ref: > lop_hoc.id]  
+  noi_dung text 
+  trang_thai varchar [note: "cho_cham, da_cham"] 
+  diem float  
+  diem_toi_da float
+  nhan_xet text  
+  nguoi_cham_id integer [ref: > nhan_vien.id]  
+  ngay_nop timestamp  
+  ngay_cham timestamp  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table ket_qua_trac_nghiem {  
+  id integer [primary key]  
+  hoc_vien_id integer [ref: > hoc_vien.id]  
+  bai_tap_id integer [ref: > bai_tap.id]  
+  lop_hoc_id integer [ref: > lop_hoc.id]  
+  diem float  
+  ngay_nop timestamp  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table binh_luan {  
+  id integer [primary key]  
+  nguoi_dung_id integer [ref: > nguoi_dung.id]  
+  bai_hoc_id integer [ref: > bai_hoc.id]  
+  lop_hoc_id integer [ref: > lop_hoc.id]  
+  noi_dung text  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table thanh_toan {  
+  id integer [primary key]  
+  dang_ky_id integer [ref: > dang_ky_hocs.id, unique]  
+  so_tien float  
+  ngay_thanh_toan date  
+  phuong_thuc_thanh_toan varchar  
+  trang_thai varchar [note: "cho_thanh_toan, da_thanh_toan, da_hoan_tien"]  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}  
+
+Table luong_nhan_vien {  
+  id integer [primary key]  
+  nhan_vien_id integer [ref: > nhan_vien.id]  
+  lop_hoc_id integer [ref: > lop_hoc.id]  
+  tong_hoc_phi_thu_duoc float [note: "Tổng học phí thu được từ lớp"]  
+  vai_tro_id integer [ref: > vai_tro.id, note: "Dùng vai trò để xác định tỷ lệ lương"]  
+  tong_luong float [note: "Lương thực nhận"]  
+  ngay_thanh_toan date  
+  trang_thai varchar [note: "cho_thanh_toan, da_thanh_toan"]  
+  tao_luc timestamp  
+  cap_nhat_luc timestamp  
+}
+
+Table tien_do_bai_hoc {
+  id integer [primary key]
+  bai_hoc_id integer [ref: > bai_hoc.id]
+  hoc_vien_id integer [ref: > hoc_vien.id]
+  ngay_hoan_thanh timestamp [note: "Ngày hoàn thành bài học"]
+  diem float [note: "Điểm bài học"]
+  trang_thai varchar [note: "da_bat_dau, dang_hoc, da_hoan_thanh, khong_dat"]
+  ghi_chu text
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table bai_hoc_lop {
+  id integer [primary key]
+  lop_hoc_id integer [ref: > lop_hoc.id]
+  bai_hoc_id integer [ref: > bai_hoc.id]
+  so_thu_tu integer [note: "Thứ tự bài học trong lớp"]
+  ngay_bat_dau date
+  trang_thai varchar [note: "cho_hoc, dang_hoc, da_hoan_thanh"]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table dang_ky_quan_tam {
+  id integer [primary key]
+  ten varchar
+  email varchar
+  so_dien_thoai varchar
+  khoa_hoc_id integer [ref: > khoa_hoc.id]
+  dia_chi varchar
+  lich_hoc_mong_muon varchar
+  hinh_thuc_hoc varchar
+  ly_do text
+  ghi_chu text
+  trang_thai varchar [note: "cho_xu_ly, da_lien_he, da_chuyen_doi, khong_quan_tam"]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table vai_tro_nguoi_dung {
+  id integer [primary key]
+  nguoi_dung_id integer [ref: > nguoi_dung.id]
+  vai_tro_id integer [ref: > vai_tro.id]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table quyen {
+  id integer [primary key]
+  ten varchar
+  ma_quyen varchar [unique, note: "Mã định danh duy nhất, ví dụ: xem_nguoi_dung, sua_khoa_hoc"]
+  mo_ta varchar
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table quyen_vai_tro {
+  id integer [primary key]
+  vai_tro_id integer [ref: > vai_tro.id]
+  quyen_id integer [ref: > quyen.id]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table lua_chon_cau_hoi {
+  id integer [primary key]
+  cau_hoi_id integer [ref: > cau_hoi_trac_nghiem.id]
+  noi_dung_lua_chon text
+  la_dap_an_dung boolean [note: "Lựa chọn đúng hay không"]
+  so_thu_tu integer [note: "Thứ tự hiển thị"]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table dap_an_trac_nghiem {
+  id integer [primary key]
+  ket_qua_id integer [ref: > ket_qua_trac_nghiem.id]
+  cau_hoi_id integer [ref: > cau_hoi_trac_nghiem.id]
+  lua_chon_da_chon_id integer [ref: > lua_chon_cau_hoi.id]
+  la_dap_an_dung boolean
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table file_bai_tap {
+  id integer [primary key]
+  hoc_vien_id integer [ref: > hoc_vien.id]
+  bai_tap_id integer [ref: > bai_tap.id]
+  lop_hoc_id integer [ref: > lop_hoc.id]
+  ten_file varchar
+  duong_dan_file varchar
+  loai_file varchar
+  kich_thuoc_file bigint
+  ngay_nop timestamp
+  diem float
+  nhan_xet text
+  trang_thai varchar [note: "da_nop, da_cham, da_tra_lai"]
+  nguoi_cham_id integer [ref: > nhan_vien.id]
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table lich_su_lam_bai {
+  id integer [primary key]
+  hoc_vien_id integer [ref: > hoc_vien.id]
+  bai_tap_id integer [ref: > bai_tap.id]
+  lop_hoc_id integer [ref: > lop_hoc.id]
+  diem float
+  lan_thu integer [note: "Lần thứ mấy làm bài"]
+  ngay_lam timestamp
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
+
+Table thong_ke_tai_chinh {
+  id integer [primary key]
+  thang integer
+  nam integer
+  tong_thu float [note: "Tổng thu từ học phí"]
+  tong_chi float [note: "Tổng chi trả lương"]
+  loi_nhuan float
+  ghi_chu text
+  tao_luc timestamp
+  cap_nhat_luc timestamp
+}
