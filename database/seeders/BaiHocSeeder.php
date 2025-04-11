@@ -145,7 +145,6 @@ class BaiHocSeeder extends Seeder
                             'bai_hoc_id' => $baiHocId,
                             'so_thu_tu' => $index + 1,
                             'ngay_bat_dau' => date('Y-m-d', strtotime('+ ' . ($index * 2) . ' days', strtotime(DB::table('lop_hocs')->where('id', $lopHocId)->value('ngay_bat_dau')))),
-                            'trang_thai' => 'cho_hoc',
                             'tao_luc' => now(),
                             'cap_nhat_luc' => now(),
                         ];
