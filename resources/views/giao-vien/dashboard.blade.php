@@ -6,6 +6,19 @@
 @php
     $active = 'dashboard';
     $role = 'giao_vien';
+    
+    function formatFileSize($size) {
+        if (!$size) return '0 B';
+        if ($size < 1024) {
+            return $size . ' B';
+        } elseif ($size < 1024*1024) {
+            return round($size/1024, 2) . ' KB';
+        } elseif ($size < 1024*1024*1024) {
+            return round($size/(1024*1024), 2) . ' MB';
+        } else {
+            return round($size/(1024*1024*1024), 2) . ' GB';
+        }
+    }
 @endphp
 
 @section('content')
@@ -117,7 +130,7 @@
                             </dt>
                             <dd>
                                 <div class="text-lg font-semibold text-gray-900">
-                                    {{ $baiTuLuans->count() + $fileBaiTaps->count() }}
+                                    {{ $tongBaiTapCanCham ?? 0 }}
                                 </div>
                             </dd>
                         </dl>
@@ -167,13 +180,14 @@
                                                     </p>
                                                     <p class="text-xs text-gray-500 mt-1">
                                                         <span class="mr-2">
-                                                            <i class="fas fa-book mr-1"></i> {{ $lopHoc->khoaHoc->ten }}
+                                                            <i class="fas fa-book mr-1"></i> {{ $lopHoc->khoaHoc->ten ?? 'Không có khóa học' }}
                                                         </span>
                                                         <span class="mr-2">
-                                                            <i class="fas fa-users mr-1"></i> {{ $lopHoc->dangKyHocs()->where('trang_thai', 'da_duyet')->count() }} học viên
+                                                            <i class="fas fa-users mr-1"></i> {{ $lopHoc->soHocVien ?? 0 }} học viên
                                                         </span>
                                                         <span>
-                                                            <i class="fas fa-user-tie mr-1"></i> Trợ giảng: {{ $lopHoc->troGiang ? $lopHoc->troGiang->nguoiDung->ho . ' ' . $lopHoc->troGiang->nguoiDung->ten : 'Chưa phân công' }}
+                                                            <i class="fas fa-user-tie mr-1"></i> Trợ giảng: 
+                                                            {{ $lopHoc->troGiang ? ($lopHoc->troGiang->nguoiDung->ho_ten ?? $lopHoc->troGiang->nguoiDung->ho . ' ' . $lopHoc->troGiang->nguoiDung->ten) : 'Chưa phân công' }}
                                                         </span>
                                                     </p>
                                                 </div>
@@ -213,75 +227,50 @@
                 <h3 class="text-lg font-medium text-gray-900">Bài tập cần chấm</h3>
             </div>
             <div class="p-6">
-                @if ($baiTuLuans->count() > 0 || $fileBaiTaps->count() > 0)
+                @if ($baiTapDaNops && $baiTapDaNops->count() > 0)
                     <div class="flow-root">
                         <ul role="list" class="-mb-8">
-                            @foreach ($baiTuLuans as $baiTuLuan)
+                            @foreach ($baiTapDaNops as $baiTapDaNop)
                                 <li>
                                     <div class="relative pb-8">
-                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                                        <div class="relative flex space-x-3">
-                                            <div>
-                                                <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                                <div>
-                                                    <p class="text-sm text-gray-900">
-                                                        <span class="font-medium text-gray-900">Bài tự luận từ {{ $baiTuLuan->hocVien->nguoiDung->ho . ' ' . $baiTuLuan->hocVien->nguoiDung->ten }}</span>
-                                                    </p>
-                                                    <p class="text-xs text-gray-500 mt-1">
-                                                        <span class="mr-2">
-                                                            <i class="fas fa-book mr-1"></i> {{ $baiTuLuan->baiTap->tieu_de }}
-                                                        </span>
-                                                        <span>
-                                                            <i class="fas fa-users mr-1"></i> {{ $baiTuLuan->lopHoc->ten }}
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                                <div class="text-right text-sm whitespace-nowrap text-gray-900">
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                        Chờ chấm điểm
-                                                    </span>
-                                                    <p class="text-xs text-gray-500 mt-1">
-                                                        Nộp: {{ \Carbon\Carbon::parse($baiTuLuan->ngay_nop)->format('d/m/Y H:i') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            @endforeach
-                            
-                            @foreach ($fileBaiTaps as $fileBaiTap)
-                                <li>
-                                    <div class="relative pb-8">
-                                        @if (!$loop->last || $baiTuLuans->count() > 0)
+                                        @if (!$loop->last)
                                             <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
                                         @endif
                                         <div class="relative flex space-x-3">
                                             <div>
                                                 <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                    </svg>
+                                                    @if(isset($baiTapDaNop->baiTap->loai) && $baiTapDaNop->baiTap->loai == 'file')
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                    @endif
                                                 </span>
                                             </div>
                                             <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                                 <div>
                                                     <p class="text-sm text-gray-900">
-                                                        <span class="font-medium text-gray-900">Bài tập file từ {{ $fileBaiTap->hocVien->nguoiDung->ho . ' ' . $fileBaiTap->hocVien->nguoiDung->ten }}</span>
+                                                        <span class="font-medium text-gray-900">
+                                                            @if(isset($baiTapDaNop->baiTap))
+                                                                {{ $baiTapDaNop->baiTap->loai == 'file' ? 'Bài tập file' : 'Bài tập tự luận' }} 
+                                                                từ {{ $baiTapDaNop->hocVien->nguoiDung->ho_ten ?? ($baiTapDaNop->hocVien->nguoiDung->ho . ' ' . $baiTapDaNop->hocVien->nguoiDung->ten ?? 'Học viên') }}
+                                                            @else
+                                                                Bài tập từ {{ $baiTapDaNop->hocVien->nguoiDung->ho_ten ?? ($baiTapDaNop->hocVien->nguoiDung->ho . ' ' . $baiTapDaNop->hocVien->nguoiDung->ten ?? 'Học viên') }}
+                                                            @endif
+                                                        </span>
                                                     </p>
                                                     <p class="text-xs text-gray-500 mt-1">
                                                         <span class="mr-2">
-                                                            <i class="fas fa-book mr-1"></i> {{ $fileBaiTap->baiTap->tieu_de }}
+                                                            <i class="fas fa-book mr-1"></i> {{ $baiTapDaNop->baiTap->tieu_de ?? 'Không có tiêu đề' }}
                                                         </span>
+                                                        @if(isset($baiTapDaNop->baiTap->baiHoc->baiHocLops) && count($baiTapDaNop->baiTap->baiHoc->baiHocLops) > 0)
                                                         <span>
-                                                            <i class="fas fa-users mr-1"></i> {{ $fileBaiTap->lopHoc->ten }}
+                                                            <i class="fas fa-users mr-1"></i> {{ $baiTapDaNop->baiTap->baiHoc->baiHocLops[0]->lopHoc->ten ?? 'Không có lớp' }}
                                                         </span>
+                                                        @endif
                                                     </p>
                                                 </div>
                                                 <div class="text-right text-sm whitespace-nowrap text-gray-900">
@@ -289,7 +278,7 @@
                                                         Chờ chấm điểm
                                                     </span>
                                                     <p class="text-xs text-gray-500 mt-1">
-                                                        Nộp: {{ \Carbon\Carbon::parse($fileBaiTap->ngay_nop)->format('d/m/Y H:i') }}
+                                                        Nộp: {{ \Carbon\Carbon::parse($baiTapDaNop->ngay_nop ?? $baiTapDaNop->created_at)->format('d/m/Y H:i') }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -319,4 +308,118 @@
             </div>
         </div>
     </div>
+    
+    <!-- Thống kê theo lớp học -->
+    @if(isset($thongKeTheoLop) && count($thongKeTheoLop) > 0)
+    <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Thống kê chi tiết theo lớp học</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tên lớp học
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Số học viên
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Tổng số bài tập
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Bài tập cần chấm
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Thao tác
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($thongKeTheoLop as $lopHocId => $thongKe)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $thongKe['ten'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ $thongKe['so_hoc_vien'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ $thongKe['so_bai_tap'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($thongKe['so_bai_tap_can_cham'] > 0)
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    {{ $thongKe['so_bai_tap_can_cham'] }} bài cần chấm
+                                </span>
+                            @else
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Đã chấm hết
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <a href="{{ route('giao-vien.lop-hoc.show', $lopHocId) }}" class="text-blue-600 hover:text-blue-900">Xem chi tiết</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+    
+    <!-- Thông báo gần đây -->
+    @if(isset($thongBaos) && $thongBaos->count() > 0)
+    <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
+        <div class="px-6 py-5 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Thông báo lớp học gần đây</h3>
+        </div>
+        <div class="p-6">
+            <div class="flow-root">
+                <ul role="list" class="-mb-8">
+                    @foreach($thongBaos as $thongBao)
+                    <li>
+                        <div class="relative pb-8">
+                            @if(!$loop->last)
+                                <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                            @endif
+                            <div class="relative flex space-x-3">
+                                <div>
+                                    <span class="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center ring-8 ring-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                    <div>
+                                        <p class="text-sm text-gray-900">
+                                            <a href="#" class="font-medium text-gray-900">
+                                                {{ Str::limit($thongBao->tieu_de, 100) }}
+                                            </a>
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            {{ Str::limit($thongBao->mo_ta, 150) }}
+                                        </p>
+                                    </div>
+                                    <div class="text-right text-sm whitespace-nowrap text-gray-500">
+                                        {{ \Carbon\Carbon::parse($thongBao->created_at)->format('d/m/Y H:i') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="mt-6 text-center">
+                <a href="{{ route('giao-vien.thong-bao.index') }}" class="text-sm font-medium text-purple-600 hover:text-purple-900">
+                    Xem tất cả thông báo <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
 @endsection 

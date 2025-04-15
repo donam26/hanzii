@@ -33,7 +33,7 @@ class BaiHocController extends Controller
             $query->where('trang_thai', $request->trang_thai);
         }
         
-        $baiHocs = $query->with('khoaHoc')->orderBy('created_at', 'desc')->paginate(10);
+        $baiHocs = $query->with('khoaHoc')->orderBy('tao_luc', 'desc')->paginate(10);
         
         return view('admin.bai-hoc.index', compact('baiHocs'));
     }

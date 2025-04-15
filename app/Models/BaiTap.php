@@ -82,7 +82,7 @@ class BaiTap extends Model
      */
     public function nopBaiTaps(): HasMany
     {
-        return $this->hasMany(NopBaiTap::class, 'bai_tap_id');
+        return $this->baiTapDaNops();
     }
 
     /**

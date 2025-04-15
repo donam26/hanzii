@@ -14,7 +14,7 @@ class ThongBaoLopHoc extends Model
      *
      * @var string
      */
-    protected $table = 'thong_bao_lop_hoc';
+    protected $table = 'thong_bao_lop_hocs';
 
     /**
      * Các trường có thể gán giá trị
@@ -23,9 +23,14 @@ class ThongBaoLopHoc extends Model
      */
     protected $fillable = [
         'lop_hoc_id',
-        'user_id',
         'tieu_de',
         'noi_dung',
+        'nguoi_tao',
+        'nguoi_sua',
+        'ngay_hieu_luc',
+        'ngay_het_han',
+        'trang_thai',
+        'dinh_kem',
         'file_dinh_kem',
         'hien_thi',
     ];
@@ -40,6 +45,12 @@ class ThongBaoLopHoc extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    /**
+     * Các trạng thái thông báo
+     */
+    const TRANG_THAI_KICH_HOAT = 1;
+    const TRANG_THAI_KHONG_KICH_HOAT = 0;
 
     /**
      * Lấy lớp học liên quan đến thông báo

@@ -8,6 +8,14 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+     * Các command tùy chỉnh của ứng dụng.
+     *
+     * @var array
+     */
+    protected $commands = [
+    ];
+
+    /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void

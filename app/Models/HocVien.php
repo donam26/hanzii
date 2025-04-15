@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class HocVien extends Model
 {
@@ -84,5 +85,21 @@ class HocVien extends Model
     public function fileBaiTaps(): HasMany
     {
         return $this->hasMany(FileBaiTap::class, 'hoc_vien_id');
+    }
+
+    public function lopHoc(): BelongsTo
+    {
+        return $this->belongsTo(LopHoc::class, 'lop_hoc_id');
+    }
+
+    /**
+     * Quan hệ nhiều-nhiều với lớp học thông qua đăng ký học
+     */
+    public function lopHocs(): BelongsToMany
+    {
+        return $this->belongsToMany(LopHoc::class, 'dang_ky_hocs', 'hoc_vien_id', 'lop_hoc_id')
+                    ->whereIn('dang_ky_hocs.trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+                    ->withPivot(['ngay_dang_ky', 'trang_thai'])
+                    ->withTimestamps('tao_luc', 'cap_nhat_luc');
     }
 }

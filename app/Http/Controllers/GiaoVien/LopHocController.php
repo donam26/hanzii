@@ -12,7 +12,6 @@ use App\Models\TroGiang;
 use App\Models\KhoaHoc;
 use App\Models\BaiHoc;
 use App\Models\TraLoiBaiTap;
-use App\Models\NopBaiTap;
 use App\Models\DanhGiaLopHoc;
 use App\Models\HoanThanhBaiHoc;
 use Illuminate\Http\Request;
@@ -91,7 +90,7 @@ class LopHocController extends Controller
                 $hocVien->ho_ten = $dangKy->hocVien->nguoiDung->ho_ten ?? $dangKy->hocVien->nguoiDung->ho . ' ' . $dangKy->hocVien->nguoiDung->ten;
                 $hocVien->email = $dangKy->hocVien->nguoiDung->email;
                 $hocVien->dien_thoai = $dangKy->hocVien->nguoiDung->dien_thoai;
-                $hocVien->pivot = (object) ['created_at' => $dangKy->ngay_dang_ky];
+                $hocVien->pivot = (object) ['tao_luc' => $dangKy->ngay_dang_ky];
                 $hocViens->push($hocVien);
             }
         }

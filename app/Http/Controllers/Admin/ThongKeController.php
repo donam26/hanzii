@@ -14,87 +14,257 @@ use App\Models\ThongKeTaiChinh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\Luong;
+use App\Models\GiaoVien;
+use App\Models\TroGiang;
 
 class ThongKeController extends Controller
 {
     /**
-     * Hiển thị thống kê tài chính
+     * Hiển thị thống kê tổng quan
      */
-    public function taiChinh(Request $request)
+    public function tongQuan()
     {
-        $thang = $request->input('thang');
-        $nam = $request->input('nam');
+        // Số lượng học viên
+        $tongHocVien = HocVien::count();
+        $hocVienMoi = HocVien::whereMonth('tao_luc', Carbon::now()->month)
+            ->whereYear('tao_luc', Carbon::now()->year)
+            ->count();
         
-        // Nếu không có thông tin tháng năm, lấy thời gian hiện tại
-        if (!$thang || !$nam) {
-            $thang = Carbon::now()->month;
-            $nam = Carbon::now()->year;
+        // Số lượng giáo viên và trợ giảng
+        $tongGiaoVien = GiaoVien::count();
+        $tongTroGiang = TroGiang::count();
+        
+        // Số lượng lớp học và khóa học
+        $tongLopHoc = LopHoc::count();
+        $lopHocDangDienRa = LopHoc::where('trang_thai', 'dang_dien_ra')->count();
+        $tongKhoaHoc = KhoaHoc::count();
+        
+        // Doanh thu tháng hiện tại
+        $doanhThuThang = ThanhToan::whereMonth('ngay_thanh_toan', Carbon::now()->month)
+            ->whereYear('ngay_thanh_toan', Carbon::now()->year)
+            ->where('trang_thai', 'da_thanh_toan')
+            ->sum('so_tien');
+        
+        // Chi phí lương tháng hiện tại
+        $chiPhiLuongThang = Luong::whereMonth('ngay_thanh_toan', Carbon::now()->month)
+            ->whereYear('ngay_thanh_toan', Carbon::now()->year)
+            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
+            ->sum('tong_luong');
+        
+        // Lấy dữ liệu doanh thu theo tháng trong năm hiện tại
+        $dataDoanhThu = $this->getDoanhThuTheoThang(Carbon::now()->year);
+        
+        // Lấy dữ liệu chi phí lương theo tháng trong năm hiện tại
+        $dataChiPhi = $this->getChiPhiTheoThang(Carbon::now()->year);
+        
+        // Lấy dữ liệu lợi nhuận theo tháng trong năm hiện tại
+        $dataLoiNhuan = [];
+        for ($i = 0; $i < 12; $i++) {
+            $dataLoiNhuan[] = $dataDoanhThu[$i] - $dataChiPhi[$i];
         }
         
-        // Lấy hoặc tạo thống kê tài chính cho tháng
-        $thongKeTaiChinh = ThongKeTaiChinh::where('thang', $thang)
-                                ->where('nam', $nam)
-                                ->first();
-        
-        if (!$thongKeTaiChinh) {
-            $thongKeTaiChinh = $this->taoThongKeTaiChinh($thang, $nam);
-        }
-        
-        // Lấy thống kê các tháng gần đây
-        $thongKeTheoThang = ThongKeTaiChinh::where('nam', $nam)
-                                ->orderBy('thang', 'asc')
-                                ->get();
-        
-        // Thống kê theo khóa học
-        $thongKeTheoKhoaHoc = DB::table('thanh_toans')
-                                ->join('dang_ky_hocs', 'thanh_toans.dang_ky_id', '=', 'dang_ky_hocs.id')
-                                ->join('lop_hocs', 'dang_ky_hocs.lop_hoc_id', '=', 'lop_hocs.id')
-                                ->join('khoa_hocs', 'lop_hocs.khoa_hoc_id', '=', 'khoa_hocs.id')
-                                ->select('khoa_hocs.id', 'khoa_hocs.ten', DB::raw('SUM(thanh_toans.so_tien) as tong_thu'))
-                                ->where('thanh_toans.trang_thai', 'da_thanh_toan')
-                                ->whereMonth('thanh_toans.ngay_thanh_toan', $thang)
-                                ->whereYear('thanh_toans.ngay_thanh_toan', $nam)
-                                ->groupBy('khoa_hocs.id', 'khoa_hocs.ten')
-                                ->get();
-        
-        return view('admin.thong-ke.tai-chinh', compact(
-            'thongKeTaiChinh',
-            'thongKeTheoThang',
-            'thongKeTheoKhoaHoc',
-            'thang',
-            'nam'
+        return view('admin.thong-ke.tong-quan', compact(
+            'tongHocVien', 
+            'hocVienMoi', 
+            'tongGiaoVien', 
+            'tongTroGiang', 
+            'tongLopHoc', 
+            'lopHocDangDienRa', 
+            'tongKhoaHoc', 
+            'doanhThuThang',
+            'chiPhiLuongThang',
+            'dataDoanhThu',
+            'dataChiPhi',
+            'dataLoiNhuan'
         ));
     }
     
     /**
-     * Tạo thống kê tài chính cho tháng
+     * Hiển thị thống kê doanh thu theo ngày
      */
-    private function taoThongKeTaiChinh($thang, $nam)
+    public function doanhThuNgay(Request $request)
     {
-        // Tính tổng thu từ học phí
-        $tongThu = ThanhToan::where('trang_thai', 'da_thanh_toan')
-                    ->whereMonth('ngay_thanh_toan', $thang)
+        $tuNgay = $request->input('tu_ngay', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $denNgay = $request->input('den_ngay', Carbon::now()->format('Y-m-d'));
+        
+        $tuNgayCarbon = Carbon::parse($tuNgay)->startOfDay();
+        $denNgayCarbon = Carbon::parse($denNgay)->endOfDay();
+        
+        // Kiểm tra khoảng thời gian hợp lệ
+        if ($tuNgayCarbon->diffInDays($denNgayCarbon) > 90) {
+            return redirect()->back()->with('error', 'Khoảng thời gian không được vượt quá 90 ngày');
+        }
+        
+        // Lấy dữ liệu thanh toán theo ngày
+        $thanhToans = ThanhToan::select(
+                DB::raw('DATE(ngay_thanh_toan) as ngay'),
+                DB::raw('COUNT(*) as so_luong'),
+                DB::raw('SUM(so_tien) as tong_tien')
+            )
+            ->whereBetween('ngay_thanh_toan', [$tuNgayCarbon, $denNgayCarbon])
+            ->where('trang_thai', 'da_thanh_toan')
+            ->groupBy('ngay')
+            ->orderBy('ngay')
+                                ->get();
+        
+        // Chuẩn bị dữ liệu cho biểu đồ
+        $labels = [];
+        $soLuong = [];
+        $tongTien = [];
+        
+        // Tạo mảng chứa tất cả các ngày trong khoảng
+        $currentDate = $tuNgayCarbon->copy();
+        while ($currentDate <= $denNgayCarbon) {
+            $dateString = $currentDate->format('Y-m-d');
+            $labels[] = $dateString;
+            
+            // Tìm dữ liệu cho ngày hiện tại
+            $data = $thanhToans->firstWhere('ngay', $dateString);
+            
+            $soLuong[] = $data ? $data->so_luong : 0;
+            $tongTien[] = $data ? $data->tong_tien : 0;
+            
+            $currentDate->addDay();
+        }
+        
+        // Tính tổng doanh thu và số lượng giao dịch
+        $tongDoanhThu = array_sum($tongTien);
+        $tongGiaoDich = array_sum($soLuong);
+        
+        return view('admin.thong-ke.doanh-thu-ngay', compact(
+            'labels', 
+            'soLuong', 
+            'tongTien', 
+            'tongDoanhThu', 
+            'tongGiaoDich', 
+            'tuNgay', 
+            'denNgay'
+        ));
+    }
+    
+    /**
+     * Hiển thị thống kê doanh thu theo tháng
+     */
+    public function doanhThuThang(Request $request)
+    {
+        $nam = $request->input('nam', Carbon::now()->year);
+        
+        // Lấy dữ liệu thanh toán theo tháng
+        $thanhToans = ThanhToan::select(
+                DB::raw('MONTH(ngay_thanh_toan) as thang'),
+                DB::raw('COUNT(*) as so_luong'),
+                DB::raw('SUM(so_tien) as tong_tien')
+            )
+            ->whereYear('ngay_thanh_toan', $nam)
+            ->where('trang_thai', 'da_thanh_toan')
+            ->groupBy('thang')
+            ->orderBy('thang')
+                                ->get();
+        
+        // Chuẩn bị dữ liệu cho biểu đồ
+        $labels = [];
+        $soLuong = [];
+        $tongTien = [];
+        
+        for ($i = 1; $i <= 12; $i++) {
+            $labels[] = 'Tháng ' . $i;
+            
+            // Tìm dữ liệu cho tháng hiện tại
+            $data = $thanhToans->firstWhere('thang', $i);
+            
+            $soLuong[] = $data ? $data->so_luong : 0;
+            $tongTien[] = $data ? $data->tong_tien : 0;
+        }
+        
+        // Tính tổng doanh thu và số lượng giao dịch
+        $tongDoanhThu = array_sum($tongTien);
+        $tongGiaoDich = array_sum($soLuong);
+        
+        // Lấy danh sách các năm để hiển thị select box
+        $dsNam = ThanhToan::selectRaw('YEAR(ngay_thanh_toan) as nam')
+            ->where('trang_thai', 'da_thanh_toan')
+            ->groupBy('nam')
+            ->orderBy('nam', 'desc')
+            ->pluck('nam')
+            ->toArray();
+        
+        return view('admin.thong-ke.doanh-thu-thang', compact(
+            'labels', 
+            'soLuong', 
+            'tongTien', 
+            'tongDoanhThu', 
+            'tongGiaoDich', 
+            'nam', 
+            'dsNam'
+        ));
+    }
+    
+    /**
+     * Hiển thị thống kê chi phí lương
+     */
+    public function chiPhiLuong(Request $request)
+    {
+        $nam = $request->input('nam', Carbon::now()->year);
+        $loai = $request->input('loai', 'tat_ca'); // tat_ca, giao_vien, tro_giang
+        
+        // Lấy dữ liệu lương theo tháng
+        $query = Luong::select(
+                DB::raw('MONTH(ngay_thanh_toan) as thang'),
+                DB::raw('COUNT(*) as so_luong'),
+                DB::raw('SUM(tong_luong) as tong_tien')
+            )
                     ->whereYear('ngay_thanh_toan', $nam)
-                    ->sum('so_tien');
+            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN);
         
-        // Tính tổng chi trả lương
-        $tongChi = LuongGiaoVien::where('trang_thai', 'da_thanh_toan')
-                    ->whereMonth('ngay_thanh_toan', $thang)
-                    ->whereYear('ngay_thanh_toan', $nam)
-                    ->sum('tong_luong');
+        // Lọc theo loại người dùng
+        if ($loai == 'giao_vien') {
+            $query->whereNotNull('giao_vien_id');
+        } elseif ($loai == 'tro_giang') {
+            $query->whereNotNull('tro_giang_id');
+        }
         
-        // Tính lợi nhuận
-        $loiNhuan = $tongThu - $tongChi;
+        $luongs = $query->groupBy('thang')
+            ->orderBy('thang')
+            ->get();
         
-        // Tạo hoặc cập nhật thống kê
-        return ThongKeTaiChinh::updateOrCreate(
-            ['thang' => $thang, 'nam' => $nam],
-            [
-                'tong_thu' => $tongThu,
-                'tong_chi' => $tongChi,
-                'loi_nhuan' => $loiNhuan,
-            ]
-        );
+        // Chuẩn bị dữ liệu cho biểu đồ
+        $labels = [];
+        $soLuong = [];
+        $tongTien = [];
+        
+        for ($i = 1; $i <= 12; $i++) {
+            $labels[] = 'Tháng ' . $i;
+            
+            // Tìm dữ liệu cho tháng hiện tại
+            $data = $luongs->firstWhere('thang', $i);
+            
+            $soLuong[] = $data ? $data->so_luong : 0;
+            $tongTien[] = $data ? $data->tong_tien : 0;
+        }
+        
+        // Tính tổng chi phí và số lượng thanh toán
+        $tongChiPhi = array_sum($tongTien);
+        $tongThanhToan = array_sum($soLuong);
+        
+        // Lấy danh sách các năm để hiển thị select box
+        $dsNam = Luong::selectRaw('YEAR(ngay_thanh_toan) as nam')
+            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
+            ->groupBy('nam')
+            ->orderBy('nam', 'desc')
+            ->pluck('nam')
+            ->toArray();
+        
+        return view('admin.thong-ke.chi-phi-luong', compact(
+            'labels', 
+            'soLuong', 
+            'tongTien', 
+            'tongChiPhi', 
+            'tongThanhToan', 
+            'nam', 
+            'dsNam',
+            'loai'
+        ));
     }
     
     /**
@@ -102,111 +272,154 @@ class ThongKeController extends Controller
      */
     public function hocVien(Request $request)
     {
-        // Thống kê tổng số học viên
+        $nam = $request->input('nam', Carbon::now()->year);
+        
+        // Lấy dữ liệu học viên theo tháng
+        $hocViens = HocVien::select(
+                DB::raw('MONTH(tao_luc) as thang'),
+                DB::raw('COUNT(*) as so_luong')
+            )
+            ->whereYear('tao_luc', $nam)
+            ->groupBy('thang')
+            ->orderBy('thang')
+            ->get();
+        
+        // Chuẩn bị dữ liệu cho biểu đồ
+        $labels = [];
+        $soLuong = [];
+        
+        for ($i = 1; $i <= 12; $i++) {
+            $labels[] = 'Tháng ' . $i;
+            
+            // Tìm dữ liệu cho tháng hiện tại
+            $data = $hocViens->firstWhere('thang', $i);
+            
+            $soLuong[] = $data ? $data->so_luong : 0;
+        }
+        
+        // Tính tổng học viên
         $tongHocVien = HocVien::count();
         
-        // Thống kê học viên theo trạng thái
-        $hocVienHoatDong = HocVien::where('trang_thai', 'hoat_dong')->count();
-        $hocVienKhongHoatDong = HocVien::where('trang_thai', 'khong_hoat_dong')->count();
+        // Thống kê học viên đang học
+        $hocVienDangHoc = DangKyHoc::where('trang_thai', 'dang_hoc')->count();
         
-        // Thống kê học viên đăng ký mới theo tháng
-        $hocVienMoiTheoThang = $this->layHocVienMoiTheoThang();
+        // Thống kê học viên mới trong tháng hiện tại
+        $hocVienMoiThangNay = HocVien::whereMonth('tao_luc', Carbon::now()->month)
+            ->whereYear('tao_luc', Carbon::now()->year)
+            ->count();
+        
+        // Thống kê đăng ký chờ xử lý
+        $dangKyChoXuLy = DangKyHoc::where('trang_thai', 'cho_xu_ly')->count();
+        
+        // Thống kê trạng thái đăng ký học
+        $thongKeTrangThai = DangKyHoc::select(
+                'trang_thai',
+                DB::raw('COUNT(*) as so_luong')
+            )
+            ->groupBy('trang_thai')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'trang_thai' => ucfirst(str_replace('_', ' ', $item->trang_thai)),
+                    'so_luong' => $item->so_luong
+                ];
+            });
         
         // Thống kê học viên theo khóa học
-        $hocVienTheoKhoaHoc = DB::table('dang_ky_hocs')
-                                ->join('lop_hocs', 'dang_ky_hocs.lop_hoc_id', '=', 'lop_hocs.id')
-                                ->join('khoa_hocs', 'lop_hocs.khoa_hoc_id', '=', 'khoa_hocs.id')
-                                ->select('khoa_hocs.id', 'khoa_hocs.ten', DB::raw('COUNT(DISTINCT dang_ky_hocs.hoc_vien_id) as so_luong_hoc_vien'))
-                                ->where('dang_ky_hocs.trang_thai', 'da_thanh_toan')
-                                ->groupBy('khoa_hocs.id', 'khoa_hocs.ten')
+        $khoaHocStats = KhoaHoc::select(
+                'khoa_hocs.id',
+                'khoa_hocs.ten',
+                DB::raw('COUNT(DISTINCT lop_hocs.id) as so_lop'),
+                DB::raw('COUNT(DISTINCT dang_ky_hocs.id) as so_hoc_vien')
+            )
+            ->leftJoin('lop_hocs', 'lop_hocs.khoa_hoc_id', '=', 'khoa_hocs.id')
+            ->leftJoin('dang_ky_hocs', 'dang_ky_hocs.lop_hoc_id', '=', 'lop_hocs.id')
+            ->groupBy('khoa_hocs.id', 'khoa_hocs.ten')
+            ->having('so_hoc_vien', '>', 0)
+            ->get();
+        
+        // Tính tỷ lệ học viên theo khóa học
+        $totalHocVien = $khoaHocStats->sum('so_hoc_vien');
+        $khoaHocStats->transform(function ($item) use ($totalHocVien) {
+            $item->ty_le = $totalHocVien > 0 ? round(($item->so_hoc_vien / $totalHocVien) * 100, 1) : 0;
+            return $item;
+        });
+        
+        // Lấy danh sách học viên mới đăng ký gần đây
+        $hocVienMoi = HocVien::with(['nguoiDung', 'lopHoc.khoaHoc'])
+            ->orderBy('tao_luc', 'desc')
+            ->limit(10)
                                 ->get();
         
-        // Thống kê tỷ lệ hoàn thành khóa học
-        $tyLeHoanThanh = $this->tinhTyLeHoanThanh();
+        // Lấy danh sách các năm để hiển thị select box
+        $dsNam = HocVien::selectRaw('YEAR(tao_luc) as nam')
+            ->groupBy('nam')
+            ->orderBy('nam', 'desc')
+            ->pluck('nam')
+            ->toArray();
+        
+        // Truyền dữ liệu biểu đồ vào view để hiển thị
+        $duLieuBieuDo = $soLuong;
         
         return view('admin.thong-ke.hoc-vien', compact(
+            'labels', 
+            'soLuong', 
             'tongHocVien',
-            'hocVienHoatDong',
-            'hocVienKhongHoatDong',
-            'hocVienMoiTheoThang',
-            'hocVienTheoKhoaHoc',
-            'tyLeHoanThanh'
+            'thongKeTrangThai', 
+            'nam', 
+            'dsNam',
+            'hocVienDangHoc',
+            'hocVienMoiThangNay',
+            'dangKyChoXuLy',
+            'khoaHocStats',
+            'hocVienMoi',
+            'duLieuBieuDo'
         ));
     }
     
     /**
-     * Lấy thống kê học viên mới theo tháng
+     * Lấy dữ liệu doanh thu theo tháng
      */
-    private function layHocVienMoiTheoThang()
+    private function getDoanhThuTheoThang($nam)
     {
-        $result = [];
-        $now = Carbon::now();
+        $thanhToans = ThanhToan::select(
+                DB::raw('MONTH(ngay_thanh_toan) as thang'),
+                DB::raw('SUM(so_tien) as tong_tien')
+            )
+            ->whereYear('ngay_thanh_toan', $nam)
+            ->where('trang_thai', 'da_thanh_toan')
+            ->groupBy('thang')
+            ->get();
         
-        // Lấy thống kê 6 tháng gần nhất
-        for ($i = 0; $i < 6; $i++) {
-            $month = $now->copy()->subMonths($i);
-            $count = NguoiDung::where('loai_tai_khoan', 'hoc_vien')
-                        ->whereYear('tao_luc', $month->year)
-                        ->whereMonth('tao_luc', $month->month)
-                        ->count();
-            
-            $result[] = [
-                'thang' => $month->format('m/Y'),
-                'so_luong' => $count
-            ];
+        $data = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $thang = $thanhToans->firstWhere('thang', $i);
+            $data[] = $thang ? $thang->tong_tien : 0;
         }
         
-        return array_reverse($result);
+        return $data;
     }
     
     /**
-     * Tính tỷ lệ hoàn thành khóa học
+     * Lấy dữ liệu chi phí lương theo tháng
      */
-    private function tinhTyLeHoanThanh()
+    private function getChiPhiTheoThang($nam)
     {
-        $result = [];
+        $luongs = Luong::select(
+                DB::raw('MONTH(ngay_thanh_toan) as thang'),
+                DB::raw('SUM(tong_luong) as tong_tien')
+            )
+            ->whereYear('ngay_thanh_toan', $nam)
+            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
+            ->groupBy('thang')
+            ->get();
         
-        // Lấy danh sách khóa học
-        $khoaHocs = KhoaHoc::all();
-        
-        foreach ($khoaHocs as $khoaHoc) {
-            // Tổng số lớp đã kết thúc của khóa học
-            $tongSoLop = LopHoc::where('khoa_hoc_id', $khoaHoc->id)
-                            ->where('trang_thai', 'da_hoan_thanh')
-                            ->count();
-            
-            if ($tongSoLop > 0) {
-                // Tổng số học viên đăng ký
-                $tongSoHocVien = DangKyHoc::whereHas('lopHoc', function ($query) use ($khoaHoc) {
-                                    $query->where('khoa_hoc_id', $khoaHoc->id)
-                                          ->where('trang_thai', 'da_hoan_thanh');
-                                })
-                                ->where('trang_thai', 'da_thanh_toan')
-                                ->count();
-                
-                // Tổng số học viên hoàn thành
-                $hocVienHoanThanh = DangKyHoc::whereHas('lopHoc', function ($query) use ($khoaHoc) {
-                                        $query->where('khoa_hoc_id', $khoaHoc->id)
-                                              ->where('trang_thai', 'da_hoan_thanh');
-                                    })
-                                    ->where('trang_thai', 'da_thanh_toan')
-                                    ->whereHas('tienDoBaiHocs', function ($query) {
-                                        $query->where('trang_thai', 'da_hoan_thanh');
-                                    })
-                                    ->count();
-                
-                // Tính tỷ lệ
-                $tyLe = ($tongSoHocVien > 0) ? round(($hocVienHoanThanh / $tongSoHocVien) * 100, 2) : 0;
-                
-                $result[] = [
-                    'khoa_hoc' => $khoaHoc->ten,
-                    'tong_so_hoc_vien' => $tongSoHocVien,
-                    'hoc_vien_hoan_thanh' => $hocVienHoanThanh,
-                    'ty_le' => $tyLe
-                ];
-            }
+        $data = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $thang = $luongs->firstWhere('thang', $i);
+            $data[] = $thang ? $thang->tong_tien : 0;
         }
         
-        return $result;
+        return $data;
     }
 } 

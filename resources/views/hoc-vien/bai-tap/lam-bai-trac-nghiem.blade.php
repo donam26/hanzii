@@ -1,6 +1,12 @@
-@extends('layouts.hoc-vien')
+@extends('layouts.dashboard')
 
 @section('title', 'Làm bài tập trắc nghiệm')
+@section('page-heading', 'Làm bài tập trắc nghiệm')
+
+@php
+    $active = 'lop-hoc';
+    $role = 'hoc_vien';
+@endphp
 
 @section('content')
 <div class="container-fluid">

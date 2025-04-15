@@ -76,9 +76,9 @@
                             <i class="fas fa-sort-{{ request('direction') == 'asc' ? 'up' : 'down' }} ml-1"></i>
                         @endif
                     </a>
-                    <a href="{{ route('admin.hoc-vien.index', array_merge(request()->query(), ['sort' => 'created_at', 'direction' => request('direction') == 'asc' && request('sort') == 'created_at' ? 'desc' : 'asc'])) }}" class="px-3 py-1 border border-gray-300 rounded-md text-sm {{ request('sort') == 'created_at' ? 'bg-gray-100' : 'bg-white' }}">
+                    <a href="{{ route('admin.hoc-vien.index', array_merge(request()->query(), ['sort' => 'tao_luc', 'direction' => request('direction') == 'asc' && request('sort') == 'tao_luc' ? 'desc' : 'asc'])) }}" class="px-3 py-1 border border-gray-300 rounded-md text-sm {{ request('sort') == 'tao_luc' ? 'bg-gray-100' : 'bg-white' }}">
                         Ngày đăng ký
-                        @if(request('sort') == 'created_at')
+                        @if(request('sort') == 'tao_luc')
                             <i class="fas fa-sort-{{ request('direction') == 'asc' ? 'up' : 'down' }} ml-1"></i>
                         @endif
                     </a>
@@ -172,7 +172,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ \Carbon\Carbon::parse($hocVien->created_at)->format('d/m/Y') }}
+                                {{ \Carbon\Carbon::parse($hocVien->tao_luc)->format('d/m/Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex space-x-2 justify-end">

@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\LopHoc;
-use App\Models\NopBaiTap;
 use App\Models\BaiTap;
 use App\Models\LichHoc;
 use App\Models\TienDoBaiHoc;
 use App\Models\HocVien;
 use App\Models\DangKyHoc;
 use Carbon\Carbon;
+use App\Models\BaiTapDaNop;
 
 class DashboardController extends Controller
 {
@@ -37,8 +37,8 @@ class DashboardController extends Controller
         
         $totalLopHoc = count($dangKyHocs);
         
-        $completedTasks = NopBaiTap::where('hoc_vien_id', $hocVien->id)
-            ->where('trang_thai', 'da_nop')
+        // Đếm số bài tập đã hoàn thành
+        $completedTasks = BaiTapDaNop::where('hoc_vien_id', $hocVien->id)
             ->count();
         
         $pendingTasks = BaiTap::whereHas('baiHoc.baiHocLops', function($query) use ($dangKyHocs) {
@@ -49,7 +49,7 @@ class DashboardController extends Controller
         })
         ->count();
         
-        // Điểm trung bình
+        // Lấy điểm trung bình
         $averageScore = $this->calculateAverageScore($hocVien->id);
         
         // Lớp học sắp diễn ra - dựa trên lịch học
@@ -108,8 +108,7 @@ class DashboardController extends Controller
     private function calculateAverageScore($hocVienId)
     {
         // Lấy điểm từ các bài tập đã nộp
-        $diemTrungBinh = NopBaiTap::where('hoc_vien_id', $hocVienId)
-            ->where('trang_thai', 'da_cham')
+        $diemTrungBinh = BaiTapDaNop::where('hoc_vien_id', $hocVienId)
             ->whereNotNull('diem')
             ->avg('diem');
             

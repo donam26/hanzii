@@ -151,14 +151,6 @@ class AuthController extends Controller
         return redirect()->route('welcome')->with('success', 'Đăng xuất thành công!');
     }
 
-    /**
-     * Hiển thị form đăng ký quan tâm
-     */
-    public function showRegisterInterestForm()
-    {
-        $khoaHocs = \App\Models\KhoaHoc::all();
-        return view('auth.register-interest', compact('khoaHocs'));
-    }
 
     /**
      * Xử lý đăng ký quan tâm

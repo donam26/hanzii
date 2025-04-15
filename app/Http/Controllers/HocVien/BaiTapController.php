@@ -12,6 +12,7 @@ use App\Models\HocVien;
 use App\Models\KetQuaTracNghiem;
 use App\Models\LichSuLamBai;
 use App\Models\LuaChonCauHoi;
+use App\Models\BaiTapDaNop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -284,13 +285,62 @@ class BaiTapController extends Controller
         $baiTapDaNop = BaiTapDaNop::with([
             'baiTap.cauHois.dapAns',
             'baiTap.baiHoc.baiHocLops.lopHoc'
-        ])
-        ->where('hoc_vien_id', $hocVien->id)
-        ->findOrFail($id);
+        ])->findOrFail($id);
         
-        $baiTap = $baiTapDaNop->baiTap;
-        $lopHoc = $baiTap->baiHoc->baiHocLops->first()->lopHoc;
+        // Kiểm tra quyền truy cập
+        if ($baiTapDaNop->hoc_vien_id != $hocVien->id) {
+            return redirect()->route('hoc-vien.dashboard')
+                ->with('error', 'Bạn không có quyền truy cập trang này.');
+        }
         
-        return view('hoc-vien.bai-tap.ket-qua', compact('baiTapDaNop', 'baiTap', 'lopHoc'));
+        return view('hoc-vien.bai-tap.ket-qua', compact('baiTapDaNop'));
+    }
+    
+    /**
+     * Nộp bài tự luận
+     */
+    public function nopBaiTuLuan(Request $request, $id)
+    {
+        $nguoiDungId = session('nguoi_dung_id');
+        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$hocVien) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục.');
+        }
+        
+        $baiTap = BaiTap::findOrFail($id);
+        
+        // Kiểm tra loại bài tập
+        if ($baiTap->loai != 'tu_luan') {
+            return redirect()->route('hoc-vien.bai-tap.show', $id)
+                ->with('error', 'Bài tập này không phải là bài tập tự luận.');
+        }
+        
+        // Kiểm tra đã nộp bài chưa
+        $daNop = BaiTapDaNop::where('bai_tap_id', $id)
+            ->where('hoc_vien_id', $hocVien->id)
+            ->exists();
+            
+        if ($daNop) {
+            return redirect()->route('hoc-vien.bai-tap.show', $id)
+                ->with('error', 'Bạn đã nộp bài tập này rồi.');
+        }
+        
+        // Validate input
+        $request->validate([
+            'noi_dung' => 'required|string|min:10',
+        ]);
+        
+        // Lưu bài tập đã nộp
+        $baiTapDaNop = new BaiTapDaNop();
+        $baiTapDaNop->bai_tap_id = $id;
+        $baiTapDaNop->hoc_vien_id = $hocVien->id;
+        $baiTapDaNop->noi_dung = $request->input('noi_dung');
+        $baiTapDaNop->trang_thai = 'da_nop';
+        $baiTapDaNop->ngay_nop = now();
+        $baiTapDaNop->save();
+        
+        return redirect()->route('hoc-vien.bai-tap.show', $id)
+            ->with('success', 'Nộp bài tập thành công!');
     }
 } 

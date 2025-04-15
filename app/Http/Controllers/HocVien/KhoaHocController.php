@@ -19,8 +19,7 @@ class KhoaHocController extends Controller
     public function index(Request $request)
     {
         // Lọc theo danh mục hoặc từ khóa tìm kiếm
-        $query = KhoaHoc::with('danhMucKhoaHoc')
-                    ->where('trang_thai', 'hoat_dong');
+        $query = KhoaHoc::where('trang_thai', 'hoat_dong');
         
         // Lọc theo danh mục
         if ($request->has('danh_muc_id') && $request->danh_muc_id) {
@@ -70,7 +69,7 @@ class KhoaHocController extends Controller
      */
     public function show($id)
     {
-        $khoaHoc = KhoaHoc::with(['danhMucKhoaHoc'])->findOrFail($id);
+        $khoaHoc = KhoaHoc::findOrFail($id);
         
         // Kiểm tra trạng thái khóa học
         if ($khoaHoc->trang_thai != 'hoat_dong') {

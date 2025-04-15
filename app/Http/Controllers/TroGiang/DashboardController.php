@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\LopHoc;
 use App\Models\BaiTap;
-use App\Models\NopBaiTap;
+use App\Models\BaiTapDaNop;
 use App\Models\TroGiang;
 use Carbon\Carbon;
 
@@ -41,13 +41,12 @@ class DashboardController extends Controller
             $totalHocVien += $lopHoc->hocViens()->count();
         }
         
-        // Số lượng bài tập cần chấm
-        $baiTapCanCham = NopBaiTap::whereHas('baiTap.lopHocs', function($query) use ($troGiang) {
-                $query->where('lop_hoc.tro_giang_id', $troGiang->id);
-            })
-            ->where('trang_thai', 'da_nop')
-            ->whereNull('diem')
-            ->count();
+        // Lấy số bài tập cần chấm điểm
+        $baiTapCanCham = BaiTapDaNop::whereHas('baiTap.lopHocs', function($query) use ($troGiang) {
+            $query->where('tro_giang_id', $troGiang->id);
+        })
+        ->where('trang_thai', 'da_nop')
+        ->count();
         
         // Lớp học sắp diễn ra trong tuần
         $lichDay = LopHoc::where('tro_giang_id', $troGiang->id)
@@ -57,16 +56,15 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
         
-        // Danh sách bài tập cần chấm gần đây
-        $baiTapChamGanDay = NopBaiTap::whereHas('baiTap.lopHocs', function($query) use ($troGiang) {
-                $query->where('lop_hoc.tro_giang_id', $troGiang->id);
-            })
-            ->where('trang_thai', 'da_nop')
-            ->whereNull('diem')
-            ->with(['baiTap', 'user'])
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+        // Lấy số bài tập đã chấm gần đây
+        $baiTapChamGanDay = BaiTapDaNop::whereHas('baiTap.lopHocs', function($query) use ($troGiang) {
+            $query->where('tro_giang_id', $troGiang->id);
+        })
+        ->where('trang_thai', 'da_cham')
+        ->whereNotNull('nguoi_cham_id')
+        ->where('nguoi_cham_id', $troGiang->id)
+        ->whereBetween('ngay_cham', [now()->subDays(7), now()])
+        ->count();
         
         return view('tro-giang.dashboard', compact(
             'totalLopHoc',

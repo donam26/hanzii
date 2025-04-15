@@ -12,6 +12,9 @@ class BaiTapDaNop extends Model
 
     protected $table = 'bai_tap_da_nops';
 
+    const CREATED_AT = 'tao_luc';
+    const UPDATED_AT = 'cap_nhat_luc';
+    
     protected $fillable = [
         'bai_tap_id',
         'hoc_vien_id',

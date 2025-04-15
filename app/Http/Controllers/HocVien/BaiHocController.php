@@ -15,8 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Models\NopBaiTap;
-use App\Models\TaiLieuBaiHoc;
+use Illuminate\Support\Facades\Log;
+use App\Models\BaiTapDaNop;
+use App\Models\TaiLieuBoTro;
 
 class BaiHocController extends Controller
 {
@@ -40,7 +41,7 @@ class BaiHocController extends Controller
         // Kiểm tra học viên đã đăng ký lớp học chưa
         $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
             ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->first();
                     
         if (!$kiemTraDangKy) {
@@ -48,10 +49,12 @@ class BaiHocController extends Controller
                     ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
         }
         
-        // Lấy thông tin bài học
+        // Lấy thông tin bài học chi tiết
+        $baiHoc = BaiHoc::findOrFail($baiHocId);
+        
+        // Lấy thông tin bài học trong lớp
         $baiHocLop = BaiHocLop::where('bai_hoc_id', $baiHocId)
             ->where('lop_hoc_id', $lopHocId)
-            ->with('baiHoc', 'baiHoc.baiTaps')
             ->first();
         
         if (!$baiHocLop) {
@@ -59,7 +62,23 @@ class BaiHocController extends Controller
                     ->with('error', 'Không tìm thấy bài học này trong lớp học');
         }
         
-        $baiHoc = $baiHocLop->baiHoc;
+        // Lấy danh sách bài tập trực tiếp từ bảng bài tập
+        $baiTaps = BaiTap::where('bai_hoc_id', $baiHocId)->get();
+        
+        // Log chi tiết từng bài tập
+        Log::info('Số lượng bài tập của bài học ' . $baiHocId . ': ' . $baiTaps->count());
+        foreach ($baiTaps as $bt) {
+            Log::info('Bài tập ID: ' . $bt->id . ', Tiêu đề: ' . $bt->tieu_de);
+            
+            // Đảm bảo các trường tên và tiêu đề được gán đúng
+            // Hiệu chỉnh dữ liệu để phù hợp với view
+            if (empty($bt->ten) && !empty($bt->tieu_de)) {
+                $bt->ten = $bt->tieu_de;
+            }
+        }
+        
+        // Gán danh sách bài tập vào bài học
+        $baiHoc->baiTaps = $baiTaps;
         
         // Lấy tiến độ bài học
         $tienDo = TienDoBaiHoc::firstOrCreate([
@@ -71,8 +90,8 @@ class BaiHocController extends Controller
         ]);
         
         // Lấy danh sách bài tập đã nộp
-        $baiTapDaNop = NopBaiTap::where('hoc_vien_id', $hocVien->id)
-                        ->whereIn('bai_tap_id', $baiHoc->baiTaps->pluck('id'))
+        $baiTapDaNop = BaiTapDaNop::where('hoc_vien_id', $hocVien->id)
+                        ->whereIn('bai_tap_id', $baiTaps->pluck('id'))
                         ->get()
                         ->keyBy('bai_tap_id');
         
@@ -81,6 +100,19 @@ class BaiHocController extends Controller
                             ->with('baiHoc')
                             ->orderBy('so_thu_tu', 'asc')
                             ->get();
+        
+        // Debug danh sách bài học
+        Log::info('Số lượng bài học trong lớp ' . $lopHocId . ': ' . $danhSachBaiHoc->count());
+        foreach ($danhSachBaiHoc as $item) {
+            Log::info('Bài học lớp ID: ' . $item->id . 
+                ', Bài học ID: ' . $item->bai_hoc_id . 
+                ', Tên: ' . ($item->baiHoc->ten ?? $item->baiHoc->tieu_de ?? 'Không có tên'));
+            
+            // Đảm bảo title hiển thị đúng cho menu
+            if (empty($item->baiHoc->ten) && !empty($item->baiHoc->tieu_de)) {
+                $item->baiHoc->ten = $item->baiHoc->tieu_de;
+            }
+        }
         
         // Lấy tiến độ của tất cả bài học
         $tienDoBaiHocs = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
@@ -123,7 +155,7 @@ class BaiHocController extends Controller
         // Kiểm tra học viên đã đăng ký lớp học chưa
         $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
             ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->exists();
                     
         if (!$kiemTraDangKy) {
@@ -168,7 +200,7 @@ class BaiHocController extends Controller
                 'ngay_bat_dau' => now()
             ]);
             
-            return redirect()->route('hoc-vien.bai-hoc.show', ['lopId' => $lopHocId, 'baiHocId' => $baiHocTiepTheo->bai_hoc_id])
+            return redirect()->route('hoc-vien.bai-hoc.show', ['lopHocId' => $lopHocId, 'baiHocId' => $baiHocTiepTheo->bai_hoc_id])
                     ->with('success', 'Đã hoàn thành bài học. Chuyển đến bài học tiếp theo.');
         }
         
@@ -196,7 +228,7 @@ class BaiHocController extends Controller
         // Kiểm tra học viên đã đăng ký lớp học chưa
         $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
             ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->first();
                     
         if (!$kiemTraDangKy) {
@@ -207,21 +239,32 @@ class BaiHocController extends Controller
         // Lấy thông tin bài tập
         $baiTap = BaiTap::findOrFail($baiTapId);
         
+        // Kiểm tra và đảm bảo dữ liệu hiển thị
+        if (empty($baiTap->ten) && !empty($baiTap->tieu_de)) {
+            $baiTap->ten = $baiTap->tieu_de;
+        }
+        
+        // Log để debug
+        Log::info('Dữ liệu bài tập: ID=' . $baiTap->id . 
+            ', Ten=' . ($baiTap->ten ?? 'null') . 
+            ', TieuDe=' . ($baiTap->tieu_de ?? 'null') . 
+            ', BaiHocID=' . $baiTap->bai_hoc_id);
+        
         // Kiểm tra bài tập thuộc bài học đang xem
         if ($baiTap->bai_hoc_id != $baiHocId) {
-            return redirect()->route('hoc-vien.bai-hoc.show', ['lopId' => $lopHocId, 'baiHocId' => $baiHocId])
+            return redirect()->route('hoc-vien.bai-hoc.show', ['lopHocId' => $lopHocId, 'baiHocId' => $baiHocId])
                     ->with('error', 'Bài tập không thuộc bài học này');
         }
         
         // Lấy bài tập đã nộp (nếu có)
-        $baiTapDaNop = NopBaiTap::where('hoc_vien_id', $hocVien->id)
+        $baiTapDaNop = BaiTapDaNop::where('hoc_vien_id', $hocVien->id)
                         ->where('bai_tap_id', $baiTapId)
                         ->first();
         
         // Lấy thông tin lớp học
         $lopHoc = LopHoc::findOrFail($lopHocId);
         
-        return view('hoc-vien.bai-hoc.nop-bai-tap', compact('baiTap', 'baiTapDaNop', 'lopHoc', 'baiHocId', 'hocVien'));
+        return view('hoc-vien.bai-tap.nop-bai', compact('baiTap', 'baiTapDaNop', 'lopHoc', 'baiHocId', 'hocVien'));
     }
     
     /**
@@ -244,7 +287,7 @@ class BaiHocController extends Controller
         // Kiểm tra học viên đã đăng ký lớp học chưa
         $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
             ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->first();
                     
         if (!$kiemTraDangKy) {
@@ -263,12 +306,12 @@ class BaiHocController extends Controller
         }
         
         // Kiểm tra bài tập đã nộp chưa
-        $baiTapDaNop = NopBaiTap::where('hoc_vien_id', $hocVien->id)
+        $baiTapDaNop = BaiTapDaNop::where('hoc_vien_id', $hocVien->id)
                         ->where('bai_tap_id', $baiTapId)
                         ->first();
         
         if (!$baiTapDaNop) {
-            $baiTapDaNop = new NopBaiTap();
+            $baiTapDaNop = new BaiTapDaNop();
             $baiTapDaNop->hoc_vien_id = $hocVien->id;
             $baiTapDaNop->bai_tap_id = $baiTapId;
             $baiTapDaNop->ngay_nop = now();
@@ -276,8 +319,8 @@ class BaiHocController extends Controller
             $baiTapDaNop->ngay_nop = now();
             
             // Xóa file cũ nếu có
-            if ($baiTapDaNop->file_dinh_kem && Storage::disk('public')->exists($baiTapDaNop->file_dinh_kem)) {
-                Storage::disk('public')->delete($baiTapDaNop->file_dinh_kem);
+            if ($baiTapDaNop->file_path && Storage::disk('public')->exists($baiTapDaNop->file_path)) {
+                Storage::disk('public')->delete($baiTapDaNop->file_path);
             }
         }
         
@@ -287,13 +330,14 @@ class BaiHocController extends Controller
         // Lưu file đính kèm nếu có
         if ($request->hasFile('file_dinh_kem')) {
             $filePath = $request->file('file_dinh_kem')->store('bai_tap_nop', 'public');
-            $baiTapDaNop->file_dinh_kem = $filePath;
+            $baiTapDaNop->file_path = $filePath;
+            $baiTapDaNop->ten_file = $request->file('file_dinh_kem')->getClientOriginalName();
         }
         
         $baiTapDaNop->trang_thai = 'da_nop';
         $baiTapDaNop->save();
         
-        return redirect()->route('hoc-vien.bai-hoc.show', ['lopId' => $lopHocId, 'baiHocId' => $baiHocId])
+        return redirect()->route('hoc-vien.bai-hoc.show', ['lopHocId' => $lopHocId, 'baiHocId' => $baiHocId])
                 ->with('success', 'Nộp bài tập thành công');
     }
     
@@ -302,29 +346,36 @@ class BaiHocController extends Controller
      */
     public function taiTaiLieu($lopHocId, $baiHocId, $taiLieuId)
     {
-        $user = Auth::user();
-        $hocVien = HocVien::where('user_id', $user->id)->first();
+        $nguoiDungId = session('nguoi_dung_id');
+        if (!$nguoiDungId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục');
+        }
+        
+        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
             return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
+        // Kiểm tra tài liệu tồn tại
+        $taiLieu = TaiLieuBoTro::findOrFail($taiLieuId);
+        
         // Kiểm tra đăng ký học
         $dangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
                     ->where('hoc_vien_id', $hocVien->id)
-                    ->where('trang_thai', 'da_thanh_toan')
+                    ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
                     ->first();
                     
         if (!$dangKy) {
             return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn chưa đăng ký hoặc chưa thanh toán lớp học này');
+                    ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
         }
         
         // Kiểm tra file tồn tại
-        if (!Storage::disk('public')->exists($taiLieu->file_path)) {
+        if (!Storage::disk('public')->exists($taiLieu->duong_dan_file)) {
             return back()->with('error', 'Tài liệu không tồn tại hoặc đã bị xóa');
         }
         
-        return Storage::disk('public')->download($taiLieu->file_path, $taiLieu->ten_goc);
+        return response()->file(storage_path('app/public/' . $taiLieu->duong_dan_file));
     }
 } 

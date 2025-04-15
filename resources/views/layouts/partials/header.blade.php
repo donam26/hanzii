@@ -37,7 +37,6 @@
                 @else
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-red-600 py-2">Đăng nhập</a>
                     <a href="{{ route('register') }}" class="text-gray-700 hover:text-red-600 py-2">Đăng ký</a>
-                    <a href="{{ route('register.interest') }}" class="text-gray-700 hover:text-red-600 py-2">Đăng ký học thử</a>
                 @endauth
             </nav>
 
@@ -112,7 +111,6 @@
                         @else
                             <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Đăng nhập</a>
                             <a href="{{ route('register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Đăng ký</a>
-                            <a href="{{ route('register.interest') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Đăng ký học thử</a>
                         @endauth
                     </div>
                 </div>

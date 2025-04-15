@@ -15,74 +15,110 @@ use Illuminate\Support\Facades\DB;
 class ThanhToanController extends Controller
 {
     /**
-     * Hiển thị danh sách các thanh toán
+     * Hiển thị danh sách thanh toán
      */
     public function index(Request $request)
     {
-        // Xử lý tìm kiếm và lọc
+        // Khởi tạo query builder
         $query = ThanhToan::with(['dangKyHoc.hocVien.nguoiDung', 'dangKyHoc.lopHoc.khoaHoc']);
         
-        // Tìm kiếm theo từ khóa (tên học viên, mã lớp)
-        if ($request->has('q') && !empty($request->q)) {
-            $search = $request->q;
-            $query->whereHas('dangKyHoc.hocVien.nguoiDung', function($q) use ($search) {
-                $q->where('ho', 'like', "%{$search}%")
-                  ->orWhere('ten', 'like', "%{$search}%")
-                  ->orWhere(DB::raw('CONCAT(ho, " ", ten)'), 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            })->orWhereHas('dangKyHoc.lopHoc', function($q) use ($search) {
-                $q->where('ma_lop', 'like', "%{$search}%");
+        // Tìm kiếm theo học viên
+        if ($request->has('hoc_vien_id') && !empty($request->hoc_vien_id)) {
+            $query->whereHas('dangKyHoc', function($q) use ($request) {
+                $q->where('hoc_vien_id', $request->hoc_vien_id);
             });
         }
         
-        // Lọc theo trạng thái thanh toán
+        // Tìm kiếm theo lớp học
+        if ($request->has('lop_hoc_id') && !empty($request->lop_hoc_id)) {
+            $query->whereHas('dangKyHoc', function($q) use ($request) {
+                $q->where('lop_hoc_id', $request->lop_hoc_id);
+            });
+        }
+        
+        // Tìm kiếm theo khóa học
+        if ($request->has('khoa_hoc_id') && !empty($request->khoa_hoc_id)) {
+            $query->whereHas('dangKyHoc.lopHoc', function($q) use ($request) {
+                $q->where('khoa_hoc_id', $request->khoa_hoc_id);
+            });
+        }
+        
+        // Tìm kiếm theo trạng thái
         if ($request->has('trang_thai') && !empty($request->trang_thai)) {
             $query->where('trang_thai', $request->trang_thai);
         }
         
-        // Lọc theo phương thức thanh toán
-        if ($request->has('phuong_thuc') && !empty($request->phuong_thuc)) {
-            $query->where('phuong_thuc_thanh_toan', $request->phuong_thuc);
+        // Tìm kiếm theo phương thức thanh toán
+        if ($request->has('phuong_thuc_thanh_toan') && !empty($request->phuong_thuc_thanh_toan)) {
+            $query->where('phuong_thuc_thanh_toan', $request->phuong_thuc_thanh_toan);
         }
         
-        // Lọc theo thời gian thanh toán
+        // Tìm kiếm theo thời gian
         if ($request->has('tu_ngay') && !empty($request->tu_ngay)) {
-            $query->whereDate('ngay_thanh_toan', '>=', $request->tu_ngay);
+            $query->whereDate('tao_luc', '>=', $request->tu_ngay);
         }
         
         if ($request->has('den_ngay') && !empty($request->den_ngay)) {
-            $query->whereDate('ngay_thanh_toan', '<=', $request->den_ngay);
+            $query->whereDate('tao_luc', '<=', $request->den_ngay);
         }
         
-        // Sắp xếp kết quả
-        $query->orderBy('created_at', 'desc');
+        // Sắp xếp mặc định theo thời gian tạo giảm dần
+        $query->orderBy('tao_luc', 'desc');
         
-        $thanhToans = $query->paginate(10);
+        // Lấy dữ liệu phân trang
+        $thanhToans = $query->paginate(15);
         
-        // Thống kê nhanh
+        // Lấy danh sách lớp học, khóa học cho select box
+        $lopHocs = LopHoc::orderBy('ten')->get();
+        $khoaHocs = KhoaHoc::orderBy('ten')->get();
+        $hocViens = HocVien::with('nguoiDung')->get();
+        
+        // Lấy các option cho select box
+        $trangThais = [
+            'cho_xac_nhan' => 'Chờ xác nhận',
+            'da_thanh_toan' => 'Đã thanh toán',
+            'da_huy' => 'Đã hủy'
+        ];
+        
+        $phuongThucThanhToans = [
+            'chuyen_khoan' => 'Chuyển khoản ngân hàng',
+            'vi_dien_tu' => 'Ví điện tử (MoMo, ZaloPay)',
+            'tien_mat' => 'Tiền mặt tại trung tâm',
+            'vnpay' => 'Thanh toán qua VNPay'
+        ];
+        
+        // Tính tổng số tiền đã thanh toán
+        $tongTien = $query->where('trang_thai', 'da_thanh_toan')->sum('so_tien');
+        
+        // Tính tổng số thanh toán
         $tongThanhToan = ThanhToan::count();
-        $tongThanhToanThang = ThanhToan::whereMonth('ngay_thanh_toan', Carbon::now()->month)
-                                ->whereYear('ngay_thanh_toan', Carbon::now()->year)
+        
+        // Tính tổng số thanh toán trong tháng hiện tại
+        $tongThanhToanThang = ThanhToan::whereMonth('tao_luc', Carbon::now()->month)
+            ->whereYear('tao_luc', Carbon::now()->year)
                                 ->count();
-        $tongSoTien = ThanhToan::where('trang_thai', 'da_thanh_toan')->sum('so_tien');
+            
+        // Tính tổng số tiền đã thanh toán (đặt tên biến giống trong view)
+        $tongSoTien = $tongTien;
+        
+        // Tính tổng số tiền trong tháng hiện tại
         $tongSoTienThang = ThanhToan::where('trang_thai', 'da_thanh_toan')
                             ->whereMonth('ngay_thanh_toan', Carbon::now()->month)
                             ->whereYear('ngay_thanh_toan', Carbon::now()->year)
                             ->sum('so_tien');
         
-        // Thống kê theo phương thức thanh toán
-        $thongKeTheoPhuongThuc = ThanhToan::select('phuong_thuc_thanh_toan', DB::raw('count(*) as so_luong'), DB::raw('sum(so_tien) as tong_tien'))
-                                ->where('trang_thai', 'da_thanh_toan')
-                                ->groupBy('phuong_thuc_thanh_toan')
-                                ->get();
-        
         return view('admin.thanh-toan.index', compact(
             'thanhToans',
+            'lopHocs', 
+            'khoaHocs', 
+            'hocViens', 
+            'trangThais', 
+            'phuongThucThanhToans',
+            'tongTien',
             'tongThanhToan', 
             'tongThanhToanThang',
             'tongSoTien',
-            'tongSoTienThang',
-            'thongKeTheoPhuongThuc'
+            'tongSoTienThang'
         ));
     }
     
@@ -94,104 +130,153 @@ class ThanhToanController extends Controller
         $thanhToan = ThanhToan::with([
                 'dangKyHoc.hocVien.nguoiDung', 
                 'dangKyHoc.lopHoc.khoaHoc',
-                'dangKyHoc.lopHoc.giaoVien.nguoiDung'
-            ])
-            ->findOrFail($id);
+            'dangKyHoc.lopHoc.giaoVien.nguoiDung',
+            'dangKyHoc.lopHoc.troGiang.nguoiDung'
+        ])->findOrFail($id);
         
         return view('admin.thanh-toan.show', compact('thanhToan'));
     }
     
     /**
-     * Hiển thị form cập nhật trạng thái thanh toán
+     * Xác nhận thanh toán
      */
-    public function edit($id)
+    public function confirm($id)
     {
-        $thanhToan = ThanhToan::with([
-                'dangKyHoc.hocVien.nguoiDung', 
-                'dangKyHoc.lopHoc.khoaHoc'
-            ])
-            ->findOrFail($id);
-        
-        return view('admin.thanh-toan.edit', compact('thanhToan'));
-    }
-    
-    /**
-     * Cập nhật trạng thái thanh toán
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'trang_thai' => 'required|in:cho_xac_nhan,da_thanh_toan,da_huy',
-            'ngay_thanh_toan' => 'required_if:trang_thai,da_thanh_toan|nullable|date',
-            'ghi_chu' => 'nullable|string|max:500',
-        ]);
-        
-        $thanhToan = ThanhToan::findOrFail($id);
-        
-        // Cập nhật thông tin thanh toán
-        $thanhToan->trang_thai = $request->trang_thai;
-        if ($request->trang_thai === 'da_thanh_toan') {
-            $thanhToan->ngay_thanh_toan = $request->ngay_thanh_toan ?? now();
-        }
-        $thanhToan->ghi_chu = $request->ghi_chu;
-        $thanhToan->save();
-        
-        // Nếu thanh toán thành công, cập nhật trạng thái đăng ký học
-        if ($request->trang_thai === 'da_thanh_toan') {
-            $dangKyHoc = DangKyHoc::find($thanhToan->dang_ky_id);
-            if ($dangKyHoc) {
-                $dangKyHoc->trang_thai = 'da_thanh_toan';
-                $dangKyHoc->save();
+        try {
+            DB::beginTransaction();
+            
+            $thanhToan = ThanhToan::with(['dangKyHoc'])->findOrFail($id);
+            
+            if ($thanhToan->trang_thai != 'cho_xac_nhan') {
+                return back()->with('error', 'Thanh toán này không thể xác nhận');
             }
-        }
-        
-        return redirect()->route('admin.thanh-toan.index')
-            ->with('success', 'Cập nhật trạng thái thanh toán thành công!');
-    }
-    
-    /**
-     * Tạo mới thanh toán cho đăng ký học
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'dang_ky_id' => 'required|exists:dang_ky_hocs,id',
-            'so_tien' => 'required|numeric|min:0',
-            'phuong_thuc_thanh_toan' => 'required|string',
-            'trang_thai' => 'required|in:cho_xac_nhan,da_thanh_toan',
-            'ngay_thanh_toan' => 'required_if:trang_thai,da_thanh_toan|nullable|date',
-            'ghi_chu' => 'nullable|string|max:500',
-        ]);
-        
-        $dangKyHoc = DangKyHoc::findOrFail($request->dang_ky_id);
-        
-        // Tạo thanh toán mới
-        $thanhToan = new ThanhToan();
-        $thanhToan->dang_ky_id = $request->dang_ky_id;
-        $thanhToan->so_tien = $request->so_tien;
-        $thanhToan->phuong_thuc_thanh_toan = $request->phuong_thuc_thanh_toan;
-        $thanhToan->trang_thai = $request->trang_thai;
-        
-        if ($request->trang_thai === 'da_thanh_toan') {
-            $thanhToan->ngay_thanh_toan = $request->ngay_thanh_toan ?? now();
+            
+            // Cập nhật trạng thái thanh toán
+            $thanhToan->trang_thai = 'da_thanh_toan';
+            $thanhToan->ngay_thanh_toan = now();
+            $thanhToan->save();
+            
             // Cập nhật trạng thái đăng ký học
+            $dangKyHoc = $thanhToan->dangKyHoc;
             $dangKyHoc->trang_thai = 'da_thanh_toan';
             $dangKyHoc->save();
+            
+            DB::commit();
+            
+            return back()->with('success', 'Đã xác nhận thanh toán thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
-        
-        $thanhToan->ghi_chu = $request->ghi_chu;
-        $thanhToan->save();
-        
-        return redirect()->route('admin.thanh-toan.index')
-            ->with('success', 'Tạo thanh toán mới thành công!');
     }
     
     /**
-     * Xuất báo cáo thanh toán
+     * Hủy thanh toán
      */
-    public function exportReport(Request $request)
+    public function cancel($id)
     {
-        // Logic xuất báo cáo - sẽ thực hiện sau
-        return redirect()->back()->with('info', 'Tính năng đang được phát triển');
+        try {
+            DB::beginTransaction();
+            
+            $thanhToan = ThanhToan::with(['dangKyHoc'])->findOrFail($id);
+            
+            if ($thanhToan->trang_thai != 'cho_xac_nhan') {
+                return back()->with('error', 'Thanh toán này không thể hủy');
+            }
+            
+            // Cập nhật trạng thái thanh toán
+            $thanhToan->trang_thai = 'da_huy';
+        $thanhToan->save();
+        
+            // Cập nhật trạng thái đăng ký học nếu chưa có thanh toán khác
+            $dangKyHoc = $thanhToan->dangKyHoc;
+            $coThanhToanKhac = ThanhToan::where('dang_ky_id', $dangKyHoc->id)
+                ->where('id', '!=', $thanhToan->id)
+                ->where('trang_thai', '!=', 'da_huy')
+                ->exists();
+                
+            if (!$coThanhToanKhac) {
+                $dangKyHoc->trang_thai = 'cho_thanh_toan';
+                $dangKyHoc->save();
+            }
+            
+            DB::commit();
+            
+            return back()->with('success', 'Đã hủy thanh toán thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Thống kê thanh toán theo ngày
+     */
+    public function thongKeTheoNgay(Request $request)
+    {
+        $tuNgay = $request->input('tu_ngay', now()->subDays(30)->format('Y-m-d'));
+        $denNgay = $request->input('den_ngay', now()->format('Y-m-d'));
+        
+        $thongKe = ThanhToan::where('trang_thai', 'da_thanh_toan')
+            ->whereDate('ngay_thanh_toan', '>=', $tuNgay)
+            ->whereDate('ngay_thanh_toan', '<=', $denNgay)
+            ->selectRaw('DATE(ngay_thanh_toan) as ngay, SUM(so_tien) as tong_tien, COUNT(*) as so_luong')
+            ->groupBy('ngay')
+            ->orderBy('ngay', 'asc')
+            ->get();
+            
+        $labels = $thongKe->pluck('ngay');
+        $tongTien = $thongKe->pluck('tong_tien');
+        $soLuong = $thongKe->pluck('so_luong');
+        
+        return view('admin.thanh-toan.thong-ke-ngay', compact(
+            'thongKe', 
+            'labels', 
+            'tongTien', 
+            'soLuong',
+            'tuNgay',
+            'denNgay'
+        ));
+    }
+    
+    /**
+     * Thống kê thanh toán theo tháng
+     */
+    public function thongKeTheoThang(Request $request)
+    {
+        $nam = $request->input('nam', now()->year);
+        
+        $thongKe = ThanhToan::where('trang_thai', 'da_thanh_toan')
+            ->whereYear('ngay_thanh_toan', $nam)
+            ->selectRaw('MONTH(ngay_thanh_toan) as thang, SUM(so_tien) as tong_tien, COUNT(*) as so_luong')
+            ->groupBy('thang')
+            ->orderBy('thang', 'asc')
+            ->get();
+            
+        $labels = $thongKe->pluck('thang')->map(function($thang) {
+            return 'Tháng ' . $thang;
+        });
+        $tongTien = $thongKe->pluck('tong_tien');
+        $soLuong = $thongKe->pluck('so_luong');
+        
+        return view('admin.thanh-toan.thong-ke-thang', compact(
+            'thongKe', 
+            'labels', 
+            'tongTien', 
+            'soLuong',
+            'nam'
+        ));
+    }
+    
+    /**
+     * Export danh sách thanh toán ra Excel
+     */
+    public function export(Request $request)
+    {
+        // Logic xuất file Excel ở đây
+        // Có thể sử dụng các package như Laravel Excel
+        
+        return redirect()->route('admin.thanh-toan.index')
+            ->with('info', 'Chức năng xuất Excel đang được phát triển');
     }
 } 

@@ -241,52 +241,6 @@
             </div>
         @endif
     </div>
-    
-    <!-- Thống kê theo phương thức thanh toán -->
-    @if($thongKeTheoPhuongThuc->count() > 0)
-        <div class="mt-6 bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-800">Thống kê theo phương thức thanh toán</h2>
-            </div>
-            <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($thongKeTheoPhuongThuc as $thongKe)
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        @if($thongKe->phuong_thuc_thanh_toan == 'chuyen_khoan')
-                            <div class="flex items-center text-blue-600 mb-2">
-                                <i class="fas fa-university text-xl mr-2"></i>
-                                <h3 class="font-semibold">Chuyển khoản</h3>
-                            </div>
-                        @elseif($thongKe->phuong_thuc_thanh_toan == 'tien_mat')
-                            <div class="flex items-center text-green-600 mb-2">
-                                <i class="fas fa-money-bill-alt text-xl mr-2"></i>
-                                <h3 class="font-semibold">Tiền mặt</h3>
-                            </div>
-                        @elseif($thongKe->phuong_thuc_thanh_toan == 'vi_dien_tu')
-                            <div class="flex items-center text-purple-600 mb-2">
-                                <i class="fas fa-wallet text-xl mr-2"></i>
-                                <h3 class="font-semibold">Ví điện tử</h3>
-                            </div>
-                        @else
-                            <div class="flex items-center text-gray-600 mb-2">
-                                <i class="fas fa-credit-card text-xl mr-2"></i>
-                                <h3 class="font-semibold">{{ $thongKe->phuong_thuc_thanh_toan }}</h3>
-                            </div>
-                        @endif
-                        
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <p class="text-gray-500 text-sm">Số lượng:</p>
-                                <p class="text-gray-800 font-bold">{{ number_format($thongKe->so_luong) }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500 text-sm">Tổng tiền:</p>
-                                <p class="text-gray-800 font-bold">{{ number_format($thongKe->tong_tien, 0, ',', '.') }} đ</p>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
+ 
 </div>
 @endsection 

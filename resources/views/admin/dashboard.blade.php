@@ -368,7 +368,7 @@
                                             </p>
                                             <div class="mt-2 flex items-center text-xs text-gray-500">
                                                 <i class="far fa-clock mr-1"></i>
-                                                <span>{{ \Carbon\Carbon::parse($thongBao->created_at)->diffForHumans() }}</span>
+                                                <span>{{ \Carbon\Carbon::parse($thongBao->tao_luc)->diffForHumans() }}</span>
                                             </div>
                                         </div>
                                     </div>
