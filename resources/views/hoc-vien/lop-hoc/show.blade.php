@@ -260,9 +260,7 @@
                                     <div class="text-sm text-gray-900">{{ isset($baiTap->han_nop) ? \Carbon\Carbon::parse($baiTap->han_nop)->format('d/m/Y H:i') : '' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if(isset($baiTap->loai) && $baiTap->loai == 'trac_nghiem')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Trắc nghiệm</span>
-                                    @elseif(isset($baiTap->loai) && $baiTap->loai == 'tu_luan')
+                                    @if(isset($baiTap->loai) && $baiTap->loai == 'tu_luan')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Tự luận</span>
                                     @elseif(isset($baiTap->loai) && $baiTap->loai == 'upload')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Nộp file</span>
@@ -276,7 +274,7 @@
                                         @if(isset($baiTap->diem))
                                             <span class="ml-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Điểm: {{ $baiTap->diem }}</span>
                                         @endif
-                                    @elseif($baiTap->trang_thai == 'dang_cham')
+                                    @elseif($baiTap->trang_thai == 'da_cham')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Đang chấm</span>
                                     @elseif($baiTap->trang_thai == 'qua_han')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Quá hạn</span>
@@ -285,12 +283,12 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    @if($baiTap->trang_thai == 'da_nop' || $baiTap->trang_thai == 'dang_cham')
+                                    @if($baiTap->trang_thai == 'da_nop' || $baiTap->trang_thai == 'da_cham')
                                         <a href="{{ route('hoc-vien.bai-tap.show', $baiTap->id) }}" class="text-blue-600 hover:text-blue-900">Xem chi tiết</a>
                                     @elseif($baiTap->trang_thai == 'qua_han')
                                         <span class="text-red-600">Đã hết hạn</span>
                                     @else
-                                        <a href="{{ route('hoc-vien.bai-tap.lam-bai', $baiTap->id) }}" class="text-green-600 hover:text-green-900">Làm bài</a>
+                                        <a href="{{ route('hoc-vien.bai-tap.show', $baiTap->id) }}" class="text-green-600 hover:text-green-900">Làm bài</a>
                                     @endif
                                 </td>
                             </tr>

@@ -85,7 +85,13 @@ class BaiHoc extends Model
     public function lopHocs(): BelongsToMany
     {
         return $this->belongsToMany(LopHoc::class, 'bai_hoc_lops', 'bai_hoc_id', 'lop_hoc_id')
-            ->withPivot(['so_thu_tu', 'ngay_bat_dau', 'trang_thai'])
+            ->withPivot(['so_thu_tu', 'ngay_bat_dau'])
+            ->withTimestamps('tao_luc', 'cap_nhat_luc');
+    }
+    public function lopHoc(): BelongsToMany
+    {
+        return $this->belongsToMany(LopHoc::class, 'bai_hoc_lops', 'bai_hoc_id', 'lop_hoc_id')
+            ->withPivot(['so_thu_tu', 'ngay_bat_dau'])
             ->withTimestamps('tao_luc', 'cap_nhat_luc');
     }
 

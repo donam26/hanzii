@@ -154,32 +154,6 @@ class BaiTapController extends Controller
             
             $baiTap->save();
             
-            // Nếu là bài tập trắc nghiệm, xử lý câu hỏi và đáp án
-            if ($validated['loai'] == 'trac_nghiem' && $request->has('cau_hoi')) {
-                foreach ($request->cau_hoi as $index => $cauHoi) {
-                    if (!empty($cauHoi['noi_dung'])) {
-                        $cauHoiMoi = new \App\Models\CauHoi();
-                        $cauHoiMoi->bai_tap_id = $baiTap->id;
-                        $cauHoiMoi->noi_dung = $cauHoi['noi_dung'];
-                        $cauHoiMoi->diem = $cauHoi['diem'] ?? 1;
-                        $cauHoiMoi->save();
-                        
-                        // Lưu các đáp án
-                        if (isset($cauHoi['dap_an']) && is_array($cauHoi['dap_an'])) {
-                            foreach ($cauHoi['dap_an'] as $indexDA => $dapAn) {
-                                if (!empty($dapAn['noi_dung'])) {
-                                    $dapAnMoi = new \App\Models\DapAn();
-                                    $dapAnMoi->cau_hoi_id = $cauHoiMoi->id;
-                                    $dapAnMoi->noi_dung = $dapAn['noi_dung'];
-                                    $dapAnMoi->la_dap_an_dung = isset($cauHoi['dap_an_dung']) && $cauHoi['dap_an_dung'] == $indexDA;
-                                    $dapAnMoi->save();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
             DB::commit();
             
             return redirect()->route('giao-vien.bai-tap.index', ['bai_hoc_id' => $validated['bai_hoc_id']])
@@ -205,7 +179,6 @@ class BaiTapController extends Controller
         // Lấy thông tin bài tập và kiểm tra quyền truy cập
         $baiTap = BaiTap::with([
             'baiHoc.baiHocLops.lopHoc',
-            'cauHois.dapAns',
             'baiTapDaNops.hocVien.nguoiDung'
         ])
         ->whereHas('baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
@@ -219,23 +192,22 @@ class BaiTapController extends Controller
         // Lấy danh sách học viên đã nộp bài
         $baiTapDaNops = $baiTap->baiTapDaNops;
         
-        // Thống kê
-        $tongSoHocVien = BaiTapDaNop::whereHas('baiTap', function($query) use ($id) {
-                $query->where('id', $id);
-            })
+        // Lấy số học viên trong lớp
+        $tongSoHocVien = DB::table('dang_ky_hocs')
+            ->where('lop_hoc_id', $lopHoc->id)
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->count();
             
-        $daNop = BaiTapDaNop::whereHas('baiTap', function($query) use ($id) {
-                $query->where('id', $id);
-            })
+        // Số học viên đã nộp bài
+        $daNop = BaiTapDaNop::where('bai_tap_id', $id)->count();
+            
+        // Số học viên đã được chấm điểm
+        $daCham = BaiTapDaNop::where('bai_tap_id', $id)
+            ->where('trang_thai', 'da_cham')
             ->count();
             
-        $daCham = BaiTapDaNop::whereHas('baiTap', function($query) use ($id) {
-                $query->where('id', $id);
-            })
-            ->count();
-            
-        $chuaNop = $tongSoHocVien - $daNop - $daCham;
+        // Số học viên chưa nộp bài
+        $chuaNop = $tongSoHocVien - $daNop;
         
         return view('giao-vien.bai-tap.show', compact('baiTap', 'lopHoc', 'baiTapDaNops', 'tongSoHocVien', 'daNop', 'daCham', 'chuaNop'));
     }
@@ -255,7 +227,6 @@ class BaiTapController extends Controller
         // Lấy thông tin bài tập và kiểm tra quyền truy cập
         $baiTap = BaiTap::with([
             'baiHoc.baiHocLops.lopHoc',
-            'cauHois.dapAns'
         ])
         ->whereHas('baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
             $query->where('giao_vien_id', $giaoVien->id);
@@ -332,39 +303,7 @@ class BaiTapController extends Controller
             
             $baiTap->save();
             
-            // Nếu là bài tập trắc nghiệm, xử lý câu hỏi và đáp án
-            if ($baiTap->loai == 'trac_nghiem' && $request->has('cau_hoi')) {
-                // Xóa câu hỏi và đáp án cũ
-                foreach ($baiTap->cauHois as $cauHoi) {
-                    $cauHoi->dapAns()->delete();
-                }
-                $baiTap->cauHois()->delete();
-                
-                // Thêm câu hỏi và đáp án mới
-                foreach ($request->cau_hoi as $index => $cauHoi) {
-                    if (!empty($cauHoi['noi_dung'])) {
-                        $cauHoiMoi = new \App\Models\CauHoi();
-                        $cauHoiMoi->bai_tap_id = $baiTap->id;
-                        $cauHoiMoi->noi_dung = $cauHoi['noi_dung'];
-                        $cauHoiMoi->diem = $cauHoi['diem'] ?? 1;
-                        $cauHoiMoi->save();
-                        
-                        // Lưu các đáp án
-                        if (isset($cauHoi['dap_an']) && is_array($cauHoi['dap_an'])) {
-                            foreach ($cauHoi['dap_an'] as $indexDA => $dapAn) {
-                                if (!empty($dapAn['noi_dung'])) {
-                                    $dapAnMoi = new \App\Models\DapAn();
-                                    $dapAnMoi->cau_hoi_id = $cauHoiMoi->id;
-                                    $dapAnMoi->noi_dung = $dapAn['noi_dung'];
-                                    $dapAnMoi->la_dap_an_dung = isset($cauHoi['dap_an_dung']) && $cauHoi['dap_an_dung'] == $indexDA;
-                                    $dapAnMoi->save();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
+      
             DB::commit();
             
             return redirect()->route('giao-vien.bai-tap.show', $id)
@@ -408,14 +347,6 @@ class BaiTapController extends Controller
             // Xóa file đính kèm nếu có
             if ($baiTap->file_dinh_kem) {
                 Storage::disk('public')->delete($baiTap->file_dinh_kem);
-            }
-            
-            // Xóa câu hỏi và đáp án nếu là bài tập trắc nghiệm
-            if ($baiTap->loai == 'trac_nghiem') {
-                foreach ($baiTap->cauHois as $cauHoi) {
-                    $cauHoi->dapAns()->delete();
-                }
-                $baiTap->cauHois()->delete();
             }
             
             // Xóa bài tập

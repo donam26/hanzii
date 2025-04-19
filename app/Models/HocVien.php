@@ -63,13 +63,6 @@ class HocVien extends Model
         return $this->hasMany(TienDoBaiHoc::class, 'hoc_vien_id');
     }
 
-    /**
-     * Quan hệ với kết quả trắc nghiệm
-     */
-    public function ketQuaTracNghiems(): HasMany
-    {
-        return $this->hasMany(KetQuaTracNghiem::class, 'hoc_vien_id');
-    }
 
     /**
      * Quan hệ với bài tập tự luận

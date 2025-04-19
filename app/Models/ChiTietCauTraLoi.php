@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ChiTietCauTraLoi extends Model
 {
@@ -14,7 +15,10 @@ class ChiTietCauTraLoi extends Model
      *
      * @var string
      */
-    protected $table = 'chi_tiet_cau_tra_loi';
+    protected $table = 'chi_tiet_cau_tra_lois';
+
+    const CREATED_AT = 'tao_luc';
+    const UPDATED_AT = 'cap_nhat_luc';
 
     /**
      * Các thuộc tính có thể gán giá trị hàng loạt
@@ -22,13 +26,10 @@ class ChiTietCauTraLoi extends Model
      * @var array
      */
     protected $fillable = [
-        'ket_qua_bai_kiem_tra_id',
+        'bai_tap_da_nop_id',
         'cau_hoi_id',
         'dap_an_id',
-        'dap_an_dung_id',
-        'da_tra_loi',
-        'diem',
-        'ghi_chu'
+        'la_dap_an_dung',
     ];
 
     /**
@@ -37,39 +38,30 @@ class ChiTietCauTraLoi extends Model
      * @var array
      */
     protected $casts = [
-        'da_tra_loi' => 'boolean',
-        'diem' => 'float',
+        'la_dap_an_dung' => 'boolean',
     ];
 
     /**
-     * Kết quả bài kiểm tra
+     * Quan hệ với bài tập đã nộp
      */
-    public function ketQuaBaiKiemTra()
+    public function baiTapDaNop(): BelongsTo
     {
-        return $this->belongsTo(KetQuaBaiKiemTra::class, 'ket_qua_bai_kiem_tra_id');
+        return $this->belongsTo(BaiTapDaNop::class, 'bai_tap_da_nop_id');
     }
 
     /**
-     * Câu hỏi
+     * Quan hệ với câu hỏi
      */
-    public function cauHoi()
+    public function cauHoi(): BelongsTo
     {
         return $this->belongsTo(CauHoi::class, 'cau_hoi_id');
     }
 
     /**
-     * Đáp án đã chọn
+     * Quan hệ với đáp án
      */
-    public function dapAn()
+    public function dapAn(): BelongsTo
     {
         return $this->belongsTo(DapAn::class, 'dap_an_id');
-    }
-
-    /**
-     * Đáp án đúng
-     */
-    public function dapAnDung()
-    {
-        return $this->belongsTo(DapAn::class, 'dap_an_dung_id');
     }
 }

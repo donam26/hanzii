@@ -37,13 +37,6 @@ class BaiTap extends Model
         return $this->belongsTo(BaiHoc::class, 'bai_hoc_id');
     }
 
-    /**
-     * Quan hệ với câu hỏi trắc nghiệm
-     */
-    public function cauHois(): HasMany
-    {
-        return $this->hasMany(CauHoi::class, 'bai_tap_id');
-    }
 
     /**
      * Quan hệ với bài tự luận
@@ -51,14 +44,6 @@ class BaiTap extends Model
     public function baiTuLuans(): HasMany
     {
         return $this->hasMany(BaiTuLuan::class, 'bai_tap_id');
-    }
-
-    /**
-     * Quan hệ với kết quả trắc nghiệm
-     */
-    public function ketQuaTracNghiems(): HasMany
-    {
-        return $this->hasMany(KetQuaTracNghiem::class, 'bai_tap_id');
     }
 
     /**

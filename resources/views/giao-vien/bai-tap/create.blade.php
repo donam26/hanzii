@@ -56,7 +56,6 @@
                             <label for="loai" class="block text-sm font-medium text-gray-700">Loại bài tập <span class="text-red-600">*</span></label>
                             <select name="loai" id="loai" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm">
                                 <option value="tu_luan" {{ old('loai') == 'tu_luan' ? 'selected' : '' }}>Tự luận</option>
-                                <option value="trac_nghiem" {{ old('loai') == 'trac_nghiem' ? 'selected' : '' }}>Trắc nghiệm</option>
                                 <option value="file" {{ old('loai') == 'file' ? 'selected' : '' }}>File</option>
                             </select>
                             @error('loai')
@@ -89,64 +88,6 @@
                        
                         </div>
 
-                        <!-- Phần câu hỏi trắc nghiệm (hiển thị khi loại bài tập là trắc nghiệm) -->
-                        <div id="trac-nghiem-section" class="border-t pt-4 mt-4 hidden">
-                            <h4 class="text-lg font-medium text-gray-900 mb-4">Câu hỏi trắc nghiệm</h4>
-                            
-                            <div id="cau-hoi-container">
-                                <!-- Mẫu câu hỏi đầu tiên -->
-                                <div class="cau-hoi-item border p-4 rounded-md mb-4">
-                                    <div class="flex justify-between mb-2">
-                                        <h5 class="font-medium">Câu hỏi 1</h5>
-                                        <button type="button" class="text-red-600 hover:text-red-800 delete-cau-hoi" onclick="removeCauHoi(this)">
-                                            <i class="fas fa-trash"></i> Xóa
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nội dung câu hỏi <span class="text-red-600">*</span></label>
-                                        <input type="text" name="cau_hoi[0][noi_dung]" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Điểm cho câu hỏi</label>
-                                        <input type="number" name="cau_hoi[0][diem]" value="1" min="0.5" step="0.5" class="w-full rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500">
-                                    </div>
-                                    
-                                    <div class="mt-3">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Các đáp án <span class="text-red-600">*</span></label>
-                                        
-                                        <div class="dap-an-container">
-                                            <!-- Đáp án A -->
-                                            <div class="flex items-center mb-2 dap-an-item">
-                                                <input type="radio" name="cau_hoi[0][dap_an_dung]" value="0" id="dap_an_0_0" class="mr-2" checked>
-                                                <input type="text" name="cau_hoi[0][dap_an][0][noi_dung]" placeholder="Đáp án A" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
-                                                <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
-                                            
-                                            <!-- Đáp án B -->
-                                            <div class="flex items-center mb-2 dap-an-item">
-                                                <input type="radio" name="cau_hoi[0][dap_an_dung]" value="1" id="dap_an_0_1" class="mr-2">
-                                                <input type="text" name="cau_hoi[0][dap_an][1][noi_dung]" placeholder="Đáp án B" class="flex-1 rounded-md border-gray-300 focus:border-red-500 focus:ring-red-500 mr-2">
-                                                <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDapAn(this)">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        
-                                        <button type="button" class="mt-2 inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="addDapAn(this)">
-                                            <i class="fas fa-plus mr-1"></i> Thêm đáp án
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <button type="button" id="add-cau-hoi" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <i class="fas fa-plus mr-1"></i> Thêm câu hỏi
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -162,33 +103,7 @@
 
 @push('scripts')
 <script>
-    // Xử lý hiển thị/ẩn phần câu hỏi trắc nghiệm dựa trên loại bài tập
-    document.addEventListener('DOMContentLoaded', function() {
-        const loaiSelect = document.getElementById('loai');
-        const tracNghiemSection = document.getElementById('trac-nghiem-section');
-        
-        // Kiểm tra ban đầu
-        if (loaiSelect.value === 'trac_nghiem') {
-            tracNghiemSection.classList.remove('hidden');
-        } else {
-            tracNghiemSection.classList.add('hidden');
-        }
-        
-        // Lắng nghe sự kiện thay đổi
-        loaiSelect.addEventListener('change', function() {
-            if (this.value === 'trac_nghiem') {
-                tracNghiemSection.classList.remove('hidden');
-            } else {
-                tracNghiemSection.classList.add('hidden');
-            }
-        });
-        
-        // Nút thêm câu hỏi
-        document.getElementById('add-cau-hoi').addEventListener('click', function() {
-            addCauHoi();
-        });
-    });
-    
+   
     // Biến đếm số câu hỏi
     let cauHoiCount = 1;
     

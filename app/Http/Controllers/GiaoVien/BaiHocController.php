@@ -37,7 +37,7 @@ class BaiHocController extends Controller
             $baiHocs = BaiHoc::join('bai_hoc_lops', 'bai_hocs.id', '=', 'bai_hoc_lops.bai_hoc_id')
                 ->where('bai_hoc_lops.lop_hoc_id', $lopHocId)
                 ->orderBy('bai_hoc_lops.so_thu_tu', 'asc')
-                ->select('bai_hocs.*', 'bai_hoc_lops.so_thu_tu as thu_tu', 'bai_hoc_lops.ngay_bat_dau', 'bai_hoc_lops.trang_thai')
+                ->select('bai_hocs.*', 'bai_hoc_lops.so_thu_tu as thu_tu', 'bai_hoc_lops.ngay_bat_dau')
                 ->paginate(10);
                 
             return view('giao-vien.bai-hoc.index', compact('baiHocs', 'lopHoc'));

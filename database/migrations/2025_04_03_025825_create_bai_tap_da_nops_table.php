@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('file_path')->nullable();
             $table->string('ten_file')->nullable();
             $table->decimal('diem', 5, 2)->nullable();
-            $table->enum('trang_thai', ['da_nop', 'da_cham'])->default('da_nop');
+            $table->enum('trang_thai', ['da_nop', 'dang_cham', 'da_cham', 'yeu_cau_nop_lai'])->default('da_nop');
             $table->datetime('ngay_nop');
+            $table->unsignedBigInteger('nguoi_cham_id')->nullable();
             $table->text('phan_hoi')->nullable();
-            $table->timestamps();
-
+            $table->timestamp('tao_luc')->useCurrent();
+            $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
             $table->foreign('bai_tap_id')->references('id')->on('bai_taps')->onDelete('cascade');
             $table->foreign('hoc_vien_id')->references('id')->on('hoc_viens')->onDelete('cascade');
         });

@@ -141,9 +141,7 @@
                                         @endif
                                     ">
                                         @if(isset($baiLam->baiTap) && isset($baiLam->baiTap->loai))
-                                            @if($baiLam->baiTap->loai == 'trac_nghiem')
-                                                Trắc nghiệm
-                                            @elseif($baiLam->baiTap->loai == 'tu_luan')
+                                            @if($baiLam->baiTap->loai == 'tu_luan')
                                                 Tự luận
                                             @elseif($baiLam->baiTap->loai == 'file')
                                                 Nộp file
@@ -260,9 +258,7 @@
                                         @endif
                                     ">
                                         @if(isset($baiLam->baiTap) && isset($baiLam->baiTap->loai))
-                                            @if($baiLam->baiTap->loai == 'trac_nghiem')
-                                                Trắc nghiệm
-                                            @elseif($baiLam->baiTap->loai == 'tu_luan')
+                                            @if($baiLam->baiTap->loai == 'tu_luan')
                                                 Tự luận
                                             @elseif($baiLam->baiTap->loai == 'file')
                                                 Nộp file

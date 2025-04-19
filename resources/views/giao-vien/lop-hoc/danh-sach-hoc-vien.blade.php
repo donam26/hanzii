@@ -26,6 +26,21 @@
         </div>
     </div>
     
+    <!-- Thông báo -->
+    @if(session('success'))
+        <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+            <p class="font-bold">Thành công!</p>
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+            <p class="font-bold">Lỗi!</p>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+    
     <!-- Thông tin lớp học -->
     <div class="bg-white shadow rounded-lg mb-6 p-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -93,7 +108,7 @@
                     <i class="fas fa-ban"></i>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-sm font-medium text-gray-900">Đã hủy</h3>
+                    <h3 class="text-sm font-medium text-gray-900">Đã từ chối</h3>
                     <p class="text-xl font-semibold text-gray-800">{{ $daHuy }}</p>
                 </div>
             </div>
@@ -121,7 +136,7 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Trạng thái
                         </th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Hành động
                         </th>
                     </tr>
@@ -132,7 +147,7 @@
                         @foreach($dangKyHocs as $trangThai => $dkGroup)
                             @foreach($dkGroup as $dangKy)
                                 @php $index++; @endphp
-                                <tr>
+                                <tr id="hoc-vien-{{ $dangKy->id }}">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $index }}
                                     </td>
@@ -174,6 +189,10 @@
                                                     $statusClass = 'bg-green-100 text-green-800';
                                                     $statusText = 'Đã xác nhận';
                                                     break;
+                                                case 'tu_choi':
+                                                    $statusClass = 'bg-red-100 text-red-800';
+                                                    $statusText = 'Từ chối';
+                                                    break;
                                                 case 'da_huy':
                                                     $statusClass = 'bg-red-100 text-red-800';
                                                     $statusText = 'Đã hủy';
@@ -187,55 +206,43 @@
                                             {{ $statusText }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex space-x-2 justify-end">
-                                            <a href="#" class="text-blue-600 hover:text-blue-900" title="Chi tiết">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex items-center space-x-3">
+                                            <a href="{{ route('giao-vien.hoc-vien.show', $dangKy->hocVien->id) }}" class="bg-blue-100 text-blue-600 p-2 rounded-md hover:bg-blue-200" title="Chi tiết">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             
-                                            @if ($dangKy->trang_thai === 'cho_xac_nhan')
-                                                <td class="d-flex">
-                                                    <form action="{{ route('giao-vien.lop-hoc.xac-nhan-hoc-vien', [$lopHoc->id, $dangKy->id]) }}" method="POST" class="me-2">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-success btn-sm">
-                                                            <i class="fas fa-check"></i> Xác nhận
-                                                        </button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modal-tu-choi-{{ $dangKy->id }}">
-                                                        <i class="fas fa-times"></i> Từ chối
+                                            @if($trangThai == 'cho_xac_nhan')
+                                                <!-- Nút xác nhận -->
+                                                <form action="{{ route('giao-vien.xac-nhan-hoc-vien', ['id' => $lopHoc->id, 'dangKyId' => $dangKy->id]) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    <button type="submit" class="bg-green-100 text-green-600 p-2 rounded-md hover:bg-green-200" title="Xác nhận học viên">
+                                                        <i class="fas fa-check"></i>
                                                     </button>
-                                                    
-                                                    <!-- Modal từ chối -->
-                                                    <div class="modal fade" id="modal-tu-choi-{{ $dangKy->id }}" tabindex="-1" aria-labelledby="modalTuChoiLabel" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="modalTuChoiLabel">Từ chối học viên: {{ $dangKy->hocVien->nguoiDung->ho_ten }}</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                </div>
-                                                                <form action="{{ route('giao-vien.lop-hoc.tu-choi-hoc-vien', [$lopHoc->id, $dangKy->id]) }}" method="POST">
-                                                                    @csrf
-                                                                    <div class="modal-body">
-                                                                        <div class="mb-3">
-                                                                            <label for="ly-do-{{ $dangKy->id }}" class="form-label">Lý do từ chối (tùy chọn)</label>
-                                                                            <textarea class="form-control" id="ly-do-{{ $dangKy->id }}" name="ly_do" rows="3" placeholder="Nhập lý do từ chối..."></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                                        <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
+                                                </form>
+                                                
+                                                <!-- Nút từ chối - mở modal -->
+                                                @php
+                                                    $hoTen = addslashes($dangKy->hocVien->nguoiDung->ho . ' ' . $dangKy->hocVien->nguoiDung->ten);
+                                                @endphp
+                                                <button type="button" onclick="showTuChoiModal('{{ $dangKy->id }}', '{{ $hoTen }}')" class="bg-red-100 text-red-600 p-2 rounded-md hover:bg-red-200" title="Từ chối học viên">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
                                             @endif
                                             
-                                            <form action="{{ route('giao-vien.lop-hoc.remove-student', ['id' => $lopHoc->id, 'hocVienId' => $dangKy->hocVien->id]) }}" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa học viên này khỏi lớp học?');">
+                                            @if($trangThai == 'tu_choi' && $dangKy->ly_do_tu_choi)
+                                                @php
+                                                    $lyDoTuChoi = addslashes($dangKy->ly_do_tu_choi);
+                                                @endphp
+                                                <button type="button" onclick="showLyDoModal('{{ $dangKy->id }}', '{{ $lyDoTuChoi }}')" class="bg-gray-100 text-gray-600 p-2 rounded-md hover:bg-gray-200" title="Xem lý do từ chối">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </button>
+                                            @endif
+                                            
+                                            <form action="{{ route('giao-vien.lop-hoc.remove-student', ['id' => $lopHoc->id, 'hocVienId' => $dangKy->hocVien->id]) }}" method="POST" class="inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa học viên này khỏi lớp học?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" title="Xóa">
+                                                <button type="submit" class="bg-red-100 text-red-600 p-2 rounded-md hover:bg-red-200" title="Xóa">
                                                     <i class="fas fa-user-minus"></i>
                                                 </button>
                                             </form>
@@ -255,37 +262,116 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal từ chối -->
+    <div id="tu-choi-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form id="tu-choi-form" action="" method="POST">
+                    @csrf
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                <i class="fas fa-times text-red-600"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="tu-choi-title">
+                                    Từ chối học viên
+                                </h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500 mb-3">
+                                        Vui lòng nhập lý do từ chối học viên này:
+                                    </p>
+                                    <textarea name="ly_do_tu_choi" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="Nhập lý do từ chối..." required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Xác nhận từ chối
+                        </button>
+                        <button type="button" onclick="hideTuChoiModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xem lý do từ chối -->
+    <div id="ly-do-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-info-circle text-gray-600"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                Lý do từ chối
+                            </h3>
+                            <div class="mt-2">
+                                <div id="ly-do-content" class="p-3 bg-gray-50 rounded-md text-sm text-gray-600">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="hideLyDoModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:w-auto sm:text-sm">
+                        Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
 <script>
-    function printTable() {
-        let printContents = document.getElementById('hocVienTable').outerHTML;
-        let originalContents = document.body.innerHTML;
+    function showTuChoiModal(dangKyId, hoTen) {
+        document.getElementById('tu-choi-title').innerText = 'Từ chối học viên: ' + hoTen;
+        const url = "{{ route('giao-vien.tu-choi-hoc-vien', ['id' => $lopHoc->id, 'dangKyId' => ':dangKyId']) }}";
+        document.getElementById('tu-choi-form').action = url.replace(':dangKyId', dangKyId);
+        document.getElementById('tu-choi-modal').classList.remove('hidden');
+    }
+    
+    function hideTuChoiModal() {
+        document.getElementById('tu-choi-modal').classList.add('hidden');
+    }
+    
+    function showLyDoModal(dangKyId, lyDo) {
+        document.getElementById('ly-do-content').innerText = lyDo;
+        document.getElementById('ly-do-modal').classList.remove('hidden');
+    }
+    
+    function hideLyDoModal() {
+        document.getElementById('ly-do-modal').classList.add('hidden');
+    }
+    
+    // Đóng modal khi click bên ngoài
+    window.onclick = function(event) {
+        const tuChoiModal = document.getElementById('tu-choi-modal');
+        const lyDoModal = document.getElementById('ly-do-modal');
         
-        document.body.innerHTML = `
-            <html>
-                <head>
-                    <title>Danh sách học viên - {{ $lopHoc->ten }}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                        table { border-collapse: collapse; width: 100%; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #f2f2f2; }
-                        h2 { text-align: center; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Danh sách học viên lớp {{ $lopHoc->ten }}</h2>
-                    <p>Khóa học: {{ $lopHoc->khoaHoc->ten }}</p>
-                    <p>Ngày in: ${new Date().toLocaleDateString('vi-VN')}</p>
-                    ${printContents}
-                </body>
-            </html>
-        `;
+        if (event.target == tuChoiModal) {
+            hideTuChoiModal();
+        }
         
-        window.print();
-        document.body.innerHTML = originalContents;
+        if (event.target == lyDoModal) {
+            hideLyDoModal();
+        }
     }
 </script>
 @endsection 

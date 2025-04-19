@@ -27,19 +27,4 @@ class LuaChonCauHoi extends Model
     const CREATED_AT = 'tao_luc';
     const UPDATED_AT = 'cap_nhat_luc';
 
-    /**
-     * Quan hệ với câu hỏi trắc nghiệm
-     */
-    public function cauHoiTracNghiem(): BelongsTo
-    {
-        return $this->belongsTo(CauHoiTracNghiem::class, 'cau_hoi_id');
-    }
-
-    /**
-     * Quan hệ với đáp án trắc nghiệm
-     */
-    public function dapAnTracNghiems(): HasMany
-    {
-        return $this->hasMany(DapAnTracNghiem::class, 'lua_chon_da_chon_id');
-    }
 }

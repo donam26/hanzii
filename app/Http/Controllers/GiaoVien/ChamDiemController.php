@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\BaiTap;
 use App\Models\BaiTapDaNop;
 use App\Models\LopHoc;
+use App\Models\TienDoBaiHoc;
+use App\Models\ThongBao;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -41,7 +43,11 @@ class ChamDiemController extends Controller
                     ->get();
         
         // Lấy danh sách bài nộp với điều kiện lọc
-        $query = BaiTapDaNop::with(['hocVien.nguoiDung', 'baiTap.baiHoc.baiHocLops.lopHoc'])
+        $query = BaiTapDaNop::with([
+            'hocVien.nguoiDung', 
+            'baiTap.baiHoc', 
+            'baiTap.baiHoc.baiHocLops.lopHoc'
+        ])
             ->whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
                 $query->where('giao_vien_id', $giaoVien->id);
             });
@@ -71,9 +77,6 @@ class ChamDiemController extends Controller
             'cho_cham' => BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($q) use ($giaoVien) {
                 $q->where('giao_vien_id', $giaoVien->id);
             })->where('trang_thai', 'da_nop')->count(),
-            'dang_cham' => BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($q) use ($giaoVien) {
-                $q->where('giao_vien_id', $giaoVien->id);
-            })->where('trang_thai', 'dang_cham')->count(),
             'da_cham' => BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($q) use ($giaoVien) {
                 $q->where('giao_vien_id', $giaoVien->id);
             })->where('trang_thai', 'da_cham')->count(),
@@ -95,12 +98,19 @@ class ChamDiemController extends Controller
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên. Vui lòng đăng nhập lại.');
         }
         
-        // Lấy bài tập đã nộp chi tiết
-        $baiNop = BaiTapDaNop::with(['hocVien.nguoiDung', 'baiTap.baiHoc.baiHocLops.lopHoc'])
-            ->whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
-                $query->where('giao_vien_id', $giaoVien->id);
-            })
-            ->findOrFail($id);
+        // Lấy bài tập đã nộp chi tiết với đầy đủ các mối quan hệ
+        $baiNop = BaiTapDaNop::with([
+            'hocVien', 
+            'hocVien.nguoiDung', 
+            'baiTap', 
+            'baiTap.baiHoc',
+            'baiTap.baiHoc.baiHocLops',
+            'baiTap.baiHoc.baiHocLops.lopHoc'
+        ])
+        ->whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
+            $query->where('giao_vien_id', $giaoVien->id);
+        })
+        ->findOrFail($id);
         
         // Cập nhật trạng thái đang chấm
         if ($baiNop->trang_thai == 'da_nop') {
@@ -108,12 +118,13 @@ class ChamDiemController extends Controller
             $baiNop->save();
         }
         
-        // Hiển thị form chấm tương ứng với loại bài tập
-        if (isset($baiNop->baiTap) && $baiNop->baiTap->loai == 'file') {
+        // Xác định loại form chấm điểm dựa vào loại bài tập
+        if($baiNop->baiTap->loai == 'file') {
             return view('giao-vien.cham-diem.file', compact('baiNop'));
-        } else {
-            return view('giao-vien.cham-diem.tu-luan', compact('baiNop'));
         }
+        
+        // Mặc định sử dụng form chấm điểm tự luận
+        return view('giao-vien.cham-diem.tu-luan', compact('baiNop'));
     }
     
     /**
@@ -148,12 +159,14 @@ class ChamDiemController extends Controller
             $baiNop->diem = $validated['diem'];
             $baiNop->phan_hoi = $validated['phan_hoi'];
             $baiNop->trang_thai = 'da_cham';
-            $baiNop->ngay_cham = now();
             $baiNop->nguoi_cham_id = $giaoVien->id;
             $baiNop->save();
             
             // Cập nhật tiến độ bài học
             $this->capNhatTienDoBaiHoc($baiNop->hoc_vien_id, $baiNop->baiTap->bai_hoc_id);
+            
+            // Tạo thông báo cho học viên
+            $this->taoThongBaoChoDiem($baiNop);
             
             DB::commit();
             
@@ -233,9 +246,7 @@ class ChamDiemController extends Controller
         }
         
         // Tải xuống file
-        return response()->file($filePath, [
-            'Content-Disposition' => 'attachment; filename="' . $baiNop->ten_file . '"'
-        ]);
+        return response()->download($filePath, $baiNop->ten_file ?: 'bai-tap.docx');
     }
     
     /**
@@ -243,31 +254,81 @@ class ChamDiemController extends Controller
      */
     private function capNhatTienDoBaiHoc($hocVienId, $baiHocId)
     {
+        // Tìm hoặc tạo mới tiến độ bài học
+        $tienDo = TienDoBaiHoc::firstOrNew([
+            'hoc_vien_id' => $hocVienId,
+            'bai_hoc_id' => $baiHocId
+        ]);
+        
+        // Cập nhật trạng thái hoàn thành
+        $tienDo->trang_thai = 'hoan_thanh';
+        $tienDo->ngay_hoan_thanh = now();
+        $tienDo->save();
+        
+        return $tienDo;
+    }
+    
+    /**
+     * Chấm điểm bài tự luận
+     */
+    public function tuLuan($id, Request $request)
+    {
+        // Lấy ID người dùng từ session
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
+        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$giaoVien) {
+            return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên. Vui lòng đăng nhập lại.');
+        }
+        
+        // Lấy bài tập đã nộp chi tiết
+        $baiNop = BaiTapDaNop::with([
+            'hocVien', 
+            'hocVien.nguoiDung', 
+            'baiTap', 
+            'baiTap.baiHoc',
+            'baiTap.baiHoc.baiHocLops',
+            'baiTap.baiHoc.baiHocLops.lopHoc'
+        ])
+        ->whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
+            $query->where('giao_vien_id', $giaoVien->id);
+        })
+        ->findOrFail($id);
+        
+        // Cập nhật trạng thái đang chấm nếu chưa được chấm
+        if ($baiNop->trang_thai == 'da_nop') {
+            $baiNop->trang_thai = 'dang_cham';
+            $baiNop->save();
+        }
+        
+        return view('giao-vien.cham-diem.tu-luan', compact('baiNop'));
+    }
+    
+   
+    /**
+     * Tạo thông báo khi đã chấm điểm
+     */
+    private function taoThongBaoChoDiem($baiTapDaNop)
+    {
         try {
-            // Kiểm tra xem đã có tiến độ bài học chưa
-            $tienDo = \App\Models\TienDoBaiHoc::where('hoc_vien_id', $hocVienId)
-                            ->where('bai_hoc_id', $baiHocId)
-                            ->first();
-                            
-            if (!$tienDo) {
-                // Nếu chưa có, tạo mới
-                $tienDo = new \App\Models\TienDoBaiHoc();
-                $tienDo->hoc_vien_id = $hocVienId;
-                $tienDo->bai_hoc_id = $baiHocId;
-                $tienDo->da_hoan_thanh = true;
-                $tienDo->ngay_hoan_thanh = now();
-                $tienDo->save();
-            } else if (!$tienDo->da_hoan_thanh) {
-                // Nếu có nhưng chưa hoàn thành, cập nhật thành đã hoàn thành
-                $tienDo->da_hoan_thanh = true;
-                $tienDo->ngay_hoan_thanh = now();
-                $tienDo->save();
-            }
+            // Lấy thông tin lớp học từ bài tập
+            $lopHoc = $baiTapDaNop->baiTap->baiHoc->baiHocLops->first()->lopHoc;
             
-            return true;
+            // Tạo thông báo mới
+            $thongBao = new ThongBao();
+            $thongBao->nguoi_dung_id = $baiTapDaNop->hocVien->nguoi_dung_id;
+            $thongBao->tieu_de = 'Bài tập đã được chấm điểm';
+            $thongBao->noi_dung = "Bài tập '{$baiTapDaNop->baiTap->tieu_de}' của bạn đã được chấm điểm. Điểm số: {$baiTapDaNop->diem}";
+            $thongBao->loai = 'cham_diem';
+            $thongBao->da_doc = false;
+            $thongBao->url = route('hoc-vien.bai-tap.ket-qua', $baiTapDaNop->id);
+            $thongBao->save();
+            
+            return $thongBao;
         } catch (\Exception $e) {
-            Log::error('Lỗi cập nhật tiến độ bài học: ' . $e->getMessage());
-            return false;
+            Log::error('Lỗi tạo thông báo: ' . $e->getMessage());
+            return null;
         }
     }
+    
 } 

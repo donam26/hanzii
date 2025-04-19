@@ -52,11 +52,4 @@ class KetQuaTracNghiem extends Model
         return $this->belongsTo(LopHoc::class, 'lop_hoc_id');
     }
 
-    /**
-     * Quan hệ với đáp án trắc nghiệm
-     */
-    public function dapAnTracNghiems(): HasMany
-    {
-        return $this->hasMany(DapAnTracNghiem::class, 'ket_qua_id');
-    }
 }

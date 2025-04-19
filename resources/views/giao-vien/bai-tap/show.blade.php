@@ -71,10 +71,6 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     Tự luận
                                 </span>
-                            @elseif($baiTap->loai == 'trac_nghiem')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                    Trắc nghiệm
-                                </span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                     File
@@ -233,42 +229,5 @@
             </div>
         </div>
 
-        <!-- Câu hỏi trắc nghiệm (nếu có) -->
-        @if($baiTap->loai == 'trac_nghiem' && $baiTap->cauHois->count() > 0)
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-6">
-                <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        <i class="fas fa-question-circle mr-2"></i> Câu hỏi trắc nghiệm
-                    </h3>
-                </div>
-                <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
-                    @foreach($baiTap->cauHois as $index => $cauHoi)
-                        <div class="mb-6 pb-6 {{ $index < $baiTap->cauHois->count() - 1 ? 'border-b border-gray-200' : '' }}">
-                            <h4 class="text-base font-medium text-gray-900 mb-3">Câu hỏi {{ $index + 1 }}: {{ $cauHoi->noi_dung }}</h4>
-                            <p class="text-sm text-gray-500 mb-3">Điểm: {{ $cauHoi->diem }}</p>
-                            
-                            <div class="ml-4 space-y-2">
-                                @foreach($cauHoi->dapAns as $indexDA => $dapAn)
-                                    <div class="flex items-center">
-                                        <div class="w-5 h-5 mr-2 flex items-center justify-center">
-                                            @if($dapAn->la_dap_an_dung)
-                                                <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            @else
-                                                <div class="w-4 h-4 border border-gray-300 rounded-full"></div>
-                                            @endif
-                                        </div>
-                                        <span class="text-sm {{ $dapAn->la_dap_an_dung ? 'font-medium text-green-600' : 'text-gray-700' }}">
-                                            {{ chr(65 + $indexDA) }}. {{ $dapAn->noi_dung }}
-                                        </span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
     </div>
 @endsection 

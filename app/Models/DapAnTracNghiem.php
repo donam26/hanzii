@@ -26,27 +26,4 @@ class DapAnTracNghiem extends Model
     const CREATED_AT = 'tao_luc';
     const UPDATED_AT = 'cap_nhat_luc';
 
-    /**
-     * Quan hệ với kết quả trắc nghiệm
-     */
-    public function ketQuaTracNghiem(): BelongsTo
-    {
-        return $this->belongsTo(KetQuaTracNghiem::class, 'ket_qua_id');
-    }
-
-    /**
-     * Quan hệ với câu hỏi trắc nghiệm
-     */
-    public function cauHoiTracNghiem(): BelongsTo
-    {
-        return $this->belongsTo(CauHoiTracNghiem::class, 'cau_hoi_id');
-    }
-
-    /**
-     * Quan hệ với lựa chọn đã chọn
-     */
-    public function luaChonDaChon(): BelongsTo
-    {
-        return $this->belongsTo(LuaChonCauHoi::class, 'lua_chon_da_chon_id');
-    }
 }

@@ -117,52 +117,6 @@ class KetQuaController extends Controller
         }
     }
     
-    /**
-     * Hiển thị chi tiết bài tập trắc nghiệm
-     */
-    protected function showTracNghiem($baiTapDaNop)
-    {
-        $ketQua = null;
-        $cauHois = [];
-        $dapAnDung = 0;
-        $tongSoCau = 0;
-        
-        // Phân tích kết quả từ JSON
-        if ($baiTapDaNop->noi_dung) {
-            try {
-                $ketQua = json_decode($baiTapDaNop->noi_dung, true);
-                
-                if (is_array($ketQua) && isset($ketQua['cau_hoi']) && is_array($ketQua['cau_hoi'])) {
-                    $cauHois = $ketQua['cau_hoi'];
-                    $tongSoCau = count($cauHois);
-                    
-                    // Đếm số câu đúng
-                    foreach ($cauHois as $cauHoi) {
-                        if (isset($cauHoi['ketqua']) && $cauHoi['ketqua'] === true) {
-                            $dapAnDung++;
-                        }
-                    }
-                    
-                    // Log thông tin
-                    Log::info('Kết quả trắc nghiệm bài tập #' . $baiTapDaNop->id . ': ' . $dapAnDung . '/' . $tongSoCau . ' câu đúng');
-                } else {
-                    // Nếu dữ liệu không đúng định dạng, hiển thị dạng gốc
-                    $cauHois = [];
-                    Log::warning('Dữ liệu trắc nghiệm không đúng định dạng: ' . json_encode($ketQua));
-                }
-            } catch (\Exception $e) {
-                Log::error('Lỗi phân tích JSON nội dung bài tập: ' . $e->getMessage());
-            }
-        }
-        
-        return view('hoc-vien.ket-qua.trac-nghiem-detail', compact(
-            'baiTapDaNop', 
-            'ketQua', 
-            'cauHois', 
-            'dapAnDung', 
-            'tongSoCau'
-        ));
-    }
     
     /**
      * Hiển thị chi tiết bài tập tự luận

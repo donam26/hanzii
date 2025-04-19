@@ -61,9 +61,7 @@
                             <span class="text-sm font-medium text-gray-500">Loại bài tập:</span>
                             <p class="text-gray-800">
                                 @if($baiTapDaNop->baiTap && $baiTapDaNop->baiTap->loai)
-                                    @if($baiTapDaNop->baiTap->loai == 'trac_nghiem')
-                                        Trắc nghiệm
-                                    @elseif($baiTapDaNop->baiTap->loai == 'tu_luan')
+                                    @if($baiTapDaNop->baiTap->loai == 'tu_luan')
                                         Tự luận
                                     @elseif($baiTapDaNop->baiTap->loai == 'file')
                                         Nộp file
@@ -139,9 +137,7 @@
             <h4 class="text-lg font-medium text-gray-800 mb-2">Nội dung bài làm</h4>
             <div class="bg-gray-50 p-4 rounded-lg">
                 @if($baiTapDaNop->baiTap && $baiTapDaNop->baiTap->loai)
-                    @if($baiTapDaNop->baiTap->loai == 'trac_nghiem')
-                        <div class="text-gray-600 mb-2">Bạn đã làm bài tập trắc nghiệm. Xem chi tiết bên dưới</div>
-                    @elseif($baiTapDaNop->baiTap->loai == 'tu_luan')
+                    @if($baiTapDaNop->baiTap->loai == 'tu_luan')
                         @if($baiTapDaNop->noi_dung)
                             <div class="prose max-w-none">
                                 {!! $baiTapDaNop->noi_dung !!}

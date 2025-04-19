@@ -563,50 +563,185 @@ class LopHocController extends Controller
     }
 
     /**
-     * Xác nhận học viên vào lớp học
+     * Xác nhận học viên vào lớp
+     *
+     * @param int $id ID của lớp học
+     * @param int $dangKyId ID của đăng ký học
+     * @return \Illuminate\Http\Response
      */
     public function xacNhanHocVien($id, $dangKyId, Request $request)
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$giaoVien) {
-            return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên. Vui lòng đăng nhập lại.');
-        }
-        
-        // Kiểm tra quyền truy cập
-        $lopHoc = LopHoc::where('id', $id)
-                ->where('giao_vien_id', $giaoVien->id)
-                ->firstOrFail();
-        
-        // Lấy thông tin đăng ký học
-        $dangKy = DangKyHoc::findOrFail($dangKyId);
-        
         try {
+            // Lấy ID người dùng từ session
+            $nguoiDungId = session('nguoi_dung_id');
+            $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+            
+            if (!$giaoVien) {
+                return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên. Vui lòng đăng nhập lại.');
+            }
+            
+            // Kiểm tra quyền truy cập
+            $lopHoc = LopHoc::where('id', $id)
+                    ->where('giao_vien_id', $giaoVien->id)
+                    ->firstOrFail();
+            
+            // Lấy thông tin đăng ký học
+            $dangKy = DangKyHoc::with('hocVien.nguoiDung')->findOrFail($dangKyId);
+            
+            // Kiểm tra trạng thái đăng ký
+            if ($dangKy->trang_thai !== 'cho_xac_nhan') {
+                return redirect()->back()
+                    ->with('error', 'Yêu cầu này đã được xử lý trước đó');
+            }
+            
+            // Kiểm tra sĩ số lớp học
+            $currentStudents = $lopHoc->dangKyHocs()->whereIn('trang_thai', ['da_xac_nhan', 'dang_hoc'])->count();
+         
+            
             DB::beginTransaction();
-            
-            // Cập nhật trạng thái đăng ký học
-            $dangKy->trang_thai = 'da_xac_nhan';
-            $dangKy->save();
-            
-            DB::commit();
-            
-            return redirect()->route('giao-vien.lop-hoc.danh-sach-hoc-vien', $id)
-                    ->with('success', 'Đã xác nhận học viên thành công');
+            try {
+                // Cập nhật trạng thái đăng ký học
+                $dangKy->trang_thai = 'da_xac_nhan';
+                $dangKy->save();
+                
+                DB::commit();
+                
+                return redirect()->route('giao-vien.lop-hoc.danh-sach-hoc-vien', $id)
+                        ->with('success', 'Đã xác nhận học viên ' . $dangKy->hocVien->nguoiDung->ho_ten . ' thành công');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            }
         } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            Log::error('Lỗi xác nhận học viên: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
     
     /**
      * Từ chối học viên vào lớp học
+     *
+     * @param Request $request
+     * @param int $id ID của lớp học
+     * @param int $dangKyId ID của đăng ký học
+     * @return \Illuminate\Http\Response
      */
     public function tuChoiHocVien($id, $dangKyId, Request $request)
     {
+        // Validate dữ liệu đầu vào
+        $request->validate([
+            'ly_do_tu_choi' => 'required|string|max:500',
+        ], [
+            'ly_do_tu_choi.required' => 'Vui lòng nhập lý do từ chối',
+            'ly_do_tu_choi.max' => 'Lý do từ chối không được vượt quá 500 ký tự',
+        ]);
+        
+        try {
+            // Lấy ID người dùng từ session
+            $nguoiDungId = session('nguoi_dung_id');
+            $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+            
+            if (!$giaoVien) {
+                return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên. Vui lòng đăng nhập lại.');
+            }
+            
+            // Kiểm tra quyền truy cập
+            $lopHoc = LopHoc::where('id', $id)
+                    ->where('giao_vien_id', $giaoVien->id)
+                    ->firstOrFail();
+            
+            // Lấy thông tin đăng ký học
+            $dangKy = DangKyHoc::with('hocVien.nguoiDung')->findOrFail($dangKyId);
+            
+            // Kiểm tra trạng thái đăng ký
+            if ($dangKy->trang_thai !== 'cho_xac_nhan') {
+                return redirect()->back()
+                    ->with('error', 'Yêu cầu này đã được xử lý trước đó');
+            }
+            
+            DB::beginTransaction();
+            try {
+                // Cập nhật trạng thái đăng ký học
+                $dangKy->trang_thai = 'tu_choi';
+                $dangKy->ly_do_tu_choi = $request->ly_do_tu_choi;
+                $dangKy->save();
+                
+                // Tạo thông báo cho học viên
+                if (class_exists('\App\Models\ThongBao')) {
+                    $thongBao = new \App\Models\ThongBao();
+                    $thongBao->nguoi_dung_id = $dangKy->hocVien->nguoi_dung_id;
+                    $thongBao->tieu_de = 'Đăng ký lớp học đã bị từ chối';
+                    $thongBao->noi_dung = "Đăng ký tham gia lớp {$lopHoc->ten} ({$lopHoc->ma_lop}) của bạn đã bị từ chối. Lý do: {$request->ly_do_tu_choi}";
+                    $thongBao->loai = 'thong_bao_tu_choi_lop';
+                    $thongBao->da_doc = false;
+                    $thongBao->save();
+                }
+                
+                DB::commit();
+                
+                return redirect()->route('giao-vien.lop-hoc.danh-sach-hoc-vien', $id)
+                        ->with('success', 'Đã từ chối học viên ' . $dangKy->hocVien->nguoiDung->ho_ten . ' thành công');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            }
+        } catch (\Exception $e) {
+            Log::error('Lỗi từ chối học viên: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Hiển thị danh sách yêu cầu tham gia lớp học
+     */
+    public function danhSachYeuCauThamGia($id, Request $request)
+    {
         // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
+        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$giaoVien) {
+            return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên. Vui lòng đăng nhập lại.');
+        }
+        
+        // Lấy thông tin lớp học và kiểm tra quyền truy cập
+        $lopHoc = LopHoc::with([
+            'khoaHoc', 
+            'giaoVien.nguoiDung'
+        ])
+        ->where('giao_vien_id', $giaoVien->id)
+        ->findOrFail($id);
+        
+        // Lấy danh sách yêu cầu tham gia lớp
+        $yeuCauThamGias = \App\Models\YeuCauThamGia::with(['hocVien.nguoiDung'])
+            ->where('lop_hoc_id', $id)
+            ->orderBy('tao_luc', 'desc')
+            ->get()
+            ->groupBy('trang_thai');
+        
+        // Đếm số lượng theo trạng thái
+        $tongSo = isset($yeuCauThamGias) ? $yeuCauThamGias->flatten()->count() : 0;
+        $choDuyet = isset($yeuCauThamGias['cho_duyet']) ? $yeuCauThamGias['cho_duyet']->count() : 0;
+        $daDuyet = isset($yeuCauThamGias['da_duyet']) ? $yeuCauThamGias['da_duyet']->count() : 0;
+        $daHuy = isset($yeuCauThamGias['da_huy']) ? $yeuCauThamGias['da_huy']->count() : 0;
+        
+        return view('giao-vien.lop-hoc.danh-sach-yeu-cau', compact(
+            'lopHoc', 
+            'yeuCauThamGias', 
+            'tongSo', 
+            'choDuyet',
+            'daDuyet', 
+            'daHuy'
+        ));
+    }
+    
+    /**
+     * Xử lý yêu cầu tham gia lớp học
+     */
+    public function xuLyYeuCauThamGia($id, $yeuCauId, Request $request)
+    {
+        // Lấy ID người dùng từ session
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$giaoVien) {
@@ -618,28 +753,80 @@ class LopHocController extends Controller
                 ->where('giao_vien_id', $giaoVien->id)
                 ->firstOrFail();
         
-        // Lấy thông tin đăng ký học
-        $dangKy = DangKyHoc::findOrFail($dangKyId);
+        // Lấy thông tin yêu cầu tham gia
+        $yeuCau = \App\Models\YeuCauThamGia::with(['hocVien.nguoiDung'])
+                ->where('lop_hoc_id', $id)
+                ->findOrFail($yeuCauId);
         
-        // Validate dữ liệu đầu vào
+        // Kiểm tra nếu yêu cầu đã được xử lý
+        if ($yeuCau->trang_thai !== 'cho_duyet') {
+            return back()->with('error', 'Yêu cầu này đã được xử lý trước đó.');
+        }
+        
+        // Validate action
         $validated = $request->validate([
+            'action' => 'required|in:approve,reject',
             'ly_do' => 'nullable|string|max:500',
         ]);
         
         try {
             DB::beginTransaction();
             
-            // Cập nhật trạng thái đăng ký học
-            $dangKy->trang_thai = 'da_huy';
-            $dangKy->ghi_chu = $validated['ly_do'] ?? 'Đã bị từ chối bởi giáo viên';
-            $dangKy->save();
+            if ($validated['action'] === 'approve') {
+                // Chấp nhận yêu cầu
+                $yeuCau->trang_thai = 'da_duyet';
+                $yeuCau->xu_ly_luc = now();
+                $yeuCau->save();
+                
+                // Tạo bản ghi đăng ký học
+                $dangKy = new DangKyHoc();
+                $dangKy->lop_hoc_id = $id;
+                $dangKy->hoc_vien_id = $yeuCau->hoc_vien_id;
+                $dangKy->ngay_dang_ky = now();
+                $dangKy->trang_thai = 'da_xac_nhan';
+                $dangKy->save();
+                
+                // Tạo thông báo cho học viên
+                if (class_exists('\App\Models\ThongBao')) {
+                    $thongBao = new \App\Models\ThongBao();
+                    $thongBao->nguoi_dung_id = $yeuCau->hocVien->nguoi_dung_id;
+                    $thongBao->tieu_de = 'Yêu cầu tham gia lớp học đã được chấp nhận';
+                    $thongBao->noi_dung = "Yêu cầu tham gia lớp học {$lopHoc->ten} của bạn đã được chấp nhận.";
+                    $thongBao->loai = 'thong_bao_duyet_lop';
+                    $thongBao->da_doc = false;
+                    $thongBao->save();
+                }
+                
+                $message = 'Đã chấp nhận yêu cầu tham gia lớp học thành công.';
+            } else {
+                // Từ chối yêu cầu
+                $yeuCau->trang_thai = 'da_huy';
+                $yeuCau->ly_do_tu_choi = $validated['ly_do'] ?? 'Yêu cầu không được chấp nhận';
+                $yeuCau->xu_ly_luc = now();
+                $yeuCau->save();
+                
+                // Tạo thông báo cho học viên
+                if (class_exists('\App\Models\ThongBao')) {
+                    $thongBao = new \App\Models\ThongBao();
+                    $thongBao->nguoi_dung_id = $yeuCau->hocVien->nguoi_dung_id;
+                    $thongBao->tieu_de = 'Yêu cầu tham gia lớp học đã bị từ chối';
+                    $thongBao->noi_dung = "Yêu cầu tham gia lớp học {$lopHoc->ten} của bạn đã bị từ chối. Lý do: " . ($validated['ly_do'] ?? 'Không đáp ứng đủ điều kiện');
+                    $thongBao->loai = 'thong_bao_tu_choi_lop';
+                    $thongBao->da_doc = false;
+                    $thongBao->save();
+                }
+                
+                $message = 'Đã từ chối yêu cầu tham gia lớp học.';
+            }
             
             DB::commit();
             
-            return redirect()->route('giao-vien.lop-hoc.danh-sach-hoc-vien', $id)
-                    ->with('success', 'Đã từ chối học viên thành công');
+            return redirect()->route('giao-vien.lop-hoc.danh-sach-yeu-cau', $id)
+                        ->with('success', $message);
+                        
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Lỗi xử lý yêu cầu tham gia: ' . $e->getMessage());
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }

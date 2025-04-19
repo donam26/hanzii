@@ -77,10 +77,6 @@
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                         Tự luận
                                                     </span>
-                                                @elseif($baiTap->loai == 'trac_nghiem')
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                                        Trắc nghiệm
-                                                    </span>
                                                 @else
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                                         File

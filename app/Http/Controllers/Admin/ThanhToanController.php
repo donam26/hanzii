@@ -155,8 +155,6 @@ class ThanhToanController extends Controller
             // Cập nhật thanh toán
             $thanhToan->update([
                 'trang_thai' => 'da_xac_nhan',
-                'nguoi_xac_nhan_id' => auth()->id(),
-                'ngay_xac_nhan' => now(),
                 'ghi_chu_xac_nhan' => $request->ghi_chu_xac_nhan
             ]);
             
@@ -210,7 +208,6 @@ class ThanhToanController extends Controller
             // Cập nhật thanh toán
             $thanhToan->update([
                 'trang_thai' => 'da_huy',
-                'nguoi_xac_nhan_id' => auth()->id(),
                 'ngay_xac_nhan' => now(),
                 'ghi_chu_xac_nhan' => $request->ghi_chu_xac_nhan
             ]);

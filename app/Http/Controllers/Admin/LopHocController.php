@@ -373,11 +373,7 @@ class LopHocController extends Controller
 
         $lopHoc = LopHoc::findOrFail($id);
         
-        // Kiểm tra sĩ số tối đa
-        $currentStudents = $lopHoc->dangKyHocs()->where('trang_thai', 'da_xac_nhan')->count();
-        if ($currentStudents >= $lopHoc->so_luong_toi_da) {
-            return back()->with('error', 'Lớp học đã đạt số lượng học viên tối đa!');
-        }
+      
         
         // Kiểm tra học viên đã đăng ký chưa
         $exists = DangKyHoc::where('lop_hoc_id', $id)
@@ -458,9 +454,7 @@ class LopHocController extends Controller
         // Kiểm tra sĩ số tối đa
         $lopHoc = LopHoc::findOrFail($lopHocId);
         $currentStudents = $lopHoc->dangKyHocs()->where('trang_thai', 'da_xac_nhan')->count();
-        if ($currentStudents >= $lopHoc->so_luong_toi_da) {
-            return back()->with('error', 'Lớp học đã đạt số lượng học viên tối đa!');
-        }
+
         
         DB::beginTransaction();
         try {

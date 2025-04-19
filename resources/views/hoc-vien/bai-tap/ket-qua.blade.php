@@ -1,6 +1,5 @@
 @extends('layouts.dashboard')
 
-
 @section('title', 'Kết quả bài tập')
 @section('page-heading', 'Kết quả bài tập')
 
@@ -10,168 +9,187 @@
 @endphp
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Kết quả bài tập: {{ $baiTap->tieu_de }}</h3>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900">
+                <i class="fas fa-clipboard-check mr-2 text-indigo-600"></i>Kết quả bài tập: {{ $baiTapDaNop->baiTap->tieu_de }}
+            </h3>
+            <div>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <i class="far fa-calendar-alt mr-1"></i>
+                    Ngày nộp: {{ \Carbon\Carbon::parse($baiTapDaNop->ngay_nop)->format('d/m/Y H:i') }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+                <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Thông tin kết quả</h3>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="alert alert-info">
-                                <p><strong>Lớp học:</strong> {{ $lopHoc->ten }}</p>
-                                <p><strong>Bài học:</strong> {{ $baiTap->baiHoc->tieu_de }}</p>
-                                <p><strong>Loại bài tập:</strong> 
-                                    @if ($baiTap->loai == 'trac_nghiem')
-                                        <span class="badge badge-primary">Trắc nghiệm</span>
-                                    @elseif ($baiTap->loai == 'tu_luan')
-                                        <span class="badge badge-info">Tự luận</span>
-                                    @else
-                                        <span class="badge badge-secondary">File</span>
-                                    @endif
-                                </p>
-                                <p><strong>Điểm tối đa:</strong> {{ $baiTap->diem_toi_da }}</p>
-                            </div>
+                <div class="border-t border-gray-200">
+                    <dl>
+                        <div class="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-200">
+                            <dt class="text-sm font-medium text-gray-500">Điểm số</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                @if ($baiTapDaNop->diem !== null)
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                                        {{ $baiTapDaNop->diem }} / {{ $baiTapDaNop->baiTap->diem_toi_da }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                        Chưa có điểm
+                                    </span>
+                                @endif
+                            </dd>
                         </div>
-                        <div class="col-md-6">
-                            <div class="alert alert-success">
-                                <p><strong>Ngày nộp:</strong> {{ $baiTapDaNop->ngay_nop->format('d/m/Y H:i') }}</p>
-                                <p><strong>Trạng thái:</strong> 
-                                    @if ($baiTapDaNop->trang_thai == 'da_nop')
-                                        <span class="badge badge-warning">Đã nộp - Chờ chấm</span>
-                                    @else
-                                        <span class="badge badge-success">Đã chấm</span>
-                                    @endif
-                                </p>
-                                <p><strong>Điểm đạt được:</strong> 
-                                    @if ($baiTapDaNop->diem !== null)
-                                        <span class="badge badge-primary">{{ $baiTapDaNop->diem }}/{{ $baiTap->diem_toi_da }}</span>
-                                    @else
-                                        <span class="badge badge-secondary">Chưa có điểm</span>
-                                    @endif
-                                </p>
-                            </div>
+                        <div class="bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-200">
+                            <dt class="text-sm font-medium text-gray-500">Trạng thái</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                @if ($baiTapDaNop->trang_thai == 'da_nop')
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                        Đã nộp - Chờ chấm
+                                    </span>
+                                @elseif ($baiTapDaNop->trang_thai == 'da_cham')
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                        Đã chấm
+                                    </span>
+                                @endif
+                            </dd>
                         </div>
+                        @if ($baiTapDaNop->phan_hoi)
+                        <div class="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-b border-gray-200">
+                            <dt class="text-sm font-medium text-gray-500">Phản hồi của giáo viên</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 prose prose-sm max-w-none bg-gray-50 p-4 rounded-md">
+                                {!! $baiTapDaNop->phan_hoi !!}
+                            </dd>
+                        </div>
+                        @endif
+                    </dl>
+                </div>
+            </div>
+            
+            @if ($baiTapDaNop->baiTap->loai == 'trac_nghiem')
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Chi tiết bài làm</h3>
                     </div>
-
-                    @if ($baiTap->loai == 'trac_nghiem')
-                        <div class="mt-4">
-                            <h4 class="mb-3">Chi tiết bài làm trắc nghiệm</h4>
-                            
-                            @php
-                                $dapAns = json_decode($baiTapDaNop->noi_dung, true) ?? [];
-                                $totalQuestions = $baiTap->cauHois->count();
-                                $correctCount = 0;
-                            @endphp
-                            
-                            @foreach($baiTap->cauHois as $index => $cauHoi)
-                                @php
-                                    $userAnswerId = $dapAns[$cauHoi->id] ?? null;
-                                    $userAnswer = null;
-                                    $correctAnswer = $cauHoi->dapAns->where('la_dap_an_dung', true)->first();
-                                    $isCorrect = false;
-                                    
-                                    if ($userAnswerId && $correctAnswer) {
-                                        $userAnswer = $cauHoi->dapAns->where('id', $userAnswerId)->first();
-                                        $isCorrect = $userAnswerId == $correctAnswer->id;
-                                        if ($isCorrect) $correctCount++;
-                                    }
-                                @endphp
-                                
-                                <div class="card mb-4 {{ $isCorrect ? 'border-success' : ($userAnswer ? 'border-danger' : 'border-warning') }}">
-                                    <div class="card-header {{ $isCorrect ? 'bg-success' : ($userAnswer ? 'bg-danger' : 'bg-warning') }} text-white">
-                                        <strong>Câu {{ $index + 1 }}:</strong> {!! $cauHoi->noi_dung !!}
-                                        
-                                        <div class="float-right">
-                                            @if ($isCorrect)
-                                                <i class="fas fa-check-circle"></i> Đúng
-                                            @elseif ($userAnswer)
-                                                <i class="fas fa-times-circle"></i> Sai
-                                            @else
-                                                <i class="fas fa-exclamation-circle"></i> Không trả lời
-                                            @endif
-                                        </div>
+                    <div class="border-t border-gray-200">
+                        @if($baiTapDaNop->chiTietCauTraLois->count() > 0)
+                            @foreach ($baiTapDaNop->chiTietCauTraLois as $index => $chiTiet)
+                                <div class="px-4 py-5 sm:px-6 {{ $loop->odd ? 'bg-white' : 'bg-gray-50' }} border-b border-gray-200">
+                                    <div class="flex items-center mb-2">
+                                        <span class="flex-shrink-0 h-6 w-6 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center mr-2">
+                                            {{ $index + 1 }}
+                                        </span>
+                                        <h4 class="text-md font-medium text-gray-900">
+                                            {!! $chiTiet->cauHoi->noi_dung !!}
+                                        </h4>
+                                        @if ($chiTiet->la_dap_an_dung)
+                                            <span class="ml-2 h-5 w-5 text-green-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                            </span>
+                                        @else
+                                            <span class="ml-2 h-5 w-5 text-red-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                </svg>
+                                            </span>
+                                        @endif
                                     </div>
-                                    <div class="card-body">
-                                        @foreach($cauHoi->dapAns as $dapAn)
-                                            <div class="form-group">
-                                                <div class="custom-control custom-radio mb-2">
-                                                    <input class="custom-control-input" type="radio" 
-                                                        id="ket_qua_{{ $cauHoi->id }}_{{ $dapAn->id }}" 
-                                                        {{ $userAnswerId == $dapAn->id ? 'checked' : '' }}
-                                                        disabled>
-                                                    <label class="custom-control-label {{ $dapAn->la_dap_an_dung ? 'text-success font-weight-bold' : '' }}" 
-                                                           for="ket_qua_{{ $cauHoi->id }}_{{ $dapAn->id }}">
-                                                        {!! $dapAn->noi_dung !!}
-                                                        
-                                                        @if ($dapAn->la_dap_an_dung)
-                                                            <i class="fas fa-check text-success"></i> (Đáp án đúng)
-                                                        @endif
-                                                        
-                                                        @if ($userAnswerId == $dapAn->id && !$dapAn->la_dap_an_dung)
-                                                            <i class="fas fa-times text-danger"></i> (Bạn đã chọn)
-                                                        @endif
-                                                    </label>
+                                    
+                                    <div class="ml-8 mt-3">
+                                        <div class="{{ $chiTiet->la_dap_an_dung ? 'text-green-600' : 'text-red-600' }} flex items-start mb-2">
+                                            <span class="mr-2 flex-shrink-0">
+                                                @if ($chiTiet->la_dap_an_dung)
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                    </svg>
+                                                @endif
+                                            </span>
+                                            <div>
+                                                <p class="text-sm font-medium">Đáp án của bạn:</p>
+                                                <p class="text-sm">{!! $chiTiet->dapAn->noi_dung !!}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        @if (!$chiTiet->la_dap_an_dung)
+                                            <div class="text-green-600 flex items-start">
+                                                <span class="mr-2 flex-shrink-0">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                                <div>
+                                                    <p class="text-sm font-medium">Đáp án đúng:</p>
+                                                    <p class="text-sm">
+                                                        @foreach ($chiTiet->cauHoi->dapAns as $dapAn)
+                                                            @if ($dapAn->la_dap_an_dung)
+                                                                {!! $dapAn->noi_dung !!}
+                                                            @endif
+                                                        @endforeach
+                                                    </p>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
-                            
-                            <div class="alert alert-info">
-                                <p><strong>Tổng số câu hỏi:</strong> {{ $totalQuestions }}</p>
-                                <p><strong>Số câu trả lời đúng:</strong> {{ $correctCount }}</p>
-                                <p><strong>Tỷ lệ đúng:</strong> {{ $totalQuestions > 0 ? round(($correctCount / $totalQuestions) * 100, 2) : 0 }}%</p>
-                                <p><strong>Điểm đạt được:</strong> {{ $baiTapDaNop->diem }}/{{ $baiTap->diem_toi_da }}</p>
-                            </div>
-                        </div>
-                    @elseif ($baiTap->loai == 'tu_luan')
-                        <div class="mt-4">
-                            <h4 class="mb-3">Bài làm tự luận của bạn</h4>
-                            <div class="card">
-                                <div class="card-body">
-                                    {!! $baiTapDaNop->noi_dung !!}
+                        @else
+                            <div class="px-4 py-5 sm:px-6 bg-yellow-50 text-yellow-700">
+                                <div class="flex">
+                                    <svg class="h-5 w-5 text-yellow-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    <p>Không có thông tin chi tiết câu trả lời.</p>
                                 </div>
                             </div>
+                        @endif
+                    </div>
+                </div>
+            @elseif ($baiTapDaNop->baiTap->loai == 'tu_luan')
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Nội dung bài làm</h3>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                        <div class="prose prose-sm max-w-none bg-gray-50 p-4 rounded-md">
+                            {!! $baiTapDaNop->noi_dung !!}
                         </div>
-                    @elseif ($baiTap->loai == 'file')
-                        <div class="mt-4">
-                            <h4 class="mb-3">File bài làm của bạn</h4>
-                            @if ($baiTapDaNop->file_path)
-                                <a href="{{ asset('storage/' . $baiTapDaNop->file_path) }}" target="_blank" class="btn btn-info">
-                                    <i class="fas fa-download"></i> Tải xuống {{ $baiTapDaNop->ten_file }}
-                                </a>
-                            @else
-                                <div class="alert alert-warning">
-                                    Không tìm thấy file bài làm.
-                                </div>
-                            @endif
-                        </div>
-                    @endif
-
-                    @if ($baiTapDaNop->phan_hoi)
-                        <div class="mt-4">
-                            <h4 class="mb-3">Phản hồi từ giáo viên</h4>
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    {!! $baiTapDaNop->phan_hoi !!}
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class="form-group text-center mt-4">
-                        <a href="{{ route('hoc-vien.bai-tap.show', $baiTap->id) }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Quay lại chi tiết bài tập
-                        </a>
-                        <a href="{{ route('hoc-vien.bai-hoc.show', $baiTap->baiHoc->id) }}" class="btn btn-info">
-                            <i class="fas fa-book"></i> Quay lại bài học
+                    </div>
+                </div>
+            @elseif ($baiTapDaNop->baiTap->loai == 'file')
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">File đã nộp</h3>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+                        <a href="{{ asset('storage/' . $baiTapDaNop->file_path) }}" target="_blank" 
+                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Tải xuống {{ $baiTapDaNop->ten_file }}
                         </a>
                     </div>
                 </div>
+            @endif
+
+            <div class="mt-8 text-center">
+                <a href="{{ route('hoc-vien.bai-tap.show', $baiTapDaNop->baiTap->id) }}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Quay lại bài tập
+                </a>
             </div>
         </div>
     </div>

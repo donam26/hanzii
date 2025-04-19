@@ -60,4 +60,9 @@ class BaiHocLop extends Model
     {
         return $this->hasMany(TienDoBaiHoc::class, 'bai_hoc_id', 'bai_hoc_id');
     }
+
+    public function lopHocs()
+    {
+        return $this->belongsTo(LopHoc::class, 'lop_hoc_id');
+    }
 }

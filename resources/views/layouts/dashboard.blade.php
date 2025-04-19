@@ -22,6 +22,44 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- Thêm style cho component -->
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .pagination li {
+            margin: 0 2px;
+        }
+        
+        .pagination li a, .pagination li span {
+            display: inline-block;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            color: #4a5568;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .pagination li.active span {
+            background-color: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+        
+        .pagination li.disabled span {
+            color: #a0aec0;
+            cursor: not-allowed;
+        }
+        
+        .pagination li a:hover {
+            background-color: #f7fafc;
+        }
+    </style>
     @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-100 text-gray-900">

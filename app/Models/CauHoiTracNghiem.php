@@ -39,14 +39,6 @@ class CauHoiTracNghiem extends Model
     }
 
     /**
-     * Quan hệ với đáp án trắc nghiệm
-     */
-    public function dapAnTracNghiems(): HasMany
-    {
-        return $this->hasMany(DapAnTracNghiem::class, 'cau_hoi_id');
-    }
-
-    /**
      * Lấy đáp án đúng
      */
     public function dapAnDung()

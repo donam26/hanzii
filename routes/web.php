@@ -64,10 +64,9 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
     // Bài tập
     Route::prefix('bai-tap')->name('bai-tap.')->group(function () {
         Route::get('/{id}', [App\Http\Controllers\HocVien\BaiTapController::class, 'show'])->name('show');
-        Route::get('/{id}/lam-bai', [App\Http\Controllers\HocVien\BaiTapController::class, 'lamBai'])->name('lam-bai');
         Route::get('/{id}/lam-bai-trac-nghiem', [App\Http\Controllers\HocVien\BaiTapController::class, 'lamBaiTracNghiem'])->name('lam-bai-trac-nghiem');
-        Route::post('/{id}/nop-bai-trac-nghiem', [App\Http\Controllers\HocVien\BaiTapController::class, 'nopBaiTracNghiem'])->name('nop-bai-trac-nghiem');
-        Route::get('/{id}/form-nop-bai', [App\Http\Controllers\HocVien\BaiTapController::class, 'formNopBai'])->name('form-nop-bai');
+        Route::post('/{id}/lam-bai-trac-nghiem', [App\Http\Controllers\HocVien\BaiTapController::class, 'xuLyLamBaiTracNghiem'])->name('xu-ly-lam-bai-trac-nghiem');
+        Route::get('/{id}/nop-bai', [App\Http\Controllers\HocVien\BaiTapController::class, 'formNopBai'])->name('form-nop-bai');
         Route::post('/{id}/nop-bai', [App\Http\Controllers\HocVien\BaiTapController::class, 'nopBai'])->name('nop-bai');
         Route::get('/ket-qua/{id}', [App\Http\Controllers\HocVien\BaiTapController::class, 'ketQua'])->name('ket-qua');
     });
@@ -128,6 +127,11 @@ Route::prefix('giao-vien')->name('giao-vien.')->middleware(['auth', 'role:giao_v
     Route::post('/lop-hoc/{id}/add-student-email', 'App\Http\Controllers\GiaoVien\LopHocController@addStudentByEmail')->name('lop-hoc.add-student-email');
     Route::delete('/lop-hoc/{id}/remove-student/{hocVienId}', 'App\Http\Controllers\GiaoVien\LopHocController@removeStudent')->name('lop-hoc.remove-student');
     
+    Route::get('lich-day', 'App\Http\Controllers\GiaoVien\LopHocController@lichDay')->name('lich-day');
+    Route::post('lop-hoc/{id}/hoc-vien/add-by-email', 'App\Http\Controllers\GiaoVien\LopHocController@addStudentByEmail')->name('lop-hoc.add-student-by-email');
+    Route::get('lop-hoc/{id}/ket-qua', 'App\Http\Controllers\GiaoVien\LopHocController@ketQua')->name('lop-hoc.ket-qua');
+    
+    // Quản lý học viên
     // Quản lý học viên
     Route::get('/hoc-vien', 'App\Http\Controllers\GiaoVien\HocVienController@index')->name('hoc-vien.index');
     Route::get('/hoc-vien/{id}', 'App\Http\Controllers\GiaoVien\HocVienController@show')->name('hoc-vien.show');
@@ -145,6 +149,8 @@ Route::prefix('giao-vien')->name('giao-vien.')->middleware(['auth', 'role:giao_v
     Route::post('/cham-diem/{id}', 'App\Http\Controllers\GiaoVien\ChamDiemController@cham')->name('cham-diem.cham');
     Route::get('/cham-diem/download/{id}', 'App\Http\Controllers\GiaoVien\ChamDiemController@downloadFile')->name('cham-diem.download');
     Route::post('/cham-diem/cap-nhat-trang-thai/{id}', 'App\Http\Controllers\GiaoVien\ChamDiemController@capNhatTrangThai')->name('cham-diem.cap-nhat-trang-thai');
+    Route::get('/cham-diem/tu-luan/{id}', 'App\Http\Controllers\GiaoVien\ChamDiemController@tuLuan')->name('cham-diem.tu-luan');
+    Route::post('/cham-diem/yeu-cau-nop-lai/{id}', 'App\Http\Controllers\GiaoVien\ChamDiemController@yeuCauNopLai')->name('cham-diem.yeu-cau-nop-lai');
     
     // Quản lý yêu cầu tham gia
     Route::prefix('yeu-cau-tham-gia')->name('yeu-cau-tham-gia.')->group(function () {
@@ -277,10 +283,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 // Admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/luong', [App\Http\Controllers\Admin\LuongController::class, 'index'])->name('luong.index');
-    Route::get('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'show'])->name('luong.show');
+    // Route::get('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'show'])->name('luong.show');
     Route::get('/luong/{luong}/edit', [App\Http\Controllers\Admin\LuongController::class, 'edit'])->name('luong.edit');
-    Route::put('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'update'])->name('luong.update');
-    Route::put('/luong/{luong}/thanh-toan', [App\Http\Controllers\Admin\LuongController::class, 'thanhToan'])->name('luong.thanh-toan');
+    // Route::put('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'update'])->name('luong.update');
+    // Route::put('/luong/{luong}/thanh-toan', [App\Http\Controllers\Admin\LuongController::class, 'thanhToan'])->name('luong.thanh-toan');
     Route::get('/lop-hoc/{lopHoc}/tao-luong', [App\Http\Controllers\Admin\LuongController::class, 'taoLuongKhiKetThucLop'])->name('luong.tao-luong');
 });
 

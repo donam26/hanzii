@@ -132,9 +132,7 @@
                                             <h4 class="font-medium text-gray-900">{{ $tieuDe }}</h4>
                                             <p class="text-sm text-gray-600 mt-1">
                                                 <span class="font-medium">Loại bài tập:</span> 
-                                                @if($loaiBaiTap == 'trac_nghiem')
-                                                    Trắc nghiệm
-                                                @elseif($loaiBaiTap == 'tu_luan')
+                                                @if($loaiBaiTap == 'tu_luan')
                                                     Tự luận
                                                 @elseif($loaiBaiTap == 'file')
                                                     Nộp file

@@ -22,7 +22,7 @@ class YeuCauThamGiaController extends Controller
     public function index(Request $request)
     {
         // Lấy ID người dùng đang đăng nhập và thông tin giáo viên
-        $nguoiDungId = Auth::id();
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$giaoVien) {
@@ -79,9 +79,9 @@ class YeuCauThamGiaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $nguoiDungId = Auth::id();
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$giaoVien) {
@@ -105,9 +105,9 @@ class YeuCauThamGiaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function duyet($id)
+    public function duyet($id, Request $request)
     {
-        $nguoiDungId = Auth::id();
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$giaoVien) {
@@ -131,10 +131,7 @@ class YeuCauThamGiaController extends Controller
         $lopHoc = $yeuCau->lopHoc;
         $currentStudents = $lopHoc->dangKyHocs()->whereIn('trang_thai', ['da_xac_nhan', 'dang_hoc'])->count();
         
-        if ($currentStudents >= $lopHoc->so_luong_toi_da) {
-            return redirect()->back()
-                ->with('error', 'Lớp học đã đạt số lượng học viên tối đa');
-        }
+     
         
         // Thực hiện trong transaction để đảm bảo tính toàn vẹn dữ liệu
         DB::beginTransaction();
@@ -175,13 +172,13 @@ class YeuCauThamGiaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function tuChoi(Request $request, $id)
+        public function tuChoi(Request $request, $id)
     {
         $request->validate([
             'ly_do_tu_choi' => 'required|string|max:500'
         ]);
         
-        $nguoiDungId = Auth::id();
+        $nguoiDungId = $request->session()->get('nguoi_dung_id');
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$giaoVien) {
