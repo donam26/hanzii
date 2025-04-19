@@ -27,7 +27,7 @@
                 <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-1">Trạng thái lớp</label>
                 <select id="trang_thai" name="trang_thai" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
                     <option value="">Tất cả trạng thái</option>
-                    <option value="sap_dien_ra" {{ request('trang_thai') == 'sap_dien_ra' ? 'selected' : '' }}>Sắp diễn ra</option>
+                    <option value="sap_khai_giang" {{ request('trang_thai') == 'sap_khai_giang' ? 'selected' : '' }}>Sắp khai giảng</option>
                     <option value="dang_dien_ra" {{ request('trang_thai') == 'dang_dien_ra' ? 'selected' : '' }}>Đang diễn ra</option>
                     <option value="da_ket_thuc" {{ request('trang_thai') == 'da_ket_thuc' ? 'selected' : '' }}>Đã kết thúc</option>
                 </select>

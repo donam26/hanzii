@@ -49,10 +49,10 @@
                         <span class="text-gray-600">Trạng thái:</span>
                         <span class="px-2 py-1 text-xs rounded-full 
                             @if($lopHoc->trang_thai == 'dang_dien_ra') bg-green-100 text-green-800 
-                            @elseif($lopHoc->trang_thai == 'sap_dien_ra') bg-blue-100 text-blue-800 
+                            @elseif($lopHoc->trang_thai == 'sap_khai_giang') bg-blue-100 text-blue-800 
                             @else bg-gray-100 text-gray-800 @endif">
                             @if($lopHoc->trang_thai == 'dang_dien_ra') Đang diễn ra
-                            @elseif($lopHoc->trang_thai == 'sap_dien_ra') Sắp diễn ra
+                            @elseif($lopHoc->trang_thai == 'sap_khai_giang') Sắp khai giảng
                             @else Đã kết thúc @endif
                         </span>
                     </div>

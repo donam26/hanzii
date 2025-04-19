@@ -30,7 +30,9 @@ class LopHocController extends Controller
         Log::info('Tổng số lớp học: ' . $totalLopHoc);
 
         $query = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung'])
-                ->withCount('dangKyHocs');
+                ->withCount(['dangKyHocs' => function($query) {
+                    $query->where('trang_thai', 'da_xac_nhan');
+                }]);
         
         // Lọc theo tìm kiếm
         if ($request->has('search') && !empty($request->search)) {
@@ -68,7 +70,7 @@ class LopHocController extends Controller
         // Thống kê số lượng
         $tong_lop = LopHoc::count();
         $dang_dien_ra = LopHoc::where('trang_thai', 'dang_hoc')->orWhere('trang_thai', 'dang_dien_ra')->count();
-        $sap_dien_ra = LopHoc::where('trang_thai', 'sap_khai_giang')->count();
+        $sap_khai_giang = LopHoc::where('trang_thai', 'sap_khai_giang')->count();
         $da_ket_thuc = LopHoc::where('trang_thai', 'da_ket_thuc')->count();
         
         // Thống kê thêm
@@ -82,7 +84,7 @@ class LopHocController extends Controller
             'khoaHocs', 
             'tong_lop', 
             'dang_dien_ra', 
-            'sap_dien_ra', 
+            'sap_khai_giang', 
             'da_ket_thuc',
             'tong_hoc_vien',
             'tong_giao_vien'
@@ -141,7 +143,7 @@ class LopHocController extends Controller
             'lich_hoc' => 'required|string',
             'ngay_bat_dau' => 'required|date',
             'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
-            'trang_thai' => 'required|in:sap_dien_ra,dang_dien_ra,da_ket_thuc',
+            'trang_thai' => 'required|in:sap_,dang_dien_ra,da_ket_thuc',
             'so_luong_toi_da' => 'required|integer|min:1|max:100',
         ]);
 
@@ -242,7 +244,7 @@ class LopHocController extends Controller
             'lich_hoc' => 'required|string',
             'ngay_bat_dau' => 'required|date',
             'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
-            'trang_thai' => 'required|in:sap_dien_ra,dang_dien_ra,da_ket_thuc',
+            'trang_thai' => 'required|in:sap_khai_giang,dang_dien_ra,da_ket_thuc',
             'so_luong_toi_da' => 'required|integer|min:1|max:100',
         ]);
 

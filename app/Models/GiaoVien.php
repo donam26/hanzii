@@ -84,7 +84,7 @@ class GiaoVien extends Model
     public function soLopDangDay()
     {
         return $this->lopHocs()
-            ->whereIn('trang_thai', ['dang_dien_ra', 'sap_dien_ra'])
+            ->whereIn('trang_thai', ['dang_dien_ra', 'sap_khai_giang'])
             ->count();
     }
 

@@ -24,14 +24,14 @@
             <div class="mt-3 md:mt-0">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
                     {{ $lopHoc->trang_thai == 'dang_dien_ra' ? 'bg-green-100 text-green-800' : 
-                       ($lopHoc->trang_thai == 'sap_dien_ra' ? 'bg-yellow-100 text-yellow-800' : 
+                       ($lopHoc->trang_thai == 'sap_khai_giang' ? 'bg-yellow-100 text-yellow-800' : 
                         'bg-gray-100 text-gray-800') }}">
                     @if($lopHoc->trang_thai == 'dang_dien_ra')
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Đang diễn ra
-                    @elseif($lopHoc->trang_thai == 'sap_dien_ra')
+                    @elseif($lopHoc->trang_thai == 'sap_khai_giang')
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>

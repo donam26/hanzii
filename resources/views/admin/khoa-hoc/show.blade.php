@@ -229,11 +229,11 @@
                         <div>
                             <div class="flex justify-between mb-1">
                                 <span class="text-sm font-medium text-gray-700">Lớp sắp diễn ra:</span>
-                                <span class="text-sm font-semibold text-gray-900">{{ $khoaHoc->lopHocs->where('trang_thai', 'sap_dien_ra')->count() }}</span>
+                                <span class="text-sm font-semibold text-gray-900">{{ $khoaHoc->lopHocs->where('trang_thai', 'sap_khai_giang')->count() }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2.5">
                                 @php 
-                                    $sapDienRaPercent = $khoaHoc->lopHocs->count() > 0 ? ($khoaHoc->lopHocs->where('trang_thai', 'sap_dien_ra')->count() / $khoaHoc->lopHocs->count() * 100) : 0;
+                                    $sapDienRaPercent = $khoaHoc->lopHocs->count() > 0 ? ($khoaHoc->lopHocs->where('trang_thai', 'sap_khai_giang')->count() / $khoaHoc->lopHocs->count() * 100) : 0;
                                 @endphp
                                 <div class="bg-indigo-600 h-2.5 rounded-full" style="width: {{ $sapDienRaPercent }}%"></div>
                             </div>

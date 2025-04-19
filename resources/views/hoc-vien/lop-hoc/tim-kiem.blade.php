@@ -35,9 +35,9 @@
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 mr-2">
                             Đang diễn ra
                         </span>
-                    @elseif($lopHoc->trang_thai == 'sap_dien_ra')
+                    @elseif($lopHoc->trang_thai == 'sap_khai_giang')
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 mr-2">
-                            Sắp diễn ra
+                            Sắp khai giảng
                         </span>
                     @elseif($lopHoc->trang_thai == 'da_ket_thuc')
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 mr-2">

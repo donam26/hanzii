@@ -71,7 +71,7 @@
                         <div class="mb-4">
                             <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-1">Trạng thái <span class="text-red-600">*</span></label>
                             <select id="trang_thai" name="trang_thai" required class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
-                                <option value="sap_dien_ra" {{ old('trang_thai') == 'sap_dien_ra' ? 'selected' : '' }}>Sắp diễn ra</option>
+                                <option value="sap_khai_giang" {{ old('trang_thai') == 'sap_khai_giang' ? 'selected' : '' }}>Sắp khai giảng</option>
                                 <option value="dang_dien_ra" {{ old('trang_thai') == 'dang_dien_ra' ? 'selected' : '' }}>Đang diễn ra</option>
                                 <option value="da_ket_thuc" {{ old('trang_thai') == 'da_ket_thuc' ? 'selected' : '' }}>Đã kết thúc</option>
                             </select>

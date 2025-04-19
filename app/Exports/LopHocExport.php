@@ -58,8 +58,8 @@ class LopHocExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     {
         // Định dạng trạng thái
         $trangThai = 'Không xác định';
-        if ($lopHoc->trang_thai == 'sap_dien_ra') {
-            $trangThai = 'Sắp diễn ra';
+        if ($lopHoc->trang_thai == 'sap_khai_giang') {
+            $trangThai = 'Sắp khai giảng';
         } elseif ($lopHoc->trang_thai == 'dang_dien_ra') {
             $trangThai = 'Đang diễn ra';
         } elseif ($lopHoc->trang_thai == 'da_ket_thuc') {

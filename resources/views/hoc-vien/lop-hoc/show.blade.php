@@ -58,11 +58,11 @@
                             <span class="font-medium">Trạng thái:</span>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                 @if($lopHoc->trang_thai == 'dang_dien_ra') bg-green-100 text-green-800
-                                @elseif($lopHoc->trang_thai == 'sap_dien_ra') bg-yellow-100 text-yellow-800
+                                @elseif($lopHoc->trang_thai == 'sap_khai_giang') bg-yellow-100 text-yellow-800
                                 @elseif($lopHoc->trang_thai == 'da_hoan_thanh') bg-gray-100 text-gray-800
                                 @else bg-blue-100 text-blue-800 @endif">
                                 @if($lopHoc->trang_thai == 'dang_dien_ra') Đang diễn ra
-                                @elseif($lopHoc->trang_thai == 'sap_dien_ra') Sắp diễn ra
+                                @elseif($lopHoc->trang_thai == 'sap_khai_giang') Sắp khai giảng
                                 @elseif($lopHoc->trang_thai == 'da_hoan_thanh') Đã hoàn thành
                                 @else Đang hoạt động @endif
                             </span>

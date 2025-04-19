@@ -20,8 +20,8 @@ return new class extends Migration
             $table->boolean('da_doc')->default(false);
             $table->string('url')->nullable()->comment('Đường dẫn liên kết khi click vào thông báo');
             $table->timestamp('ngay_doc')->nullable()->comment('Thời điểm người dùng đọc thông báo');
-            $table->timestamps();
-        });
+            $table->timestamp('tao_luc')->nullable();
+            $table->timestamp('cap_nhat_luc')->nullable();        });
     }
 
     /**

@@ -34,9 +34,9 @@
                             $statusClass = '';
                             $statusText = '';
                             
-                            if ($lopHoc->trang_thai == 'sap_dien_ra') {
+                            if ($lopHoc->trang_thai == 'sap_khai_giang') {
                                 $statusClass = 'bg-yellow-100 text-yellow-800';
-                                $statusText = 'Sắp diễn ra';
+                                $statusText = 'Sắp khai giảng';
                             } elseif ($lopHoc->trang_thai == 'dang_dien_ra') {
                                 $statusClass = 'bg-green-100 text-green-800';
                                 $statusText = 'Đang diễn ra';
@@ -116,7 +116,7 @@
                                         <span class="text-sm text-gray-600">Thời gian còn lại:</span>
                                         @php
                                             $remaining = '';
-                                            if ($lopHoc->trang_thai == 'sap_dien_ra') {
+                                            if ($lopHoc->trang_thai == 'sap_khai_giang') {
                                                 $days = \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::parse($lopHoc->ngay_bat_dau), false);
                                                 $remaining = $days . ' ngày nữa sẽ khai giảng';
                                             } elseif ($lopHoc->trang_thai == 'dang_dien_ra') {

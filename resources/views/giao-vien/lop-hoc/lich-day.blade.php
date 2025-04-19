@@ -250,9 +250,9 @@
                                             $statusClass = 'bg-green-100 text-green-800';
                                             $statusText = 'Đang diễn ra';
                                             break;
-                                        case 'sap_dien_ra':
+                                        case 'sap_khai_giang':
                                             $statusClass = 'bg-blue-100 text-blue-800';
-                                            $statusText = 'Sắp diễn ra';
+                                            $statusText = 'Sắp khai giảng';
                                             break;
                                         case 'da_ket_thuc':
                                             $statusClass = 'bg-gray-100 text-gray-800';

@@ -34,18 +34,13 @@ class ThongKeTaiChinh extends Model
             ->where('trang_thai', 'da_thanh_toan')
             ->sum('so_tien');
 
-        $tongChi = LuongGiaoVien::whereYear('ngay_thanh_toan', $nam)
-            ->whereMonth('ngay_thanh_toan', $thang)
-            ->where('trang_thai', 'da_thanh_toan')
-            ->sum('tong_luong');
 
-        $loiNhuan = $tongThu - $tongChi;
+        $loiNhuan = $tongThu;
 
         return self::updateOrCreate(
             ['thang' => $thang, 'nam' => $nam],
             [
                 'tong_thu' => $tongThu,
-                'tong_chi' => $tongChi,
                 'loi_nhuan' => $loiNhuan,
             ]
         );

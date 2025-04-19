@@ -78,7 +78,7 @@ class LopHocController extends Controller
         
         // Phân loại lớp học theo trạng thái
         $lopDangDienRa = $lopHocs->where('trang_thai', 'dang_dien_ra');
-        $lopSapDienRa = $lopHocs->where('trang_thai', 'sap_dien_ra');
+        $lopSapDienRa = $lopHocs->where('trang_thai', 'sap_khai_giang');
         $lopDaHoanThanh = $lopHocs->where('trang_thai', 'da_hoan_thanh');
         
         Log::info('Phân loại lớp học: Đang diễn ra=' . $lopDangDienRa->count() . 

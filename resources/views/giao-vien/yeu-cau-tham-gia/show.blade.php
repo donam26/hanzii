@@ -135,8 +135,8 @@
                             
                             <p class="mb-2 text-sm">
                                 <span class="font-medium">Trạng thái lớp:</span> 
-                                @if($yeuCau->lopHoc->trang_thai == 'sap_dien_ra')
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Sắp diễn ra</span>
+                                @if($yeuCau->lopHoc->trang_thai == 'sap_khai_giang')
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Sắp khai giảng</span>
                                 @elseif($yeuCau->lopHoc->trang_thai == 'dang_dien_ra')
                                     <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Đang diễn ra</span>
                                 @elseif($yeuCau->lopHoc->trang_thai == 'da_ket_thuc')
