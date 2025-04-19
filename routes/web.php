@@ -272,3 +272,30 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/luong/{id}/huy', [App\Http\Controllers\Admin\LuongController::class, 'huy'])->name('luong.huy');
     Route::get('/luong-thong-ke', [App\Http\Controllers\Admin\LuongController::class, 'thongKe'])->name('luong.thong-ke');
 });
+
+// Routes cho quản lý lương
+// Admin
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/luong', [App\Http\Controllers\Admin\LuongController::class, 'index'])->name('luong.index');
+    Route::get('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'show'])->name('luong.show');
+    Route::get('/luong/{luong}/edit', [App\Http\Controllers\Admin\LuongController::class, 'edit'])->name('luong.edit');
+    Route::put('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'update'])->name('luong.update');
+    Route::put('/luong/{luong}/thanh-toan', [App\Http\Controllers\Admin\LuongController::class, 'thanhToan'])->name('luong.thanh-toan');
+    Route::get('/lop-hoc/{lopHoc}/tao-luong', [App\Http\Controllers\Admin\LuongController::class, 'taoLuongKhiKetThucLop'])->name('luong.tao-luong');
+});
+
+// Giáo viên
+Route::middleware(['auth', 'giao_vien'])->prefix('giao-vien')->name('giao-vien.')->group(function () {
+    Route::get('/luong', [App\Http\Controllers\GiaoVien\LuongController::class, 'index'])->name('luong.index');
+});
+
+// Trợ giảng
+Route::middleware(['auth', 'tro_giang'])->prefix('tro-giang')->name('tro-giang.')->group(function () {
+    Route::get('/luong', [App\Http\Controllers\TroGiang\LuongController::class, 'index'])->name('luong.index');
+});
+
+// Routes cho thông báo
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])->name('index');
+    Route::get('/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('show');
+});

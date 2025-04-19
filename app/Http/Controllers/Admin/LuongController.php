@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DangKyHoc;
+use App\Models\Luong;
 use App\Models\LopHoc;
-use App\Models\LuongGiaoVien;
-use App\Models\GiaoVien;
-use App\Models\TroGiang;
-use App\Models\ThanhToan;
-use App\Models\VaiTro;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class LuongController extends Controller
 {
@@ -21,177 +17,120 @@ class LuongController extends Controller
      */
     public function index(Request $request)
     {
-        // Lọc theo trạng thái
-        $trangThai = $request->input('trang_thai');
+        $query = Luong::with(['nguoiDung', 'lopHoc.khoaHoc', 'lopHoc.hocViens']);
         
-        $query = LuongGiaoVien::with(['giaoVien.nguoiDung', 'lopHoc.khoaHoc', 'vaiTro']);
-        
-        if ($trangThai) {
-            $query->where('trang_thai', $trangThai);
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('nguoiDung', function ($q) use ($search) {
+                $q->where('ho_ten', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })->orWhereHas('lopHoc', function ($q) use ($search) {
+                $q->where('ten', 'like', "%{$search}%")
+                  ->orWhere('ma', 'like', "%{$search}%");
+            });
         }
         
-        $luongs = $query->orderBy('tao_luc', 'desc')->paginate(10);
+        if ($request->filled('status')) {
+            $query->where('trang_thai', $request->status);
+        }
         
-        // Lấy danh sách lớp học đã hoàn thành, chưa tính lương
-        $lopHocs = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung'])
-                    ->where('trang_thai', 'da_hoan_thanh')
-                    ->whereDoesntHave('luongGiaoViens')
-                    ->get();
+        $luongs = $query->latest()->paginate(10);
         
-        return view('admin.luong.index', compact('luongs', 'lopHocs', 'trangThai'));
+        $tongLuongDaThanhToan = Luong::where('trang_thai', 'da_thanh_toan')->sum('so_tien');
+        $tongLuongChuaThanhToan = Luong::where('trang_thai', 'chua_thanh_toan')->sum('so_tien');
+        $tongLuongThangNay = Luong::whereMonth('created_at', Carbon::now()->month)
+                                   ->whereYear('created_at', Carbon::now()->year)
+                                   ->sum('so_tien');
+        
+        return view('admin.luong.index', compact('luongs', 'tongLuongDaThanhToan', 'tongLuongChuaThanhToan', 'tongLuongThangNay'));
     }
     
     /**
-     * Tính toán lương
+     * Hiển thị chi tiết lương
      */
-    public function calculate(Request $request)
+    public function show(Luong $luong)
     {
-        $validator = Validator::make($request->all(), [
-            'lop_hoc_id' => 'required|exists:lop_hocs,id',
-        ]);
-        
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-        
-        $lopHocId = $request->lop_hoc_id;
-        $lopHoc = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung'])->findOrFail($lopHocId);
-        
-        // Kiểm tra xem đã tính lương cho lớp học này chưa
-        $exists = LuongGiaoVien::where('lop_hoc_id', $lopHocId)->exists();
-        if ($exists) {
-            return back()->with('error', 'Lớp học này đã được tính lương!');
-        }
-        
-        // Tính tổng học phí thu được từ lớp
-        $tongHocPhi = ThanhToan::whereHas('dangKyHoc', function ($query) use ($lopHocId) {
-                            $query->where('lop_hoc_id', $lopHocId)
-                                  ->where('trang_thai', 'da_thanh_toan');
-                        })
-                        ->where('trang_thai', 'da_thanh_toan')
-                        ->sum('so_tien');
-        
-        // Lấy thông tin vai trò và hệ số lương
-        $vaiTroGiaoVien = VaiTro::where('ten', 'giao_vien')->first();
-        $vaiTroTroGiang = VaiTro::where('ten', 'tro_giang')->first();
-        
-        if (!$vaiTroGiaoVien || !$vaiTroTroGiang) {
-            return back()->with('error', 'Không tìm thấy thông tin vai trò!');
-        }
-        
-        // Tính lương giáo viên (40% tổng học phí)
-        $luongGiaoVien = $tongHocPhi * ($vaiTroGiaoVien->he_so_luong / 100);
-        LuongGiaoVien::create([
-            'giao_vien_id' => $lopHoc->giao_vien_id,
-            'lop_hoc_id' => $lopHocId,
-            'tong_hoc_phi_thu_duoc' => $tongHocPhi,
-            'vai_tro_id' => $vaiTroGiaoVien->id,
-            'tong_luong' => $luongGiaoVien,
-            'trang_thai' => 'cho_thanh_toan',
-        ]);
-        
-        // Tính lương trợ giảng (15% tổng học phí)
-        $luongTroGiang = $tongHocPhi * ($vaiTroTroGiang->he_so_luong / 100);
-        LuongGiaoVien::create([
-            'tro_giang_id' => $lopHoc->tro_giang_id,
-            'lop_hoc_id' => $lopHocId,
-            'tong_hoc_phi_thu_duoc' => $tongHocPhi,
-            'vai_tro_id' => $vaiTroTroGiang->id,
-            'tong_luong' => $luongTroGiang,
-            'trang_thai' => 'cho_thanh_toan',
-        ]);
-        
-        return redirect()->route('admin.luong.index')
-                ->with('success', 'Tính lương thành công!');
+        $luong->load(['nguoiDung', 'lopHoc.khoaHoc', 'lopHoc.hocViens']);
+        return view('admin.luong.show', compact('luong'));
     }
     
     /**
-     * Cập nhật trạng thái lương
+     * Hiển thị form chỉnh sửa lương
      */
-    public function update(Request $request, $id)
+    public function edit(Luong $luong)
     {
-        $validator = Validator::make($request->all(), [
-            'trang_thai' => 'required|in:cho_thanh_toan,da_thanh_toan',
-            'ngay_thanh_toan' => 'required_if:trang_thai,da_thanh_toan|nullable|date',
+        $luong->load(['nguoiDung', 'lopHoc.khoaHoc']);
+        return view('admin.luong.edit', compact('luong'));
+    }
+    
+    /**
+     * Cập nhật thông tin lương
+     */
+    public function update(Request $request, Luong $luong)
+    {
+        $validated = $request->validate([
+            'phan_tram' => 'required|numeric|min:0|max:100',
+            'so_tien' => 'required|numeric|min:0',
+            'ghi_chu' => 'nullable|string|max:500',
         ]);
         
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
+        $luong->update($validated);
         
-        $luong = LuongGiaoVien::findOrFail($id);
-        
-        // Cập nhật trạng thái
-        $updateData = [
-            'trang_thai' => $request->trang_thai,
-        ];
-        
-        if ($request->trang_thai == 'da_thanh_toan') {
-            $updateData['ngay_thanh_toan'] = $request->ngay_thanh_toan ?? now();
-        }
-        
-        $luong->update($updateData);
-        
-        return redirect()->route('admin.luong.index')
-                ->with('success', 'Cập nhật trạng thái lương thành công!');
+        return redirect()->route('admin.luong.show', $luong)
+            ->with('success', 'Cập nhật thông tin lương thành công');
     }
     
     /**
-     * Xem chi tiết lương
+     * Đánh dấu lương đã thanh toán
      */
-    public function show($id)
+    public function thanhToan(Luong $luong)
     {
-        $luong = LuongGiaoVien::with(['giaoVien.nguoiDung', 'lopHoc.khoaHoc', 'vaiTro'])
-                    ->findOrFail($id);
+        $luong->update([
+            'trang_thai' => 'da_thanh_toan',
+            'ngay_thanh_toan' => now(),
+        ]);
         
-        // Lấy danh sách học viên trong lớp đã thanh toán
-        $hocViens = DangKyHoc::with(['hocVien.nguoiDung', 'thanhToan'])
-                        ->where('lop_hoc_id', $luong->lop_hoc_id)
-                        ->where('trang_thai', 'da_thanh_toan')
-                        ->whereHas('thanhToan', function ($query) {
-                            $query->where('trang_thai', 'da_thanh_toan');
-                        })
-                        ->get();
-        
-        return view('admin.luong.show', compact('luong', 'hocViens'));
+        return redirect()->route('admin.luong.show', $luong)
+            ->with('success', 'Đã đánh dấu lương này là đã thanh toán');
     }
     
     /**
-     * Báo cáo lương theo tháng
+     * Tạo lương mới khi kết thúc lớp học
      */
-    public function report(Request $request)
+    public function taoLuongKhiKetThucLop(LopHoc $lopHoc)
     {
-        $thang = $request->input('thang', date('m'));
-        $nam = $request->input('nam', date('Y'));
+        // Tính toán lương cho giáo viên
+        $giaoVien = $lopHoc->giaoVien;
+        $phanTramGiaoVien = 40; // Mặc định giáo viên 40% học phí
+        $soHocVien = $lopHoc->hocViens()->count();
+        $hocPhi = $lopHoc->khoaHoc->hoc_phi;
+        $tongThu = $soHocVien * $hocPhi;
+        $luongGiaoVien = ($tongThu * $phanTramGiaoVien) / 100;
         
-        // Thống kê lương đã thanh toán theo tháng
-        $luongs = LuongGiaoVien::with(['giaoVien.nguoiDung', 'lopHoc.khoaHoc', 'vaiTro'])
-                    ->where('trang_thai', 'da_thanh_toan')
-                    ->whereMonth('ngay_thanh_toan', $thang)
-                    ->whereYear('ngay_thanh_toan', $nam)
-                    ->get();
+        Luong::create([
+            'nguoi_dung_id' => $giaoVien->id,
+            'lop_hoc_id' => $lopHoc->id,
+            'vai_tro' => 'giao_vien',
+            'phan_tram' => $phanTramGiaoVien,
+            'so_tien' => $luongGiaoVien,
+            'trang_thai' => 'chua_thanh_toan',
+        ]);
         
-        // Tính tổng lương theo vai trò
-        $tongLuongTheoVaiTro = $luongs->groupBy('vai_tro_id')
-                                ->map(function ($items, $vaiTroId) {
-                                    return [
-                                        'vai_tro' => VaiTro::find($vaiTroId)->ten,
-                                        'tong_luong' => $items->sum('tong_luong'),
-                                        'so_luong' => $items->count(),
-                                    ];
-                                });
+        // Tính toán lương cho trợ giảng
+        $troGiang = $lopHoc->troGiang;
+        $phanTramTroGiang = 15; // Mặc định trợ giảng 15% học phí
+        $luongTroGiang = ($tongThu * $phanTramTroGiang) / 100;
         
-        // Tổng cộng
-        $tongLuong = $luongs->sum('tong_luong');
-        $tongHocPhi = $luongs->sum('tong_hoc_phi_thu_duoc');
+        Luong::create([
+            'nguoi_dung_id' => $troGiang->id,
+            'lop_hoc_id' => $lopHoc->id,
+            'vai_tro' => 'tro_giang',
+            'phan_tram' => $phanTramTroGiang,
+            'so_tien' => $luongTroGiang,
+            'trang_thai' => 'chua_thanh_toan',
+        ]);
         
-        return view('admin.luong.report', compact(
-            'luongs',
-            'tongLuongTheoVaiTro',
-            'tongLuong',
-            'tongHocPhi',
-            'thang',
-            'nam'
-        ));
+        return redirect()->route('admin.lop-hoc.show', $lopHoc)
+            ->with('success', 'Đã tạo lương cho giáo viên và trợ giảng thành công');
     }
 } 

@@ -10,60 +10,34 @@ use App\Models\LopHoc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LuongController extends Controller
 {
     /**
-     * Hiển thị danh sách lương của giáo viên
+     * Hiển thị danh sách lương của giáo viên đang đăng nhập
      */
     public function index()
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        $user = Auth::user();
         
-        if (!$giaoVien) {
-            return redirect()->route('giao-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin giáo viên');
-        }
-        
-        // Lấy danh sách lương
-        $luongs = Luong::where('giao_vien_id', $giaoVien->id)
-            ->with(['lopHoc', 'lopHoc.khoaHoc', 'vaiTro'])
-            ->orderBy('tao_luc', 'desc')
+        $luongs = Luong::with(['lopHoc.khoaHoc', 'lopHoc.hocViens'])
+            ->where('nguoi_dung_id', $user->id)
+            ->where('vai_tro', 'giao_vien')
+            ->latest()
             ->paginate(10);
         
-        // Tính tổng lương đã nhận
-        $tongLuongDaNhan = Luong::where('giao_vien_id', $giaoVien->id)
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
-            ->sum('tong_luong');
+        $tongLuongDaNhan = Luong::where('nguoi_dung_id', $user->id)
+            ->where('vai_tro', 'giao_vien')
+            ->where('trang_thai', 'da_thanh_toan')
+            ->sum('so_tien');
             
-        // Tính tổng lương chờ thanh toán
-        $tongLuongChoThanhToan = Luong::where('giao_vien_id', $giaoVien->id)
-            ->where('trang_thai', Luong::TRANG_THAI_CHO_THANH_TOAN)
-            ->sum('tong_luong');
+        $tongLuongChuaNhan = Luong::where('nguoi_dung_id', $user->id)
+            ->where('vai_tro', 'giao_vien')
+            ->where('trang_thai', 'chua_thanh_toan')
+            ->sum('so_tien');
         
-        // Tính số lớp đang dạy
-        $soLopDangDay = LopHoc::where('giao_vien_id', $giaoVien->id)
-            ->where('trang_thai', 'dang_dien_ra')
-            ->count();
-        
-        // Tính tổng số lớp đã dạy
-        $soLopDaDay = LopHoc::where('giao_vien_id', $giaoVien->id)
-            ->whereIn('trang_thai', ['da_hoan_thanh', 'da_huy'])
-            ->count();
-        
-        // Lấy dữ liệu lương theo tháng cho biểu đồ
-        $luongTheoThang = $this->getLuongTheoThang($giaoVien->id);
-        
-        return view('giao-vien.luong.index', compact(
-            'luongs', 
-            'tongLuongDaNhan', 
-            'tongLuongChoThanhToan', 
-            'soLopDangDay', 
-            'soLopDaDay', 
-            'luongTheoThang'
-        ));
+        return view('giao-vien.luong.index', compact('luongs', 'tongLuongDaNhan', 'tongLuongChuaNhan'));
     }
     
     /**

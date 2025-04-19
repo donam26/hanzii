@@ -10,64 +10,34 @@ use App\Models\LopHoc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LuongController extends Controller
 {
     /**
-     * Hiển thị danh sách lương của trợ giảng
+     * Hiển thị danh sách lương của trợ giảng đang đăng nhập
      */
     public function index()
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
+        $user = Auth::user();
         
-        if (!$troGiang) {
-            return redirect()->route('tro-giang.dashboard')
-                ->with('error', 'Không tìm thấy thông tin trợ giảng');
-        }
-        
-        // Lấy danh sách lương
-        $luongs = Luong::where('tro_giang_id', $troGiang->id)
-            ->with(['lopHoc', 'lopHoc.khoaHoc', 'vaiTro'])
-            ->orderBy('tao_luc', 'desc')
+        $luongs = Luong::with(['lopHoc.khoaHoc', 'lopHoc.hocViens'])
+            ->where('nguoi_dung_id', $user->id)
+            ->where('vai_tro', 'tro_giang')
+            ->latest()
             ->paginate(10);
         
-        // Tính tổng lương đã nhận
-        $tongLuongDaNhan = Luong::where('tro_giang_id', $troGiang->id)
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
-            ->sum('tong_luong');
+        $tongLuongDaNhan = Luong::where('nguoi_dung_id', $user->id)
+            ->where('vai_tro', 'tro_giang')
+            ->where('trang_thai', 'da_thanh_toan')
+            ->sum('so_tien');
             
-        // Tính tổng lương chờ thanh toán
-        $tongLuongChoThanhToan = Luong::where('tro_giang_id', $troGiang->id)
-            ->where('trang_thai', Luong::TRANG_THAI_CHO_THANH_TOAN)
-            ->sum('tong_luong');
+        $tongLuongChuaNhan = Luong::where('nguoi_dung_id', $user->id)
+            ->where('vai_tro', 'tro_giang')
+            ->where('trang_thai', 'chua_thanh_toan')
+            ->sum('so_tien');
         
-        // Tính số lớp đang hỗ trợ
-        $soLopDangHoTro = DB::table('lop_hoc_tro_giang')
-            ->where('tro_giang_id', $troGiang->id)
-            ->join('lop_hocs', 'lop_hoc_tro_giang.lop_hoc_id', '=', 'lop_hocs.id')
-            ->where('lop_hocs.trang_thai', 'dang_dien_ra')
-            ->count();
-        
-        // Tính tổng số lớp đã hỗ trợ
-        $soLopDaHoTro = DB::table('lop_hoc_tro_giang')
-            ->where('tro_giang_id', $troGiang->id)
-            ->join('lop_hocs', 'lop_hoc_tro_giang.lop_hoc_id', '=', 'lop_hocs.id')
-            ->whereIn('lop_hocs.trang_thai', ['da_hoan_thanh', 'da_huy'])
-            ->count();
-        
-        // Lấy dữ liệu lương theo tháng cho biểu đồ
-        $luongTheoThang = $this->getLuongTheoThang($troGiang->id);
-        
-        return view('tro-giang.luong.index', compact(
-            'luongs', 
-            'tongLuongDaNhan', 
-            'tongLuongChoThanhToan', 
-            'soLopDangHoTro', 
-            'soLopDaHoTro', 
-            'luongTheoThang'
-        ));
+        return view('tro-giang.luong.index', compact('luongs', 'tongLuongDaNhan', 'tongLuongChuaNhan'));
     }
     
     /**

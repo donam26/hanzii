@@ -944,3 +944,562 @@
 [2025-04-15 04:40:08] local.DEBUG: Middleware CheckRole: nguoi_dung_id=2, loai_tai_khoan=giao_vien  
 [2025-04-15 04:40:08] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
 [2025-04-15 04:40:08] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-04-16 10:55:18] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-04-16 10:55:19] local.DEBUG: Thông tin người dùng: ID=10, Loại=hoc_vien  
+[2025-04-16 10:55:19] local.DEBUG: Vai trò: hoc_vien  
+[2025-04-16 10:55:19] local.DEBUG: Chuyển hướng đến trang học viên  
+[2025-04-16 10:55:19] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 10:55:19] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 10:55:19] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 10:55:19] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 10:55:26] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 10:55:26] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 10:55:26] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 10:55:26] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 10:55:30] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 10:55:30] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 10:55:30] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 10:55:30] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 10:55:30] local.INFO: Tất cả đăng ký học của học viên 1: 7  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=11, Lớp ID=16, Trạng thái=da_xac_nhan  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=25, Lớp ID=17, Trạng thái=da_xac_nhan  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=35, Lớp ID=20, Trạng thái=da_thanh_toan  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=44, Lớp ID=7, Trạng thái=da_xac_nhan  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=53, Lớp ID=15, Trạng thái=da_xac_nhan  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=73, Lớp ID=2, Trạng thái=da_xac_nhan  
+[2025-04-16 10:55:30] local.INFO: Đăng ký ID=79, Lớp ID=14, Trạng thái=da_xac_nhan  
+[2025-04-16 10:55:30] local.INFO: Học viên 1 có 7 lớp học  
+[2025-04-16 10:55:30] local.INFO: Danh sách lớp: 16, 17, 20, 7, 15, 2, 14  
+[2025-04-16 10:55:30] local.INFO: Số lớp học lấy được: 7  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=2, Tên=Lớp Tiếng Trung thương mại - 03/2025, Trạng thái=dang_hoc  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=7, Tên=Lớp Tiếng Trung trung cấp nâng cao (N3) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=14, Tên=Lớp Tiếng Trung thương mại - 07/2025, Trạng thái=sap_khai_giang  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=15, Tên=Lớp Tiếng Trung trung cấp nâng cao (N3) - 03/2025, Trạng thái=dang_hoc  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=16, Tên=Lớp Tiếng Trung cho người mới bắt đầu (N5) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=17, Tên=Lớp Tiếng Trung trung cấp (N4) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 10:55:30] local.INFO: Chi tiết lớp học: ID=20, Tên=Lớp Tiếng Trung trung cấp (N4) - 04/2025, Trạng thái=sap_khai_giang  
+[2025-04-16 10:55:30] local.INFO: Phân loại lớp học: Đang diễn ra=0, Sắp diễn ra=0, Đã hoàn thành=0  
+[2025-04-16 10:55:36] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 10:55:36] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 10:55:36] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 10:55:36] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 10:55:36] local.INFO: Lớp học IDs: 16, 17, 20, 7, 15, 2, 14  
+[2025-04-16 10:55:36] local.INFO: Số lượng bài tập đã nộp: 1  
+[2025-04-16 10:55:38] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 10:55:38] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 10:55:38] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 10:55:38] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:08:51] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:08:51] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:08:51] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:08:51] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:08:52] local.ERROR: Route [notifications.index] not defined. {"view":{"view":"C:\\Users\\NetbaseJSC\\hanzii\\resources\\views\\layouts\\dashboard.blade.php","data":{"errors":"<pre class=sf-dump id=sf-dump-1651140729 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Support\\ViewErrorBag</span> {<a class=sf-dump-ref>#289</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">bags</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-1651140729\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","totalLopHoc":"<pre class=sf-dump id=sf-dump-828297009 data-indent-pad=\"  \"><span class=sf-dump-num>0</span>
+</pre><script>Sfdump(\"sf-dump-828297009\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","completedTasks":"<pre class=sf-dump id=sf-dump-1022709649 data-indent-pad=\"  \"><span class=sf-dump-num>1</span>
+</pre><script>Sfdump(\"sf-dump-1022709649\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","pendingTasks":"<pre class=sf-dump id=sf-dump-868993670 data-indent-pad=\"  \"><span class=sf-dump-num>0</span>
+</pre><script>Sfdump(\"sf-dump-868993670\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","averageScore":"<pre class=sf-dump id=sf-dump-1512204050 data-indent-pad=\"  \"><span class=sf-dump-num>0</span>
+</pre><script>Sfdump(\"sf-dump-1512204050\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","upcomingClasses":"<pre class=sf-dump id=sf-dump-985803238 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Database\\Eloquent\\Collection</span> {<a class=sf-dump-ref>#361</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-985803238\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","pendingAssignments":"<pre class=sf-dump id=sf-dump-584053784 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Database\\Eloquent\\Collection</span> {<a class=sf-dump-ref>#372</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-584053784\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","learningProgresses":"<pre class=sf-dump id=sf-dump-357116228 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Support\\Collection</span> {<a class=sf-dump-ref>#371</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-357116228\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","hocVien":"<pre class=sf-dump id=sf-dump-1902760275 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\HocVien</span> {<a class=sf-dump-ref>#339</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"9 characters\">hoc_viens</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:7</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>nguoi_dung_id</span>\" => <span class=sf-dump-num>10</span>
+    \"<span class=sf-dump-key>trinh_do_hoc_van</span>\" => \"<span class=sf-dump-str title=\"7 characters\">&#272;&#7841;i h&#7885;c</span>\"
+    \"<span class=sf-dump-key>ngay_sinh</span>\" => \"<span class=sf-dump-str title=\"10 characters\">1999-04-15</span>\"
+    \"<span class=sf-dump-key>trang_thai</span>\" => \"<span class=sf-dump-str title=\"9 characters\">hoat_dong</span>\"
+    \"<span class=sf-dump-key>tao_luc</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-04-15 02:17:40</span>\"
+    \"<span class=sf-dump-key>cap_nhat_luc</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-04-15 02:17:40</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:7</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>nguoi_dung_id</span>\" => <span class=sf-dump-num>10</span>
+    \"<span class=sf-dump-key>trinh_do_hoc_van</span>\" => \"<span class=sf-dump-str title=\"7 characters\">&#272;&#7841;i h&#7885;c</span>\"
+    \"<span class=sf-dump-key>ngay_sinh</span>\" => \"<span class=sf-dump-str title=\"10 characters\">1999-04-15</span>\"
+    \"<span class=sf-dump-key>trang_thai</span>\" => \"<span class=sf-dump-str title=\"9 characters\">hoat_dong</span>\"
+    \"<span class=sf-dump-key>tao_luc</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-04-15 02:17:40</span>\"
+    \"<span class=sf-dump-key>cap_nhat_luc</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-04-15 02:17:40</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>nguoiDung</span>\" => <span class=\"sf-dump-note sf-dump-ellipsization\" title=\"App\\Models\\NguoiDung
+\"><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">App\\Models</span><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">\\</span><span class=\"sf-dump-ellipsis-tail\">NguoiDung</span></span> {<a class=sf-dump-ref>#392</a><samp data-depth=3 class=sf-dump-compact>
+      #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"11 characters\">nguoi_dungs</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+      +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+      #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+      +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+      +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:10</span> [ &#8230;10]
+      #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:10</span> [ &#8230;10]
+      #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+      #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+      +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:7</span> [ &#8230;7]
+      #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [ &#8230;1]
+    </samp>}
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: <span class=sf-dump-note>array:4</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str title=\"13 characters\">nguoi_dung_id</span>\"
+    <span class=sf-dump-index>1</span> => \"<span class=sf-dump-str title=\"16 characters\">trinh_do_hoc_van</span>\"
+    <span class=sf-dump-index>2</span> => \"<span class=sf-dump-str title=\"9 characters\">ngay_sinh</span>\"
+    <span class=sf-dump-index>3</span> => \"<span class=sf-dump-str title=\"10 characters\">trang_thai</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"<span class=sf-dump-str>*</span>\"
+  </samp>]
+</samp>}
+</pre><script>Sfdump(\"sf-dump-1902760275\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","active":"<pre class=sf-dump id=sf-dump-292210140 data-indent-pad=\"  \">\"<span class=sf-dump-str title=\"9 characters\">dashboard</span>\"
+</pre><script>Sfdump(\"sf-dump-292210140\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","role":"<pre class=sf-dump id=sf-dump-146638008 data-indent-pad=\"  \">\"<span class=sf-dump-str title=\"8 characters\">hoc_vien</span>\"
+</pre><script>Sfdump(\"sf-dump-146638008\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","component":"<pre class=sf-dump id=sf-dump-60257571 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\View\\AnonymousComponent</span> {<a class=sf-dump-ref>#384</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">except</span>: []
+  +<span class=sf-dump-public title=\"Public property\">componentName</span>: \"<span class=sf-dump-str title=\"4 characters\">card</span>\"
+  +<span class=sf-dump-public title=\"Public property\">attributes</span>: <span class=\"sf-dump-note sf-dump-ellipsization\" title=\"Illuminate\\View\\ComponentAttributeBag
+\"><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">Illuminate\\View</span><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">\\</span><span class=\"sf-dump-ellipsis-tail\">ComponentAttributeBag</span></span> {<a class=sf-dump-ref>#386</a><samp data-depth=2 class=sf-dump-compact>
+    #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: []
+  </samp>}
+  #<span class=sf-dump-protected title=\"Protected property\">view</span>: \"<span class=sf-dump-str title=\"15 characters\">components.card</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">data</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-60257571\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+"}},"exception":"[object] (Spatie\\LaravelIgnition\\Exceptions\\ViewException(code: 0): Route [notifications.index] not defined. at C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php:477)
+[stacktrace]
+#0 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(811): Illuminate\\Routing\\UrlGenerator->route('notifications.i...', Array, true)
+#1 C:\\Users\\NetbaseJSC\\hanzii\\resources\\views\\layouts\\dashboard.blade.php(99): route('notifications.i...')
+#2 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('C:\\\\Users\\\\Netbas...')
+#3 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#4 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('C:\\\\Users\\\\Netbas...', Array)
+#5 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(72): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('C:\\\\Users\\\\Netbas...', Array)
+#6 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(207): Illuminate\\View\\Engines\\CompilerEngine->get('C:\\\\Users\\\\Netbas...', Array)
+#7 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(190): Illuminate\\View\\View->getContents()
+#8 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(159): Illuminate\\View\\View->renderContents()
+#9 C:\\Users\\NetbaseJSC\\hanzii\\resources\\views\\hoc-vien\\dashboard.blade.php(206): Illuminate\\View\\View->render()
+#10 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('C:\\\\Users\\\\Netbas...')
+#11 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#12 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('C:\\\\Users\\\\Netbas...', Array)
+#13 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(72): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('C:\\\\Users\\\\Netbas...', Array)
+#14 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(207): Illuminate\\View\\Engines\\CompilerEngine->get('C:\\\\Users\\\\Netbas...', Array)
+#15 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(190): Illuminate\\View\\View->getContents()
+#16 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(159): Illuminate\\View\\View->renderContents()
+#17 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(69): Illuminate\\View\\View->render()
+#18 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(35): Illuminate\\Http\\Response->setContent(Object(Illuminate\\View\\View))
+#19 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(918): Illuminate\\Http\\Response->__construct(Object(Illuminate\\View\\View), 200, Array)
+#20 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(885): Illuminate\\Routing\\Router::toResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#21 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Routing\\Router->prepareResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#22 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#23 C:\\Users\\NetbaseJSC\\hanzii\\app\\Http\\Middleware\\CheckRole.php(60): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#24 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\CheckRole->handle(Object(Illuminate\\Http\\Request), Object(Closure), 'hoc_vien')
+#25 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#26 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#27 C:\\Users\\NetbaseJSC\\hanzii\\app\\Http\\Middleware\\Authenticate.php(38): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#28 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#29 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#30 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#31 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#32 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#33 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#34 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#35 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#38 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#39 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#40 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#41 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#42 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#43 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#44 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#45 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#46 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#47 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#48 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#49 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#50 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#53 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#54 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#55 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#56 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#57 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#58 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#59 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#60 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#61 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#62 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#63 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#64 C:\\Users\\NetbaseJSC\\hanzii\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#65 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('C:\\\\Users\\\\Netbas...')
+#66 {main}
+
+[previous exception] [object] (Symfony\\Component\\Routing\\Exception\\RouteNotFoundException(code: 0): Route [notifications.index] not defined. at C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php:477)
+[stacktrace]
+#0 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(811): Illuminate\\Routing\\UrlGenerator->route('notifications.i...', Array, true)
+#1 C:\\Users\\NetbaseJSC\\hanzii\\storage\\framework\\views\\de8dc0a0db6953cd1e772cdb1419f72d.php(117): route('notifications.i...')
+#2 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('C:\\\\Users\\\\Netbas...')
+#3 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#4 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('C:\\\\Users\\\\Netbas...', Array)
+#5 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(72): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('C:\\\\Users\\\\Netbas...', Array)
+#6 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(207): Illuminate\\View\\Engines\\CompilerEngine->get('C:\\\\Users\\\\Netbas...', Array)
+#7 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(190): Illuminate\\View\\View->getContents()
+#8 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(159): Illuminate\\View\\View->renderContents()
+#9 C:\\Users\\NetbaseJSC\\hanzii\\storage\\framework\\views\\dba3d35385f812acef06f3b70056267f.php(331): Illuminate\\View\\View->render()
+#10 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('C:\\\\Users\\\\Netbas...')
+#11 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#12 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('C:\\\\Users\\\\Netbas...', Array)
+#13 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(72): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('C:\\\\Users\\\\Netbas...', Array)
+#14 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(207): Illuminate\\View\\Engines\\CompilerEngine->get('C:\\\\Users\\\\Netbas...', Array)
+#15 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(190): Illuminate\\View\\View->getContents()
+#16 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(159): Illuminate\\View\\View->renderContents()
+#17 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(69): Illuminate\\View\\View->render()
+#18 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(35): Illuminate\\Http\\Response->setContent(Object(Illuminate\\View\\View))
+#19 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(918): Illuminate\\Http\\Response->__construct(Object(Illuminate\\View\\View), 200, Array)
+#20 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(885): Illuminate\\Routing\\Router::toResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#21 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Routing\\Router->prepareResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#22 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#23 C:\\Users\\NetbaseJSC\\hanzii\\app\\Http\\Middleware\\CheckRole.php(60): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#24 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\CheckRole->handle(Object(Illuminate\\Http\\Request), Object(Closure), 'hoc_vien')
+#25 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#26 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#27 C:\\Users\\NetbaseJSC\\hanzii\\app\\Http\\Middleware\\Authenticate.php(38): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#28 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#29 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#30 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#31 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#32 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#33 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#34 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#35 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#38 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#39 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#40 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#41 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#42 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#43 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#44 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#45 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#46 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#47 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#48 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#49 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#50 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#53 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#54 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#55 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#56 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#57 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#58 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#59 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#60 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#61 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#62 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#63 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#64 C:\\Users\\NetbaseJSC\\hanzii\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#65 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('C:\\\\Users\\\\Netbas...')
+#66 {main}
+"} 
+[2025-04-16 11:09:10] local.ERROR: Unable to prepare route [admin/luong/{luong}] for serialization. Another route has already been assigned name [admin.luong.update]. {"exception":"[object] (LogicException(code: 0): Unable to prepare route [admin/luong/{luong}] for serialization. Another route has already been assigned name [admin.luong.update]. at C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php:247)
+[stacktrace]
+#0 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(208): Illuminate\\Routing\\AbstractRouteCollection->addToSymfonyRoutesCollection(Object(Symfony\\Component\\Routing\\RouteCollection), Object(Illuminate\\Routing\\Route))
+#1 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteCollection.php(246): Illuminate\\Routing\\AbstractRouteCollection->toSymfonyRouteCollection()
+#2 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(192): Illuminate\\Routing\\RouteCollection->toSymfonyRouteCollection()
+#3 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(163): Illuminate\\Routing\\AbstractRouteCollection->dumper()
+#4 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(109): Illuminate\\Routing\\AbstractRouteCollection->compile()
+#5 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(68): Illuminate\\Foundation\\Console\\RouteCacheCommand->buildRouteCacheFile(Object(Illuminate\\Routing\\RouteCollection))
+#6 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteCacheCommand->handle()
+#7 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#8 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#9 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#10 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#11 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(211): Illuminate\\Container\\Container->call(Array)
+#12 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#13 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#14 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(67): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\NullOutput))
+#15 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(40): Illuminate\\Console\\Command->runCommand('route:cache', Array, Object(Symfony\\Component\\Console\\Output\\NullOutput))
+#16 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\OptimizeCommand.php(36): Illuminate\\Console\\Command->callSilent('route:cache')
+#17 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Task.php(37): Illuminate\\Foundation\\Console\\OptimizeCommand->Illuminate\\Foundation\\Console\\{closure}()
+#18 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Factory.php(58): Illuminate\\Console\\View\\Components\\Task->render('routes', Object(Closure))
+#19 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\OptimizeCommand.php(37): Illuminate\\Console\\View\\Components\\Factory->__call('task', Array)
+#20 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Traits\\EnumeratesValues.php(240): Illuminate\\Foundation\\Console\\OptimizeCommand->Illuminate\\Foundation\\Console\\{closure}(Object(Closure), 'routes')
+#21 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\OptimizeCommand.php(37): Illuminate\\Support\\Collection->each(Object(Closure))
+#22 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\OptimizeCommand->handle()
+#23 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#24 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#25 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#26 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#27 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(211): Illuminate\\Container\\Container->call(Array)
+#28 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#29 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#30 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(1096): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#31 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\OptimizeCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#32 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#33 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(201): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#34 C:\\Users\\NetbaseJSC\\hanzii\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#35 {main}
+"} 
+[2025-04-16 11:09:10] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:09:10] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:09:10] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:09:10] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:09:15] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:09:15] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:09:15] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:09:15] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:09:16] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:09:16] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:09:16] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:09:16] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:09:17] local.INFO: Tất cả đăng ký học của học viên 1: 7  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=11, Lớp ID=16, Trạng thái=da_xac_nhan  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=25, Lớp ID=17, Trạng thái=da_xac_nhan  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=35, Lớp ID=20, Trạng thái=da_thanh_toan  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=44, Lớp ID=7, Trạng thái=da_xac_nhan  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=53, Lớp ID=15, Trạng thái=da_xac_nhan  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=73, Lớp ID=2, Trạng thái=da_xac_nhan  
+[2025-04-16 11:09:17] local.INFO: Đăng ký ID=79, Lớp ID=14, Trạng thái=da_xac_nhan  
+[2025-04-16 11:09:17] local.INFO: Học viên 1 có 7 lớp học  
+[2025-04-16 11:09:17] local.INFO: Danh sách lớp: 16, 17, 20, 7, 15, 2, 14  
+[2025-04-16 11:09:17] local.INFO: Số lớp học lấy được: 7  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=2, Tên=Lớp Tiếng Trung thương mại - 03/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=7, Tên=Lớp Tiếng Trung trung cấp nâng cao (N3) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=14, Tên=Lớp Tiếng Trung thương mại - 07/2025, Trạng thái=sap_khai_giang  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=15, Tên=Lớp Tiếng Trung trung cấp nâng cao (N3) - 03/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=16, Tên=Lớp Tiếng Trung cho người mới bắt đầu (N5) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=17, Tên=Lớp Tiếng Trung trung cấp (N4) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:09:17] local.INFO: Chi tiết lớp học: ID=20, Tên=Lớp Tiếng Trung trung cấp (N4) - 04/2025, Trạng thái=sap_khai_giang  
+[2025-04-16 11:09:17] local.INFO: Phân loại lớp học: Đang diễn ra=0, Sắp diễn ra=0, Đã hoàn thành=0  
+[2025-04-16 11:09:18] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:09:18] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:09:18] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:09:18] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:09:22] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:09:22] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:09:22] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:09:22] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:09:22] local.INFO: Lớp học IDs: 16, 17, 20, 7, 15, 2, 14  
+[2025-04-16 11:09:22] local.INFO: Số lượng bài tập đã nộp: 1  
+[2025-04-16 11:13:55] local.ERROR: Unable to prepare route [admin/luong/{luong}] for serialization. Another route has already been assigned name [admin.luong.update]. {"exception":"[object] (LogicException(code: 0): Unable to prepare route [admin/luong/{luong}] for serialization. Another route has already been assigned name [admin.luong.update]. at C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php:247)
+[stacktrace]
+#0 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(208): Illuminate\\Routing\\AbstractRouteCollection->addToSymfonyRoutesCollection(Object(Symfony\\Component\\Routing\\RouteCollection), Object(Illuminate\\Routing\\Route))
+#1 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteCollection.php(246): Illuminate\\Routing\\AbstractRouteCollection->toSymfonyRouteCollection()
+#2 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(192): Illuminate\\Routing\\RouteCollection->toSymfonyRouteCollection()
+#3 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(163): Illuminate\\Routing\\AbstractRouteCollection->dumper()
+#4 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(109): Illuminate\\Routing\\AbstractRouteCollection->compile()
+#5 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(68): Illuminate\\Foundation\\Console\\RouteCacheCommand->buildRouteCacheFile(Object(Illuminate\\Routing\\RouteCollection))
+#6 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteCacheCommand->handle()
+#7 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#8 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#9 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#10 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#11 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(211): Illuminate\\Container\\Container->call(Array)
+#12 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#13 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#14 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(67): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\NullOutput))
+#15 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\CallsCommands.php(40): Illuminate\\Console\\Command->runCommand('route:cache', Array, Object(Symfony\\Component\\Console\\Output\\NullOutput))
+#16 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\OptimizeCommand.php(36): Illuminate\\Console\\Command->callSilent('route:cache')
+#17 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Task.php(37): Illuminate\\Foundation\\Console\\OptimizeCommand->Illuminate\\Foundation\\Console\\{closure}()
+#18 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Factory.php(58): Illuminate\\Console\\View\\Components\\Task->render('routes', Object(Closure))
+#19 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\OptimizeCommand.php(37): Illuminate\\Console\\View\\Components\\Factory->__call('task', Array)
+#20 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Traits\\EnumeratesValues.php(240): Illuminate\\Foundation\\Console\\OptimizeCommand->Illuminate\\Foundation\\Console\\{closure}(Object(Closure), 'routes')
+#21 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\OptimizeCommand.php(37): Illuminate\\Support\\Collection->each(Object(Closure))
+#22 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\OptimizeCommand->handle()
+#23 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#24 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#25 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#26 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#27 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(211): Illuminate\\Container\\Container->call(Array)
+#28 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#29 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#30 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(1096): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#31 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\OptimizeCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#32 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#33 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(201): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#34 C:\\Users\\NetbaseJSC\\hanzii\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#35 {main}
+"} 
+[2025-04-16 11:13:57] local.ERROR: Class "App\Http\Controllers\TroGiang\LopHocController" does not exist {"exception":"[object] (ReflectionException(code: -1): Class \"App\\Http\\Controllers\\TroGiang\\LopHocController\" does not exist at C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php:225)
+[stacktrace]
+#0 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(225): ReflectionClass->__construct('App\\\\Http\\\\Contro...')
+#1 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(147): Illuminate\\Foundation\\Console\\RouteListCommand->isVendorRoute(Object(Illuminate\\Routing\\Route))
+#2 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(116): Illuminate\\Foundation\\Console\\RouteListCommand->getRouteInformation(Object(Illuminate\\Routing\\Route))
+#3 [internal function]: Illuminate\\Foundation\\Console\\RouteListCommand->Illuminate\\Foundation\\Console\\{closure}(Object(Illuminate\\Routing\\Route), 112)
+#4 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Arr.php(600): array_map(Object(Closure), Array, Array)
+#5 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Collection.php(778): Illuminate\\Support\\Arr::map(Array, Object(Closure))
+#6 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(115): Illuminate\\Support\\Collection->map(Object(Closure))
+#7 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(101): Illuminate\\Foundation\\Console\\RouteListCommand->getRoutes()
+#8 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteListCommand->handle()
+#9 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#10 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#11 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#12 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#13 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(211): Illuminate\\Container\\Container->call(Array)
+#14 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#15 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#16 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(1096): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#17 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteListCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#18 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#19 C:\\Users\\NetbaseJSC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(201): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#20 C:\\Users\\NetbaseJSC\\hanzii\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#21 {main}
+"} 
+[2025-04-16 11:15:04] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:15:04] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:15:04] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:15:04] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:15:04] local.INFO: Lớp học IDs: 16, 17, 20, 7, 15, 2, 14  
+[2025-04-16 11:15:04] local.INFO: Số lượng bài tập đã nộp: 1  
+[2025-04-16 11:15:05] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:15:05] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:15:05] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:15:05] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:15:05] local.INFO: Tất cả đăng ký học của học viên 1: 7  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=11, Lớp ID=16, Trạng thái=da_xac_nhan  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=25, Lớp ID=17, Trạng thái=da_xac_nhan  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=35, Lớp ID=20, Trạng thái=da_thanh_toan  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=44, Lớp ID=7, Trạng thái=da_xac_nhan  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=53, Lớp ID=15, Trạng thái=da_xac_nhan  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=73, Lớp ID=2, Trạng thái=da_xac_nhan  
+[2025-04-16 11:15:05] local.INFO: Đăng ký ID=79, Lớp ID=14, Trạng thái=da_xac_nhan  
+[2025-04-16 11:15:05] local.INFO: Học viên 1 có 7 lớp học  
+[2025-04-16 11:15:05] local.INFO: Danh sách lớp: 16, 17, 20, 7, 15, 2, 14  
+[2025-04-16 11:15:05] local.INFO: Số lớp học lấy được: 7  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=2, Tên=Lớp Tiếng Trung thương mại - 03/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=7, Tên=Lớp Tiếng Trung trung cấp nâng cao (N3) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=14, Tên=Lớp Tiếng Trung thương mại - 07/2025, Trạng thái=sap_khai_giang  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=15, Tên=Lớp Tiếng Trung trung cấp nâng cao (N3) - 03/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=16, Tên=Lớp Tiếng Trung cho người mới bắt đầu (N5) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=17, Tên=Lớp Tiếng Trung trung cấp (N4) - 04/2025, Trạng thái=dang_hoc  
+[2025-04-16 11:15:05] local.INFO: Chi tiết lớp học: ID=20, Tên=Lớp Tiếng Trung trung cấp (N4) - 04/2025, Trạng thái=sap_khai_giang  
+[2025-04-16 11:15:05] local.INFO: Phân loại lớp học: Đang diễn ra=0, Sắp diễn ra=0, Đã hoàn thành=0  
+[2025-04-16 11:15:08] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:15:08] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:15:08] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:15:08] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:15:11] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:15:11] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:15:11] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:15:11] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:15:11] local.INFO: Số lượng bài tập của bài học 191: 2  
+[2025-04-16 11:15:11] local.INFO: Bài tập ID: 284, Tiêu đề: Bài tập 1 - Bài 16 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài tập ID: 285, Tiêu đề: Bài tập 2 - Bài 16 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Số lượng bài học trong lớp 2: 20  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 501, Bài học ID: 176, Tên: Bài 1 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 502, Bài học ID: 177, Tên: Bài 2 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 503, Bài học ID: 178, Tên: Bài 3 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 504, Bài học ID: 179, Tên: Bài 4 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 505, Bài học ID: 180, Tên: Bài 5 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 506, Bài học ID: 181, Tên: Bài 6 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 507, Bài học ID: 182, Tên: Bài 7 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 508, Bài học ID: 183, Tên: Bài 8 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 509, Bài học ID: 184, Tên: Bài 9 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 510, Bài học ID: 185, Tên: Bài 10 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 511, Bài học ID: 186, Tên: Bài 11 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 512, Bài học ID: 187, Tên: Bài 12 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 513, Bài học ID: 188, Tên: Bài 13 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 514, Bài học ID: 189, Tên: Bài 14 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 515, Bài học ID: 190, Tên: Bài 15 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 516, Bài học ID: 191, Tên: Bài 16 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 517, Bài học ID: 192, Tên: Bài 17 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 518, Bài học ID: 193, Tên: Bài 18 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 519, Bài học ID: 194, Tên: Bài 19 - Tiếng Trung thương mại  
+[2025-04-16 11:15:11] local.INFO: Bài học lớp ID: 520, Bài học ID: 195, Tên: Bài 20 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:15:14] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:15:14] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:15:14] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:15:14] local.INFO: Số lượng bài tập của bài học 179: 2  
+[2025-04-16 11:15:14] local.INFO: Bài tập ID: 267, Tiêu đề: Bài tập 1 - Bài 4 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài tập ID: 268, Tiêu đề: Bài tập 2 - Bài 4 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Số lượng bài học trong lớp 2: 20  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 501, Bài học ID: 176, Tên: Bài 1 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 502, Bài học ID: 177, Tên: Bài 2 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 503, Bài học ID: 178, Tên: Bài 3 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 504, Bài học ID: 179, Tên: Bài 4 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 505, Bài học ID: 180, Tên: Bài 5 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 506, Bài học ID: 181, Tên: Bài 6 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 507, Bài học ID: 182, Tên: Bài 7 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 508, Bài học ID: 183, Tên: Bài 8 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 509, Bài học ID: 184, Tên: Bài 9 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 510, Bài học ID: 185, Tên: Bài 10 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 511, Bài học ID: 186, Tên: Bài 11 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 512, Bài học ID: 187, Tên: Bài 12 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 513, Bài học ID: 188, Tên: Bài 13 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 514, Bài học ID: 189, Tên: Bài 14 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 515, Bài học ID: 190, Tên: Bài 15 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 516, Bài học ID: 191, Tên: Bài 16 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 517, Bài học ID: 192, Tên: Bài 17 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 518, Bài học ID: 193, Tên: Bài 18 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 519, Bài học ID: 194, Tên: Bài 19 - Tiếng Trung thương mại  
+[2025-04-16 11:15:14] local.INFO: Bài học lớp ID: 520, Bài học ID: 195, Tên: Bài 20 - Tiếng Trung thương mại  
+[2025-04-16 11:16:16] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-04-16 11:16:16] local.DEBUG: Middleware CheckRole: nguoi_dung_id=10, loai_tai_khoan=hoc_vien  
+[2025-04-16 11:16:16] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-04-16 11:16:16] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-04-16 11:16:16] local.INFO: Dữ liệu bài tập: ID=267, Ten=Bài tập 1 - Bài 4 - Tiếng Trung thương mại, TieuDe=Bài tập 1 - Bài 4 - Tiếng Trung thương mại, BaiHocID=179  

@@ -7,8 +7,11 @@ use App\Models\DangKyHoc;
 use App\Models\ThanhToan;
 use App\Models\HocVien;
 use App\Models\LopHoc;
+use App\Models\ThongBao;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ThanhToanController extends Controller
 {
@@ -17,21 +20,12 @@ class ThanhToanController extends Controller
      */
     public function index()
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin học viên');
-        }
-        
-        // Lấy các thanh toán của học viên
-        $thanhToans = ThanhToan::with(['dangKyHoc', 'dangKyHoc.lopHoc.khoaHoc'])
-            ->whereHas('dangKyHoc', function($query) use ($hocVien) {
-                $query->where('hoc_vien_id', $hocVien->id);
+        $user = Auth::user();
+        $thanhToans = ThanhToan::with(['dangKyHoc.lopHoc.khoaHoc'])
+            ->whereHas('dangKyHoc', function($query) use ($user) {
+                $query->where('hoc_vien_id', $user->id);
             })
-            ->orderBy('tao_luc', 'desc')
+            ->latest()
             ->paginate(10);
             
         return view('hoc-vien.thanh-toan.index', compact('thanhToans'));
@@ -40,124 +34,80 @@ class ThanhToanController extends Controller
     /**
      * Hiển thị form tạo thanh toán mới
      */
-    public function create(Request $request)
+    public function create()
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin học viên');
+        $user = Auth::user();
+        $dangKys = DangKyHoc::with(['lopHoc.khoaHoc'])
+            ->where('hoc_vien_id', $user->id)
+            ->where('trang_thai', 'cho_thanh_toan')
+            ->get();
+            
+        if ($dangKys->isEmpty()) {
+            return redirect()->route('hoc-vien.thanh-toan.index')
+                ->with('error', 'Bạn không có khoá học nào đang chờ thanh toán');
         }
         
-        // Lấy thông tin đăng ký học nếu có
-        $dangKyId = $request->input('dang_ky_id');
-        if ($dangKyId) {
-            $dangKyHoc = DangKyHoc::with(['lopHoc.khoaHoc'])
-                ->where('id', $dangKyId)
-                ->where('hoc_vien_id', $hocVien->id)
-                ->firstOrFail();
-        } else {
-            // Lấy danh sách đăng ký học chưa thanh toán
-            $dangKyHoc = null;
-            $chuaThanhToans = DangKyHoc::with(['lopHoc.khoaHoc'])
-                ->where('hoc_vien_id', $hocVien->id)
-                ->whereNotIn('trang_thai', ['da_thanh_toan', 'da_huy'])
-                ->get();
-                
-            if ($chuaThanhToans->isEmpty()) {
-                return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('info', 'Bạn không có khoản học phí nào cần thanh toán');
-            }
-        }
-        
-        // Lấy thông tin các phương thức thanh toán
-        $phuongThucThanhToan = [
-            'chuyen_khoan' => 'Chuyển khoản ngân hàng',
-            'vi_dien_tu' => 'Ví điện tử (MoMo, ZaloPay)',
-            'tien_mat' => 'Tiền mặt tại trung tâm',
-            'vnpay' => 'Thanh toán trực tuyến qua VNPay'
-        ];
-        
-        return view('hoc-vien.thanh-toan.create', compact(
-            'dangKyHoc', 
-            'chuaThanhToans', 
-            'phuongThucThanhToan'
-        ));
+        return view('hoc-vien.thanh-toan.create', compact('dangKys'));
     }
     
     /**
-     * Lưu thông tin thanh toán mới
+     * Lưu thanh toán mới
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'dang_ky_id' => 'required|exists:dang_ky_hocs,id',
-            'phuong_thuc_thanh_toan' => 'required|in:chuyen_khoan,vi_dien_tu,tien_mat,vnpay',
-            'ghi_chu' => 'nullable|string|max:500',
-            'ma_giao_dich' => 'nullable|string|max:100'
+            'phuong_thuc' => 'required|in:chuyen_khoan,vnpay,truc_tiep',
+            'so_tien' => 'required|numeric|min:0',
+            'ghi_chu' => 'nullable|string|max:1000',
+            'minh_chung' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
         
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin học viên');
-        }
-        
-        // Kiểm tra đăng ký học của học viên
-        $dangKyHoc = DangKyHoc::with(['lopHoc.khoaHoc'])
-            ->where('id', $validated['dang_ky_id'])
-            ->where('hoc_vien_id', $hocVien->id)
+        // Kiểm tra đăng ký học có thuộc về học viên không
+        $user = Auth::user();
+        $dangKy = DangKyHoc::where('id', $request->dang_ky_id)
+            ->where('hoc_vien_id', $user->id)
             ->firstOrFail();
-            
-        // Kiểm tra đã thanh toán chưa
-        if ($dangKyHoc->trang_thai == 'da_thanh_toan') {
-            return redirect()->route('hoc-vien.thanh-toan.index')
-                ->with('info', 'Bạn đã thanh toán học phí cho lớp học này');
+        
+        // Kiểm tra đăng ký học có đang chờ thanh toán không
+        if ($dangKy->trang_thai !== 'cho_thanh_toan') {
+            return back()->with('error', 'Đăng ký học này không ở trạng thái chờ thanh toán');
         }
         
-        // Nếu phương thức thanh toán là VNPay, chuyển hướng đến cổng thanh toán
-        if ($validated['phuong_thuc_thanh_toan'] == 'vnpay') {
-            // Lưu thông tin đăng ký vào session
-            session(['vnpay_dang_ky_id' => $dangKyHoc->id]);
-            
-            // Chuyển hướng đến VNPay
-            return redirect()->route('hoc-vien.vnpay.create', [
-                'amount' => $dangKyHoc->hoc_phi,
-                'order_id' => 'DK' . $dangKyHoc->id . '_' . time(),
-                'order_desc' => 'Thanh toan hoc phi lop ' . $dangKyHoc->lopHoc->ten,
-            ]);
-        }
-        
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
+            // Lưu minh chứng nếu có
+            $minhChungPath = null;
+            if ($request->hasFile('minh_chung')) {
+                $minhChungPath = $request->file('minh_chung')->store('minh_chung', 'public');
+            }
             
             // Tạo thanh toán mới
-            $thanhToan = new ThanhToan();
-            $thanhToan->dang_ky_id = $dangKyHoc->id;
-            $thanhToan->so_tien = $dangKyHoc->hoc_phi;
-            $thanhToan->phuong_thuc_thanh_toan = $validated['phuong_thuc_thanh_toan'];
-            $thanhToan->trang_thai = 'cho_xac_nhan';
-            $thanhToan->ghi_chu = $validated['ghi_chu'];
-            $thanhToan->ma_giao_dich = $validated['ma_giao_dich'];
-            $thanhToan->save();
+            $thanhToan = ThanhToan::create([
+                'dang_ky_id' => $request->dang_ky_id,
+                'phuong_thuc' => $request->phuong_thuc,
+                'so_tien' => $request->so_tien,
+                'trang_thai' => 'cho_xac_nhan',
+                'ghi_chu' => $request->ghi_chu,
+                'minh_chung' => $minhChungPath,
+                'ngay_thanh_toan' => now(),
+            ]);
             
             // Cập nhật trạng thái đăng ký học
-            $dangKyHoc->trang_thai = 'cho_xac_nhan';
-            $dangKyHoc->save();
+            $dangKy->update([
+                'trang_thai' => 'cho_xac_nhan',
+            ]);
+            
+            // Tạo thông báo cho admin
+            $this->taoThongBaoChoAdmin($dangKy, $thanhToan);
             
             DB::commit();
             
-            return redirect()->route('hoc-vien.thanh-toan.index')
-                ->with('success', 'Đã gửi thông tin thanh toán thành công. Nhà trường sẽ xác nhận thanh toán của bạn trong thời gian sớm nhất.');
-                
+            return redirect()->route('hoc-vien.thanh-toan.show', $thanhToan->id)
+                ->with('success', 'Thanh toán đã được ghi nhận. Vui lòng chờ xác nhận từ quản trị viên.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
     
@@ -166,19 +116,10 @@ class ThanhToanController extends Controller
      */
     public function show($id)
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin học viên');
-        }
-        
-        // Lấy thông tin thanh toán
-        $thanhToan = ThanhToan::with(['dangKyHoc.lopHoc.khoaHoc', 'dangKyHoc.lopHoc.giaoVien.nguoiDung'])
-            ->whereHas('dangKyHoc', function($query) use ($hocVien) {
-                $query->where('hoc_vien_id', $hocVien->id);
+        $user = Auth::user();
+        $thanhToan = ThanhToan::with(['dangKyHoc.lopHoc.khoaHoc'])
+            ->whereHas('dangKyHoc', function($query) use ($user) {
+                $query->where('hoc_vien_id', $user->id);
             })
             ->findOrFail($id);
             
@@ -190,50 +131,86 @@ class ThanhToanController extends Controller
      */
     public function cancel($id)
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        $user = Auth::user();
+        $thanhToan = ThanhToan::with('dangKyHoc')
+            ->whereHas('dangKyHoc', function($query) use ($user) {
+                $query->where('hoc_vien_id', $user->id);
+            })
+            ->findOrFail($id);
         
-        if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin học viên');
+        // Chỉ hủy được khi thanh toán đang chờ xác nhận
+        if ($thanhToan->trang_thai !== 'cho_xac_nhan') {
+            return back()->with('error', 'Không thể hủy thanh toán ở trạng thái hiện tại');
         }
         
-        // Lấy thông tin thanh toán
-        $thanhToan = ThanhToan::with(['dangKyHoc'])
-            ->whereHas('dangKyHoc', function($query) use ($hocVien) {
-                $query->where('hoc_vien_id', $hocVien->id);
-            })
-            ->where('trang_thai', 'cho_xac_nhan')
-            ->findOrFail($id);
-            
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-            
             // Cập nhật trạng thái thanh toán
-            $thanhToan->trang_thai = 'da_huy';
-            $thanhToan->save();
+            $thanhToan->update([
+                'trang_thai' => 'da_huy',
+            ]);
             
-            // Cập nhật trạng thái đăng ký học nếu chưa có thanh toán khác
-            $dangKyHoc = $thanhToan->dangKyHoc;
-            $coThanhToanKhac = ThanhToan::where('dang_ky_id', $dangKyHoc->id)
-                ->where('id', '!=', $thanhToan->id)
-                ->where('trang_thai', '!=', 'da_huy')
-                ->exists();
-                
-            if (!$coThanhToanKhac) {
-                $dangKyHoc->trang_thai = 'cho_thanh_toan';
-                $dangKyHoc->save();
-            }
+            // Cập nhật trạng thái đăng ký học
+            $thanhToan->dangKyHoc->update([
+                'trang_thai' => 'cho_thanh_toan',
+            ]);
+            
+            // Tạo thông báo cho admin
+            $this->taoThongBaoHuyThanhToan($thanhToan);
             
             DB::commit();
             
             return redirect()->route('hoc-vien.thanh-toan.index')
                 ->with('success', 'Đã hủy thanh toán thành công');
-                
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            return back()->with('error', 'Đã xảy ra lỗi: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Tạo thông báo cho admin khi học viên thanh toán
+     */
+    private function taoThongBaoChoAdmin($dangKy, $thanhToan)
+    {
+        $adminUsers = User::whereHas('vaiTro', function($query) {
+            $query->where('ten', 'admin');
+        })->get();
+
+        $noiDung = "Học viên {$dangKy->hocVien->nguoiDung->ho_ten} đã thanh toán học phí cho lớp {$dangKy->lopHoc->ten} ({$dangKy->lopHoc->khoaHoc->ten}) với số tiền " . number_format($thanhToan->so_tien, 0, ',', '.') . " VNĐ. Vui lòng xác nhận thanh toán.";
+
+        foreach ($adminUsers as $admin) {
+            ThongBao::create([
+                'nguoi_dung_id' => $admin->id,
+                'tieu_de' => 'Yêu cầu xác nhận thanh toán học phí',
+                'noi_dung' => $noiDung,
+                'loai' => 'thanh_toan',
+                'da_doc' => false,
+                'url' => route('admin.thanh-toan.show', $thanhToan->id),
+            ]);
+        }
+    }
+    
+    /**
+     * Tạo thông báo khi học viên hủy thanh toán
+     */
+    private function taoThongBaoHuyThanhToan($thanhToan)
+    {
+        $adminUsers = User::whereHas('vaiTro', function($query) {
+            $query->where('ten', 'admin');
+        })->get();
+
+        $noiDung = "Học viên {$thanhToan->dangKyHoc->hocVien->nguoiDung->ho_ten} đã hủy thanh toán học phí cho lớp {$thanhToan->dangKyHoc->lopHoc->ten} ({$thanhToan->dangKyHoc->lopHoc->khoaHoc->ten}).";
+
+        foreach ($adminUsers as $admin) {
+            ThongBao::create([
+                'nguoi_dung_id' => $admin->id,
+                'tieu_de' => 'Thông báo hủy thanh toán học phí',
+                'noi_dung' => $noiDung,
+                'loai' => 'thanh_toan',
+                'da_doc' => false,
+                'url' => route('admin.thanh-toan.index'),
+            ]);
         }
     }
 } 

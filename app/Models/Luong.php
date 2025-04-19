@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Luong extends Model
 {
@@ -17,24 +18,30 @@ class Luong extends Model
     const TRANG_THAI_HUY = 2;
 
     protected $fillable = [
-        'giao_vien_id',
+        'nguoi_dung_id',
         'lop_hoc_id',
-        'vai_tro_id',
-        'he_so_luong',
-        'tong_luong',
-        'thang',
-        'nam',
+        'vai_tro',
+        'phan_tram',
+        'so_tien',
         'trang_thai',
-        'nguoi_thanh_toan',
         'ngay_thanh_toan',
-        'ghi_chu'
+        'ghi_chu',
     ];
 
     protected $casts = [
-        'he_so_luong' => 'float',
-        'tong_luong' => 'float',
         'ngay_thanh_toan' => 'datetime',
     ];
+
+    // Relationships
+    public function nguoiDung()
+    {
+        return $this->belongsTo(User::class, 'nguoi_dung_id');
+    }
+
+    public function lopHoc()
+    {
+        return $this->belongsTo(LopHoc::class, 'lop_hoc_id');
+    }
 
     /**
      * Lấy thông tin giáo viên
@@ -42,14 +49,6 @@ class Luong extends Model
     public function giaoVien()
     {
         return $this->belongsTo(GiaoVien::class, 'giao_vien_id');
-    }
-
-    /**
-     * Lấy thông tin lớp học
-     */
-    public function lopHoc()
-    {
-        return $this->belongsTo(LopHoc::class, 'lop_hoc_id');
     }
 
     /**
