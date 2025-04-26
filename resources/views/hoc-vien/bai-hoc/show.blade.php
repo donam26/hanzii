@@ -226,4 +226,7 @@
         @endif
     </div>
 </div>
+
+<!-- Component bình luận -->
+<x-binh-luan :binhLuans="$baiHoc->binhLuans" :baiHocId="$baiHoc->id" :lopHocId="$lopHoc->id" role="hoc-vien" />
 @endsection 

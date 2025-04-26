@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\TroGiang;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\LopHoc;
-use App\Models\BaiTap;
+use App\Models\BaiHoc;
 use App\Models\BaiTapDaNop;
+use App\Models\BinhLuan;
 use App\Models\TroGiang;
-use Carbon\Carbon;
+use App\Models\PhanCongGiangDay;
+use App\Models\HocVien;
+use App\Models\DangKyHoc;
+use App\Models\TienDoBaiHoc;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -20,58 +24,65 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $troGiang = TroGiang::where('user_id', $user->id)->first();
+        // Lấy ID người dùng từ session
+        $nguoiDungId = session('nguoi_dung_id');
+        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$troGiang) {
-            return redirect()->route('login')->with('error', 'Bạn không có quyền truy cập vào trang này');
+            return redirect()->route('login')
+                ->with('error', 'Không tìm thấy thông tin trợ giảng. Vui lòng đăng nhập lại!');
         }
         
-        // Lấy danh sách lớp học đang phụ trách
-        $lopHocs = LopHoc::where('tro_giang_id', $troGiang->id)
-            ->with(['khoaHoc', 'giaoVien.nguoiDung'])
-            ->get();
+        // Số lượng lớp học được phân công
+        $soLuongLopHoc = PhanCongGiangDay::where('tro_giang_id', $troGiang->id)
+            ->where('trang_thai', 'dang_hoat_dong')
+            ->count();
         
-        // Số lượng lớp đang phụ trách
-        $totalLopHoc = $lopHocs->count();
-        
-        // Số lượng học viên đang phụ trách
-        $totalHocVien = 0;
-        foreach ($lopHocs as $lopHoc) {
-            $totalHocVien += $lopHoc->hocViens()->count();
-        }
-        
-        // Lấy số bài tập cần chấm điểm
-        $baiTapCanCham = BaiTapDaNop::whereHas('baiTap.lopHocs', function($query) use ($troGiang) {
-            $query->where('tro_giang_id', $troGiang->id);
-        })
-        ->where('trang_thai', 'da_nop')
-        ->count();
-        
-        // Lớp học sắp diễn ra trong tuần
-        $lichDay = LopHoc::where('tro_giang_id', $troGiang->id)
-            ->where('trang_thai', 'dang_dien_ra')
-            ->with(['khoaHoc', 'giaoVien.nguoiDung'])
-            ->orderBy('thoi_gian_bat_dau')
+        // Danh sách các lớp học đang được phân công
+        $lopHocs = LopHoc::whereHas('phanCongGiangDays', function ($query) use ($troGiang) {
+                $query->where('tro_giang_id', $troGiang->id)
+                      ->where('trang_thai', 'dang_hoat_dong');
+            })
+            ->with('khoaHoc')
+            ->withCount(['dangKyHocs' => function ($query) {
+                $query->whereIn('trang_thai', ['dang_hoc', 'da_duyet']);
+            }])
+            ->orderBy('ngay_bat_dau', 'desc')
             ->take(5)
             ->get();
         
-        // Lấy số bài tập đã chấm gần đây
-        $baiTapChamGanDay = BaiTapDaNop::whereHas('baiTap.lopHocs', function($query) use ($troGiang) {
-            $query->where('tro_giang_id', $troGiang->id);
-        })
-        ->where('trang_thai', 'da_cham')
-        ->whereNotNull('nguoi_cham_id')
-        ->where('nguoi_cham_id', $troGiang->id)
-        ->whereBetween('ngay_cham', [now()->subDays(7), now()])
-        ->count();
+        // Thống kê tổng số học viên đang quản lý
+        $soLuongHocVien = DangKyHoc::whereHas('lopHoc.phanCongGiangDays', function ($query) use ($troGiang) {
+                $query->where('tro_giang_id', $troGiang->id)
+                      ->where('trang_thai', 'dang_hoat_dong');
+            })
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+            ->count();
+        
+        // Thống kê bài tập cần chấm
+        $soLuongBaiTapCanCham = BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops.lopHoc.phanCongGiangDays', function ($query) use ($troGiang) {
+                $query->where('tro_giang_id', $troGiang->id)
+                      ->where('trang_thai', 'dang_hoat_dong');
+            })
+            ->where('trang_thai', 'da_nop')
+            ->whereNull('diem')
+            ->count();
+        
+        // Thống kê số lượng bình luận mới
+        $soLuongBinhLuanMoi = BinhLuan::whereHas('lopHoc.phanCongGiangDays', function ($query) use ($troGiang) {
+                $query->where('tro_giang_id', $troGiang->id)
+                      ->where('trang_thai', 'dang_hoat_dong');
+            })
+            ->where('tao_luc', '>=', now()->subDays(7))
+            ->count();
         
         return view('tro-giang.dashboard', compact(
-            'totalLopHoc',
-            'totalHocVien',
-            'baiTapCanCham',
-            'lichDay',
-            'baiTapChamGanDay'
+            'troGiang',
+            'soLuongLopHoc',
+            'lopHocs',
+            'soLuongHocVien',
+            'soLuongBaiTapCanCham',
+            'soLuongBinhLuanMoi'
         ));
     }
 } 

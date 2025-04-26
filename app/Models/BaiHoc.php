@@ -27,8 +27,13 @@ class BaiHoc extends Model
     protected $fillable = [
         'khoa_hoc_id',
         'tieu_de',
-            'mo_ta',
+        'mo_ta',
+        'noi_dung',
         'so_thu_tu',
+        'loai',
+        'url_video',
+        'thoi_luong',
+        'trang_thai',
     ];
 
     /**
@@ -101,5 +106,13 @@ class BaiHoc extends Model
     public function baiHocLops(): HasMany
     {
         return $this->hasMany(BaiHocLop::class, 'bai_hoc_id');
+    }
+    
+    /**
+     * Quan hệ với các tệp đính kèm
+     */
+    public function files()
+    {
+        return $this->hasMany(Files::class, 'bai_hoc_id');
     }
 }

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\HocVien;
+namespace App\Http\Controllers\TroGiang;
 
 use App\Http\Controllers\Controller;
 use App\Models\BinhLuan;
 use App\Models\BaiHoc;
 use App\Models\LopHoc;
-use App\Models\DangKyHoc;
-use App\Models\HocVien;
+use App\Models\TroGiang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,20 +29,18 @@ class BinhLuanController extends Controller
         
         // Lấy ID người dùng hiện tại
         $nguoiDungId = session('nguoi_dung_id');
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
-        if (!$hocVien) {
-            return redirect()->back()->with('error', 'Không tìm thấy thông tin học viên.');
-        }
-        
-        // Kiểm tra học viên đã đăng ký lớp học này chưa
-        $dangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('lop_hoc_id', $request->lop_hoc_id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+        // Kiểm tra xem trợ giảng có quyền bình luận trong bài học này không
+        $lopHoc = LopHoc::where('id', $request->lop_hoc_id)
+            ->whereHas('troGiang', function($query) use ($nguoiDungId) {
+                $query->whereHas('nguoiDung', function($q) use ($nguoiDungId) {
+                    $q->where('id', $nguoiDungId);
+                });
+            })
             ->first();
             
-        if (!$dangKyHoc) {
-            return redirect()->back()->with('error', 'Bạn không được phép bình luận trong bài học của lớp bạn chưa đăng ký.');
+        if (!$lopHoc) {
+            return redirect()->back()->with('error', 'Bạn không có quyền bình luận trong bài học này.');
         }
         
         // Tạo bình luận mới

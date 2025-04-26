@@ -305,3 +305,6 @@ Route::middleware('auth')->prefix('notifications')->name('notifications.')->grou
     Route::get('/', [App\Http\Controllers\NotificationController::class, 'index'])->name('index');
     Route::get('/{id}', [App\Http\Controllers\NotificationController::class, 'show'])->name('show');
 });
+
+// Route cho upload ảnh CKEditor
+Route::post('/upload/image', [App\Http\Controllers\UploadController::class, 'uploadImage'])->name('upload.image');

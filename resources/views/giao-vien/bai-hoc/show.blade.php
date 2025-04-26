@@ -110,7 +110,7 @@
 
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Nội dung bài học</h3>
-                    <div class="prose max-w-none">
+                    <div class="prose prose-sm sm:prose-base lg:prose-lg max-w-none">
                         {!! $baiHoc->noi_dung !!}
                     </div>
                 </div>
@@ -262,6 +262,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Component bình luận -->
+    <x-binh-luan :binhLuans="$baiHoc->binhLuans" :baiHocId="$baiHoc->id" :lopHocId="$lopHoc->id" role="giao-vien" />
 
     <!-- Modal xóa bài học -->
     <div id="deleteModal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">

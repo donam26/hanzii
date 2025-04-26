@@ -18,39 +18,35 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\BaiTapDaNop;
 use App\Models\TaiLieuBoTro;
+use App\Models\TienDoHocTap;
 
 class BaiHocController extends Controller
 {
     /**
-     * Hiển thị chi tiết bài học
+     * Hiển thị nội dung bài học và bình luận
+     *
+     * @param  int  $lopHocId ID của lớp học
+     * @param  int  $baiHocId ID của bài học
+     * @return \Illuminate\Http\Response
      */
     public function show($lopHocId, $baiHocId)
     {
-        // Lấy thông tin người dùng hiện tại
-        $nguoiDungId = session('nguoi_dung_id');
-        if (!$nguoiDungId) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục');
-        }
-        
-        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$hocVien) {
-            return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
-        }
+        // Lấy thông tin học viên từ người dùng đăng nhập
+        $hocVien = HocVien::where('nguoi_dung_id', session('nguoi_dung_id'))->first();
         
         // Kiểm tra học viên đã đăng ký lớp học chưa
-        $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
-            ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+        $dangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
+            ->where('lop_hoc_id', $lopHocId)
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
             ->first();
-                    
-        if (!$kiemTraDangKy) {
+        
+        if (!$dangKyHoc) {
             return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
+                ->with('error', 'Bạn chưa đăng ký lớp học này hoặc đăng ký chưa được duyệt');
         }
         
-        // Lấy thông tin bài học chi tiết
-        $baiHoc = BaiHoc::findOrFail($baiHocId);
+        // Lấy thông tin lớp học
+        $lopHoc = LopHoc::findOrFail($lopHocId);
         
         // Lấy thông tin bài học trong lớp
         $baiHocLop = BaiHocLop::where('bai_hoc_id', $baiHocId)
@@ -59,79 +55,67 @@ class BaiHocController extends Controller
         
         if (!$baiHocLop) {
             return redirect()->route('hoc-vien.lop-hoc.show', $lopHocId)
-                    ->with('error', 'Không tìm thấy bài học này trong lớp học');
+                ->with('error', 'Bài học không thuộc lớp học này');
         }
+
+        // Lấy tiến độ học tập
+        $tienDo = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
+            ->where('bai_hoc_id', $baiHocId)
+            ->first();
         
-        // Lấy danh sách bài tập trực tiếp từ bảng bài tập
-        $baiTaps = BaiTap::where('bai_hoc_id', $baiHocId)->get();
+        // Kiểm tra xem đã hoàn thành bài học trước đó chưa
+        $daHoanThanhBaiHocTruoc = true;
         
-        // Log chi tiết từng bài tập
-        Log::info('Số lượng bài tập của bài học ' . $baiHocId . ': ' . $baiTaps->count());
-        foreach ($baiTaps as $bt) {
-            Log::info('Bài tập ID: ' . $bt->id . ', Tiêu đề: ' . $bt->tieu_de);
+        if ($baiHocLop->so_thu_tu > 1) {
+            // Tìm bài học trước đó
+            $baiHocTruoc = BaiHocLop::where('lop_hoc_id', $lopHocId)
+                ->where('so_thu_tu', $baiHocLop->so_thu_tu - 1)
+                ->first();
             
-            // Đảm bảo các trường tên và tiêu đề được gán đúng
-            // Hiệu chỉnh dữ liệu để phù hợp với view
-            if (empty($bt->ten) && !empty($bt->tieu_de)) {
-                $bt->ten = $bt->tieu_de;
+            if ($baiHocTruoc) {
+                $tienDoTruoc = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
+                    ->where('bai_hoc_id', $baiHocTruoc->bai_hoc_id)
+                    ->where('trang_thai', 'da_hoan_thanh')
+                    ->first();
+                
+                $daHoanThanhBaiHocTruoc = $tienDoTruoc ? true : false;
             }
         }
         
-        // Gán danh sách bài tập vào bài học
-        $baiHoc->baiTaps = $baiTaps;
+        // Lấy thông tin bài học chi tiết cùng bình luận
+        $baiHoc = BaiHoc::with([
+            'taiLieuBoTros',
+            'baiTaps.baiTapDaNops' => function ($query) use ($hocVien) {
+                $query->where('hoc_vien_id', $hocVien->id);
+            },
+            'binhLuans.nguoiDung.vaiTros', // Thêm quan hệ bình luận và người dùng
+        ])->findOrFail($baiHocId);
         
-        // Lấy tiến độ bài học
-        $tienDo = TienDoBaiHoc::firstOrCreate([
-            'bai_hoc_id' => $baiHocId,
-            'hoc_vien_id' => $hocVien->id
-        ], [
-            'trang_thai' => 'dang_hoc',
-            'ngay_bat_dau' => now()
-        ]);
+        // Lấy mã video YouTube nếu có
+        $videoUrl = $baiHoc->url_video ?? '';
+        $youtubeId = '';
         
-        // Lấy danh sách bài tập đã nộp
-        $baiTapDaNop = BaiTapDaNop::where('hoc_vien_id', $hocVien->id)
-                        ->whereIn('bai_tap_id', $baiTaps->pluck('id'))
-                        ->get()
-                        ->keyBy('bai_tap_id');
-        
-        // Lấy danh sách bài học của lớp để tạo menu
-        $danhSachBaiHoc = BaiHocLop::where('lop_hoc_id', $lopHocId)
-                            ->with('baiHoc')
-                            ->orderBy('so_thu_tu', 'asc')
-                            ->get();
-        
-        // Debug danh sách bài học
-        Log::info('Số lượng bài học trong lớp ' . $lopHocId . ': ' . $danhSachBaiHoc->count());
-        foreach ($danhSachBaiHoc as $item) {
-            Log::info('Bài học lớp ID: ' . $item->id . 
-                ', Bài học ID: ' . $item->bai_hoc_id . 
-                ', Tên: ' . ($item->baiHoc->ten ?? $item->baiHoc->tieu_de ?? 'Không có tên'));
-            
-            // Đảm bảo title hiển thị đúng cho menu
-            if (empty($item->baiHoc->ten) && !empty($item->baiHoc->tieu_de)) {
-                $item->baiHoc->ten = $item->baiHoc->tieu_de;
-            }
+        if (preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $videoUrl, $matches)) {
+            $youtubeId = $matches[1];
         }
-        
-        // Lấy tiến độ của tất cả bài học
-        $tienDoBaiHocs = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
-                            ->whereIn('bai_hoc_id', $danhSachBaiHoc->pluck('bai_hoc_id'))
-                            ->get()
-                            ->keyBy('bai_hoc_id');
-                            
-        // Lấy thông tin lớp học
-        $lopHoc = LopHoc::findOrFail($lopHocId);
+
+        // Nếu chưa có tiến độ, tạo mới
+        if (!$tienDo) {
+            $tienDo = new TienDoBaiHoc();
+            $tienDo->hoc_vien_id = $hocVien->id;
+            $tienDo->bai_hoc_id = $baiHocId;
+            $tienDo->trang_thai = 'da_bat_dau';
+            $tienDo->save();
+        }
         
         return view('hoc-vien.bai-hoc.show', compact(
             'baiHoc',
-            'baiHocLop',
-            'tienDo',
-            'baiTapDaNop',
-            'danhSachBaiHoc',
-            'tienDoBaiHocs',
             'lopHoc',
-            'hocVien'
+            'tienDo',
+            'baiHocLop',
+            'daHoanThanhBaiHocTruoc',
+            'videoUrl',
+            'youtubeId'
         ));
     }
     

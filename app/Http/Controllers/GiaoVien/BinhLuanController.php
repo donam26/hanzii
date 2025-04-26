@@ -9,6 +9,7 @@ use App\Models\LopHoc;
 use App\Models\GiaoVien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class BinhLuanController extends Controller
 {
@@ -50,57 +51,70 @@ class BinhLuanController extends Controller
     }
     
     /**
-     * Lưu bình luận mới (phản hồi của giáo viên)
+     * Lưu bình luận mới
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        // Validate dữ liệu
-        $validated = $request->validate([
+        // Xác thực dữ liệu
+        $request->validate([
+            'noi_dung' => 'required|string',
             'bai_hoc_id' => 'required|exists:bai_hocs,id',
             'lop_hoc_id' => 'required|exists:lop_hocs,id',
-            'noi_dung' => 'required|string|max:1000'
         ]);
         
-        // Lấy ID người dùng từ session
+        // Lấy ID người dùng hiện tại
         $nguoiDungId = session('nguoi_dung_id');
-        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
-        // Kiểm tra lớp học thuộc về giáo viên
-        $lopHoc = LopHoc::find($validated['lop_hoc_id']);
-        if ($lopHoc->giao_vien_id != $giaoVien->id) {
-            return back()->with('error', 'Bạn không phải là giáo viên phụ trách lớp học này');
+        // Kiểm tra xem giáo viên có quyền bình luận trong bài học này không
+        $lopHoc = LopHoc::where('id', $request->lop_hoc_id)
+            ->whereHas('giaoVien', function($query) use ($nguoiDungId) {
+                $query->whereHas('nguoiDung', function($q) use ($nguoiDungId) {
+                    $q->where('id', $nguoiDungId);
+                });
+            })
+            ->first();
+            
+        if (!$lopHoc) {
+            return redirect()->back()->with('error', 'Bạn không có quyền bình luận trong bài học này.');
         }
         
         // Tạo bình luận mới
         $binhLuan = new BinhLuan();
         $binhLuan->nguoi_dung_id = $nguoiDungId;
-        $binhLuan->bai_hoc_id = $validated['bai_hoc_id'];
-        $binhLuan->lop_hoc_id = $validated['lop_hoc_id'];
-        $binhLuan->noi_dung = $validated['noi_dung'];
+        $binhLuan->bai_hoc_id = $request->bai_hoc_id;
+        $binhLuan->lop_hoc_id = $request->lop_hoc_id;
+        $binhLuan->noi_dung = $request->noi_dung;
         $binhLuan->save();
         
-        return back()->with('success', 'Đã đăng bình luận thành công');
+        return redirect()->back()->with('success', 'Đã thêm bình luận thành công.');
     }
     
     /**
      * Xóa bình luận
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        // Lấy ID người dùng từ session
+        // Lấy ID người dùng hiện tại
         $nguoiDungId = session('nguoi_dung_id');
-        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
-        // Tìm bình luận 
-        $binhLuan = BinhLuan::with('lopHoc')->findOrFail($id);
-        
-        // Kiểm tra quyền xóa (chỉ giáo viên phụ trách lớp hoặc chủ bình luận mới được xóa)
-        if ($binhLuan->nguoi_dung_id != $nguoiDungId && $binhLuan->lopHoc->giao_vien_id != $giaoVien->id) {
-            return back()->with('error', 'Bạn không có quyền xóa bình luận này');
+        // Tìm bình luận
+        $binhLuan = BinhLuan::where('id', $id)
+            ->where('nguoi_dung_id', $nguoiDungId)
+            ->first();
+            
+        if (!$binhLuan) {
+            return redirect()->back()->with('error', 'Bạn không có quyền xóa bình luận này hoặc bình luận không tồn tại.');
         }
         
+        // Xóa bình luận
         $binhLuan->delete();
         
-        return back()->with('success', 'Đã xóa bình luận thành công');
+        return redirect()->back()->with('success', 'Bình luận đã được xóa.');
     }
 } 

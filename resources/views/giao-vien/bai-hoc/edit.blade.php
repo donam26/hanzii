@@ -114,12 +114,12 @@
                             </div>
 
                             <div class="sm:col-span-6">
-                                <label for="noi_dung" class="block text-sm font-medium text-gray-700">
-                                    Nội dung bài học
-                                </label>
-                                <div class="mt-1">
-                                    <textarea id="noi_dung" name="noi_dung" rows="10" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('noi_dung', $baiHoc->noi_dung) }}</textarea>
-                                </div>
+                                <x-ckeditor 
+                                    name="noi_dung" 
+                                    label="Nội dung bài học" 
+                                    :value="old('noi_dung', $baiHoc->noi_dung)" 
+                                    required="true" 
+                                />
                             </div>
 
                             <div class="sm:col-span-6">
@@ -203,16 +203,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.tiny.cloud/1/TINY_MCE_KEY/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
-    tinymce.init({
-        selector: '#noi_dung',
-        plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak autoresize',
-        toolbar_mode: 'floating',
-        height: 400,
-        language: 'vi',
-    });
-    
     function toggleLoaiBaiHoc(loai) {
         const videoUrlContainer = document.getElementById('video_url_container');
         

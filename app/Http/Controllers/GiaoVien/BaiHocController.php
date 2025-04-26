@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class BaiHocController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('clean.html', ['only' => ['store', 'update']]);
+    }
+
     /**
      * Hiển thị danh sách bài học
      *
@@ -172,7 +177,8 @@ class BaiHocController extends Controller
         // Lấy thông tin bài học và kiểm tra quyền truy cập
         $baiHoc = BaiHoc::with([
             'baiHocLops.lopHoc.khoaHoc',
-            'baiTaps'
+            'baiTaps',
+            'binhLuans.nguoiDung.vaiTros'
         ])
         ->whereHas('baiHocLops.lopHoc', function($query) use ($giaoVien) {
             $query->where('giao_vien_id', $giaoVien->id);
@@ -185,7 +191,15 @@ class BaiHocController extends Controller
         // Lấy danh sách bài tập của bài học này
         $baiTaps = $baiHoc->baiTaps()->orderBy('han_nop', 'desc')->get();
         
-        return view('giao-vien.bai-hoc.show', compact('baiHoc', 'lopHoc', 'baiTaps'));
+        // Lấy mã video YouTube nếu có
+        $videoUrl = $baiHoc->url_video ?? '';
+        $youtubeId = '';
+        
+        if (preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $videoUrl, $matches)) {
+            $youtubeId = $matches[1];
+        }
+        
+        return view('giao-vien.bai-hoc.show', compact('baiHoc', 'lopHoc', 'baiTaps', 'videoUrl', 'youtubeId'));
     }
 
     /**
