@@ -54,7 +54,7 @@ class YeuCauThamGiaController extends Controller
         // Thống kê nhanh
         $tongYeuCau = YeuCauThamGia::whereIn('lop_hoc_id', $lopHocIds)->count();
         $yeuCauChoDuyet = YeuCauThamGia::whereIn('lop_hoc_id', $lopHocIds)
-            ->where('trang_thai', 'cho_duyet')
+            ->where('trang_thai', 'cho_xac_nhan')
             ->count();
         $yeuCauDaDuyet = YeuCauThamGia::whereIn('lop_hoc_id', $lopHocIds)
             ->where('trang_thai', 'da_duyet')
@@ -122,7 +122,7 @@ class YeuCauThamGiaController extends Controller
             ->findOrFail($id);
         
         // Kiểm tra trạng thái yêu cầu
-        if ($yeuCau->trang_thai !== 'cho_duyet') {
+        if ($yeuCau->trang_thai !== 'cho_xac_nhan') {
             return redirect()->back()
                 ->with('error', 'Yêu cầu này đã được xử lý trước đó');
         }
@@ -193,7 +193,7 @@ class YeuCauThamGiaController extends Controller
             ->findOrFail($id);
         
         // Kiểm tra trạng thái yêu cầu
-        if ($yeuCau->trang_thai !== 'cho_duyet') {
+        if ($yeuCau->trang_thai !== 'cho_xac_nhan') {
             return redirect()->back()
                 ->with('error', 'Yêu cầu này đã được xử lý trước đó');
         }

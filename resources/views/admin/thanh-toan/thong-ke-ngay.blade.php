@@ -1,331 +1,242 @@
-@extends('layouts.admin')
+@extends('layouts.dashboard')
 
 @section('title', 'Thống kê thanh toán theo ngày')
+@section('page-heading', 'Thống kê thanh toán theo ngày')
+
+@php
+    $active = 'nguoi-dung';
+    $role = 'admin';
+@endphp
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Thống kê thanh toán theo ngày</h1>
-        <div>
-            <a href="{{ route('admin.thanh-toan.thong-ke-thang') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                <i class="fas fa-calendar-alt fa-sm text-white-50"></i> Thống kê theo tháng
-            </a>
-            <a href="{{ route('admin.thanh-toan.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
-                <i class="fas fa-arrow-left fa-sm text-white-50"></i> Quay lại
+<div class="container mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold text-gray-800">Thống kê thanh toán theo ngày</h1>
+        <div class="space-x-2">
+            <a href="{{ route('admin.thanh-toan.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                <i class="fas fa-arrow-left mr-2"></i>Quay lại
             </a>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Tổng thanh toán</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $thongKe->count() }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold">Chọn ngày thống kê</h2>
+        </div>
+        <div class="p-4">
+            <form action="{{ route('admin.thanh-toan.thong-ke-ngay') }}" method="GET" class="flex flex-wrap items-end gap-4">
+                <div>
+                    <label for="ngay" class="block text-gray-700 mb-2">Ngày:</label>
+                    <input type="date" id="ngay" name="ngay" value="{{ $ngay }}" 
+                           class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
+                <div>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Xem thống kê
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-4 bg-blue-50 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-blue-800">
+                    <i class="fas fa-file-invoice-dollar mr-2"></i>Tổng số thanh toán
+                </h2>
+            </div>
+            <div class="p-6 flex justify-center items-center">
+                <span class="text-4xl font-bold text-blue-600">{{ number_format($tongThanhToanNgay) }}</span>
             </div>
         </div>
 
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Tổng số tiền</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($tongTien->sum(), 0, ',', '.') }} VNĐ</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-4 bg-green-50 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-green-800">
+                    <i class="fas fa-money-bill-wave mr-2"></i>Tổng số tiền
+                </h2>
+            </div>
+            <div class="p-6 flex justify-center items-center">
+                <span class="text-4xl font-bold text-green-600">{{ number_format($tongTienNgay, 0, ',', '.') }} đ</span>
             </div>
         </div>
 
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Trung bình một ngày</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $thongKe->count() > 0 ? number_format($tongTien->sum() / $thongKe->count(), 0, ',', '.') : 0 }} VNĐ
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-4 bg-purple-50 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-purple-800">
+                    <i class="fas fa-calendar-day mr-2"></i>Ngày
+                </h2>
+            </div>
+            <div class="p-6 flex justify-center items-center">
+                <span class="text-2xl font-bold text-purple-600">{{ Carbon\Carbon::parse($ngay)->format('d/m/Y') }}</span>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Lọc theo thời gian</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.thanh-toan.thong-ke-ngay') }}" method="GET" class="form-inline">
-                        <div class="form-group mb-2 mr-2">
-                            <label for="tu_ngay" class="sr-only">Từ ngày</label>
-                            <input type="date" class="form-control" id="tu_ngay" name="tu_ngay" value="{{ $tuNgay }}">
-                        </div>
-                        <div class="form-group mb-2 mr-2">
-                            <label for="den_ngay" class="sr-only">Đến ngày</label>
-                            <input type="date" class="form-control" id="den_ngay" name="den_ngay" value="{{ $denNgay }}">
-                        </div>
-                        <button type="submit" class="btn btn-primary mb-2">Áp dụng</button>
-                    </form>
-                </div>
-            </div>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold">Thống kê theo phương thức thanh toán</h2>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Biểu đồ thanh toán theo ngày</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Số lượng thanh toán theo ngày</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-pie">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Chi tiết thanh toán theo ngày</h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" width="100%" cellspacing="0">
-                            <thead>
+        <div class="p-4">
+            @if($thongKePhuongThuc->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Phương thức
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Số lượng
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tổng tiền
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($thongKePhuongThuc as $phuongThuc)
                                 <tr>
-                                    <th>Ngày</th>
-                                    <th>Số lượng thanh toán</th>
-                                    <th>Tổng số tiền</th>
-                                    <th>Trung bình</th>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">{{ $phuongThuc['ten'] }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-900">{{ number_format($phuongThuc['so_luong']) }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                                        <div class="text-sm font-medium text-gray-900">{{ number_format($phuongThuc['tong_tien'], 0, ',', '.') }} đ</div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($thongKe as $item)
-                                <tr>
-                                    <td>{{ \Carbon\Carbon::parse($item->ngay)->format('d/m/Y') }}</td>
-                                    <td>{{ $item->so_luong }}</td>
-                                    <td>{{ number_format($item->tong_tien, 0, ',', '.') }} VNĐ</td>
-                                    <td>{{ number_format($item->tong_tien / $item->so_luong, 0, ',', '.') }} VNĐ</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-            </div>
+            @else
+                <p class="text-gray-500 text-center py-4">Không có dữ liệu thanh toán</p>
+            @endif
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold">Danh sách thanh toán trong ngày</h2>
+        </div>
+        <div class="p-4">
+            @if($thanhToansNgay->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Mã thanh toán
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Học viên
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Lớp học
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Số tiền
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Phương thức
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Trạng thái
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Thời gian
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Thao tác
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($thanhToansNgay as $thanhToan)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-medium text-gray-900">{{ $thanhToan->ma_thanh_toan }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($thanhToan->dangKyHoc && $thanhToan->dangKyHoc->hocVien && $thanhToan->dangKyHoc->hocVien->nguoiDung)
+                                            <div class="text-sm font-medium text-gray-900">{{ $thanhToan->dangKyHoc->hocVien->nguoiDung->ho_ten }}</div>
+                                            <div class="text-sm text-gray-500">{{ $thanhToan->dangKyHoc->hocVien->nguoiDung->email }}</div>
+                                        @else
+                                            <div class="text-sm text-gray-500">Không có dữ liệu</div>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($thanhToan->dangKyHoc && $thanhToan->dangKyHoc->lopHoc)
+                                            <div class="text-sm font-medium text-gray-900">{{ $thanhToan->dangKyHoc->lopHoc->ten }}</div>
+                                            @if($thanhToan->dangKyHoc->lopHoc->khoaHoc)
+                                                <div class="text-sm text-gray-500">{{ $thanhToan->dangKyHoc->lopHoc->khoaHoc->ten }}</div>
+                                            @endif
+                                        @else
+                                            <div class="text-sm text-gray-500">Không có dữ liệu</div>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                                        <div class="text-sm font-medium text-gray-900">{{ number_format($thanhToan->so_tien, 0, ',', '.') }} đ</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            @if($thanhToan->phuong_thuc == 'chuyen_khoan') bg-blue-100 text-blue-800
+                                            @elseif($thanhToan->phuong_thuc == 'tien_mat') bg-green-100 text-green-800
+                                            @elseif($thanhToan->phuong_thuc == 'vnpay') bg-yellow-100 text-yellow-800
+                                            @elseif($thanhToan->phuong_thuc == 'vi_dien_tu') bg-purple-100 text-purple-800
+                                            @else bg-gray-100 text-gray-800 @endif">
+                                            @if($thanhToan->phuong_thuc == 'chuyen_khoan')
+                                                Chuyển khoản ngân hàng
+                                            @elseif($thanhToan->phuong_thuc == 'tien_mat')
+                                                Tiền mặt
+                                            @elseif($thanhToan->phuong_thuc == 'vnpay')
+                                                VNPay
+                                            @elseif($thanhToan->phuong_thuc == 'vi_dien_tu')
+                                                Ví điện tử
+                                            @else
+                                                {{ $thanhToan->phuong_thuc }}
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            @if($thanhToan->trang_thai == 'da_thanh_toan' || $thanhToan->trang_thai == 'da_xac_nhan') bg-green-100 text-green-800
+                                            @elseif($thanhToan->trang_thai == 'cho_xac_nhan') bg-yellow-100 text-yellow-800
+                                            @elseif($thanhToan->trang_thai == 'da_huy') bg-red-100 text-red-800
+                                            @else bg-gray-100 text-gray-800 @endif">
+                                            @if($thanhToan->trang_thai == 'da_thanh_toan')
+                                                Đã thanh toán
+                                            @elseif($thanhToan->trang_thai == 'da_xac_nhan')
+                                                Đã xác nhận
+                                            @elseif($thanhToan->trang_thai == 'cho_xac_nhan')
+                                                Chờ xác nhận
+                                            @elseif($thanhToan->trang_thai == 'da_huy')
+                                                Đã hủy
+                                            @else
+                                                {{ $thanhToan->trang_thai }}
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                        {{ $thanhToan->created_at->format('H:i:s') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <a href="{{ route('admin.thanh-toan.show', $thanhToan->id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p class="text-gray-500 text-center py-4">Không có dữ liệu thanh toán</p>
+            @endif
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-<script>
-// Biểu đồ Line
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [
-            @foreach($labels as $label)
-                "{{ \Carbon\Carbon::parse($label)->format('d/m') }}",
-            @endforeach
-        ],
-        datasets: [{
-            label: "Doanh thu",
-            lineTension: 0.3,
-            backgroundColor: "rgba(78, 115, 223, 0.05)",
-            borderColor: "rgba(78, 115, 223, 1)",
-            pointRadius: 3,
-            pointBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointBorderColor: "rgba(78, 115, 223, 1)",
-            pointHoverRadius: 3,
-            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-            pointHitRadius: 10,
-            pointBorderWidth: 2,
-            data: [
-                @foreach($tongTien as $tien)
-                    {{ $tien }},
-                @endforeach
-            ],
-        }],
-    },
-    options: {
-        maintainAspectRatio: false,
-        layout: {
-            padding: {
-                left: 10,
-                right: 25,
-                top: 25,
-                bottom: 0
-            }
-        },
-        scales: {
-            xAxes: [{
-                time: {
-                    unit: 'date'
-                },
-                gridLines: {
-                    display: false,
-                    drawBorder: false
-                },
-                ticks: {
-                    maxTicksLimit: 7
-                }
-            }],
-            yAxes: [{
-                ticks: {
-                    maxTicksLimit: 5,
-                    padding: 10,
-                    callback: function(value, index, values) {
-                        return number_format(value) + ' VNĐ';
-                    }
-                },
-                gridLines: {
-                    color: "rgb(234, 236, 244)",
-                    zeroLineColor: "rgb(234, 236, 244)",
-                    drawBorder: false,
-                    borderDash: [2],
-                    zeroLineBorderDash: [2]
-                }
-            }],
-        },
-        legend: {
-            display: false
-        },
-        tooltips: {
-            backgroundColor: "rgb(255,255,255)",
-            bodyFontColor: "#858796",
-            titleMarginBottom: 10,
-            titleFontColor: '#6e707e',
-            titleFontSize: 14,
-            borderColor: '#dddfeb',
-            borderWidth: 1,
-            xPadding: 15,
-            yPadding: 15,
-            displayColors: false,
-            intersect: false,
-            mode: 'index',
-            caretPadding: 10,
-            callbacks: {
-                label: function(tooltipItem, chart) {
-                    var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                    return datasetLabel + ': ' + number_format(tooltipItem.yLabel) + ' VNĐ';
-                }
-            }
-        }
-    }
-});
-
-// Biểu đồ Pie
-var ctx = document.getElementById("myPieChart");
-var myPieChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: [
-            @foreach($labels as $label)
-                "{{ \Carbon\Carbon::parse($label)->format('d/m') }}",
-            @endforeach
-        ],
-        datasets: [{
-            data: [
-                @foreach($soLuong as $sl)
-                    {{ $sl }},
-                @endforeach
-            ],
-            backgroundColor: [
-                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#5a5c69', '#858796',
-                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#5a5c69', '#858796'
-            ],
-            hoverBackgroundColor: [
-                '#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617', '#3a3b45', '#60616f',
-                '#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617', '#3a3b45', '#60616f'
-            ],
-            hoverBorderColor: "rgba(234, 236, 244, 1)",
-        }],
-    },
-    options: {
-        maintainAspectRatio: false,
-        tooltips: {
-            backgroundColor: "rgb(255,255,255)",
-            bodyFontColor: "#858796",
-            borderColor: '#dddfeb',
-            borderWidth: 1,
-            xPadding: 15,
-            yPadding: 15,
-            displayColors: false,
-            caretPadding: 10,
-        },
-        legend: {
-            display: false
-        },
-        cutoutPercentage: 80,
-    },
-});
-
-function number_format(number, decimals, dec_point, thousands_sep) {
-    // *     example: number_format(1234.56, 2, ',', ' ');
-    // *     return: '1 234,56'
-    number = (number + '').replace(',', '').replace(' ', '');
-    var n = !isFinite(+number) ? 0 : +number,
-        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-        s = '',
-        toFixedFix = function(n, prec) {
-            var k = Math.pow(10, prec);
-            return '' + Math.round(n * k) / k;
-        };
-    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-    if (s[0].length > 3) {
-        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-    }
-    if ((s[1] || '').length < prec) {
-        s[1] = s[1] || '';
-        s[1] += new Array(prec - s[1].length + 1).join('0');
-    }
-    return s.join(dec);
-}
-</script>
 @endsection 

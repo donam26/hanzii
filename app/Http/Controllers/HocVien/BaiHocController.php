@@ -37,9 +37,11 @@ class BaiHocController extends Controller
         // Kiểm tra học viên đã đăng ký lớp học chưa
         $dangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $lopHocId)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->first();
-        
+        logger($dangKyHoc);
+        logger($lopHocId);
+
         if (!$dangKyHoc) {
             return redirect()->route('hoc-vien.lop-hoc.index')
                 ->with('error', 'Bạn chưa đăng ký lớp học này hoặc đăng ký chưa được duyệt');
@@ -84,21 +86,37 @@ class BaiHocController extends Controller
         
         // Lấy thông tin bài học chi tiết cùng bình luận
         $baiHoc = BaiHoc::with([
-            'taiLieuBoTros',
             'baiTaps.baiTapDaNops' => function ($query) use ($hocVien) {
                 $query->where('hoc_vien_id', $hocVien->id);
             },
             'binhLuans.nguoiDung.vaiTros', // Thêm quan hệ bình luận và người dùng
         ])->findOrFail($baiHocId);
         
-        // Lấy mã video YouTube nếu có
-        $videoUrl = $baiHoc->url_video ?? '';
-        $youtubeId = '';
-        
-        if (preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $videoUrl, $matches)) {
-            $youtubeId = $matches[1];
+        // Tạo mảng bài tập đã nộp để dễ truy cập trong view
+        $baiTapDaNop = [];
+        if ($baiHoc->baiTaps) {
+            foreach ($baiHoc->baiTaps as $baiTap) {
+                if ($baiTap->baiTapDaNops && count($baiTap->baiTapDaNops) > 0) {
+                    $baiTapDaNop[$baiTap->id] = $baiTap->baiTapDaNops[0]; // Lấy bài nộp mới nhất
+                }
+            }
         }
-
+        // Lấy danh sách bài học của lớp
+        $danhSachBaiHoc = BaiHocLop::where('lop_hoc_id', $lopHocId)
+            ->orderBy('so_thu_tu', 'asc')
+            ->with('baiHoc')
+            ->get();
+   
+        // Lấy tiến độ của tất cả bài học trong lớp
+        $tienDoBaiHocs = [];
+        $danhSachTienDo = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
+            ->whereIn('bai_hoc_id', $danhSachBaiHoc->pluck('bai_hoc_id'))
+            ->get();
+            
+        foreach ($danhSachTienDo as $td) {
+            $tienDoBaiHocs[$td->bai_hoc_id] = $td;
+        }
+   
         // Nếu chưa có tiến độ, tạo mới
         if (!$tienDo) {
             $tienDo = new TienDoBaiHoc();
@@ -114,8 +132,9 @@ class BaiHocController extends Controller
             'tienDo',
             'baiHocLop',
             'daHoanThanhBaiHocTruoc',
-            'videoUrl',
-            'youtubeId'
+            'danhSachBaiHoc',
+            'tienDoBaiHocs',
+            'baiTapDaNop'
         ));
     }
     

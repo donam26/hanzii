@@ -142,8 +142,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(isset($yeuCauThamGias['cho_duyet']) && count($yeuCauThamGias['cho_duyet']) > 0)
-                                    @foreach($yeuCauThamGias['cho_duyet'] as $key => $yeuCau)
+                                @if(isset($yeuCauThamGias['cho_xac_nhan']) && count($yeuCauThamGias['cho_xac_nhan']) > 0)
+                                    @foreach($yeuCauThamGias['cho_xac_nhan'] as $key => $yeuCau)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $yeuCau->hocVien->nguoiDung->ho_ten }}</td>

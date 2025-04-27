@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('tai_lieu_bo_tros', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bai_hoc_id')->constrained('bai_hocs')->onDelete('cascade');
-            $table->foreignId('lop_hoc_id')->constrained('lop_hocs')->onDelete('cascade');
+            $table->foreignId('lop_hoc_id')->nullable()->constrained('lop_hocs')->onDelete('cascade');
             $table->string('tieu_de');
             $table->text('mo_ta')->nullable();
-            $table->string('duong_dan_file')->nullable();
-            $table->timestamp('tao_luc')->useCurrent();
-            $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
+            $table->string('duong_dan_file');
+            $table->timestamp('tao_luc')->nullable();
+            $table->timestamp('cap_nhat_luc')->nullable();
         });
     }
 

@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Yêu cầu tham gia lớp học')
+@section('title', 'Đăng ký tham gia lớp học')
 
 @section('content')
 @php
@@ -10,7 +10,7 @@
 
 <div class="bg-white rounded-lg shadow p-6">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-semibold text-gray-800">Yêu cầu tham gia lớp học</h2>
+        <h2 class="text-xl font-semibold text-gray-800">Đăng ký tham gia lớp học</h2>
         <div class="flex space-x-2">
             <a href="{{ route('hoc-vien.lop-hoc.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -29,26 +29,38 @@
     </div>
     
     <div class="mb-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-3">Danh sách yêu cầu đã gửi</h3>
+        <h3 class="text-lg font-medium text-gray-900 mb-3">Danh sách đăng ký lớp học</h3>
         
-        @forelse($yeuCauDaGui as $yeuCau)
+        @forelse($dangKyHoc as $dangKy)
             <div class="bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
                 <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                     <div>
-                        <h4 class="font-medium text-gray-900">{{ $yeuCau->lopHoc->ten ?? 'Lớp học: ' . $yeuCau->lopHoc->ma_lop }}</h4>
-                        <p class="text-sm text-gray-500">Khoá học: {{ $yeuCau->lopHoc->khoaHoc->ten }}</p>
-                        <p class="text-sm text-gray-500">Giáo viên: {{ $yeuCau->lopHoc->giaoVien->ho_ten }}</p>
+                        <h4 class="font-medium text-gray-900">{{ $dangKy->lopHoc->ten ?? 'Lớp học: ' . $dangKy->lopHoc->ma_lop }}</h4>
+                        <p class="text-sm text-gray-500">Khoá học: {{ $dangKy->lopHoc->khoaHoc->ten }}</p>
+                        <p class="text-sm text-gray-500">Giáo viên: {{ $dangKy->lopHoc->giaoVien->nguoiDung->ho_ten }}</p>
                     </div>
                     <div>
-                        @if($yeuCau->trang_thai == 'cho_duyet')
+                        @if($dangKy->trang_thai == 'cho_xac_nhan')
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                 Đang chờ duyệt
                             </span>
-                        @elseif($yeuCau->trang_thai == 'da_duyet')
+                        @elseif($dangKy->trang_thai == 'cho_thanh_toan')
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                Chờ thanh toán
+                            </span>
+                        @elseif($dangKy->trang_thai == 'da_thanh_toan')
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đã thanh toán
+                            </span>
+                        @elseif($dangKy->trang_thai == 'da_duyet' || $dangKy->trang_thai == 'da_xac_nhan')
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                 Đã được chấp nhận
                             </span>
-                        @elseif($yeuCau->trang_thai == 'tu_choi')
+                        @elseif($dangKy->trang_thai == 'dang_hoc')
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đang học
+                            </span>
+                        @elseif($dangKy->trang_thai == 'tu_choi')
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                                 Đã bị từ chối
                             </span>
@@ -61,35 +73,39 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Ngày gửi: {{ \Carbon\Carbon::parse($yeuCau->ngay_gui)->format('d/m/Y H:i') }}
+                        Ngày đăng ký: {{ \Carbon\Carbon::parse($dangKy->ngay_dang_ky)->format('d/m/Y H:i') }}
                     </div>
                     
-                    @if($yeuCau->ghi_chu)
+                    @if($dangKy->ghi_chu)
                         <div class="mb-3">
                             <p class="text-sm font-medium text-gray-700">Ghi chú:</p>
-                            <p class="text-sm text-gray-600">{{ $yeuCau->ghi_chu }}</p>
+                            <p class="text-sm text-gray-600">{{ $dangKy->ghi_chu }}</p>
                         </div>
                     @endif
                     
-                    @if($yeuCau->trang_thai == 'tu_choi' && $yeuCau->ly_do_tu_choi)
+                    @if($dangKy->trang_thai == 'tu_choi' && $dangKy->ly_do_tu_choi)
                         <div class="mb-3">
                             <p class="text-sm font-medium text-gray-700">Lý do từ chối:</p>
-                            <p class="text-sm text-gray-600">{{ $yeuCau->ly_do_tu_choi }}</p>
+                            <p class="text-sm text-gray-600">{{ $dangKy->ly_do_tu_choi }}</p>
                         </div>
                     @endif
                     
                     <div class="mt-3">
-                        @if($yeuCau->trang_thai == 'da_duyet')
-                            <a href="{{ route('hoc-vien.lop-hoc.show', $yeuCau->lopHoc->id) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        @if(in_array($dangKy->trang_thai, ['da_duyet', 'da_xac_nhan', 'da_thanh_toan', 'dang_hoc']))
+                            <a href="{{ route('hoc-vien.lop-hoc.show', $dangKy->lopHoc->id) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                 Xem lớp học
                             </a>
-                        @elseif($yeuCau->trang_thai == 'cho_duyet')
+                        @elseif($dangKy->trang_thai == 'cho_xac_nhan')
                             <div class="text-sm text-yellow-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 Vui lòng chờ giáo viên phê duyệt
                             </div>
+                        @elseif($dangKy->trang_thai == 'cho_thanh_toan')
+                            <a href="{{ route('hoc-vien.thanh-toan.create', ['dang_ky_id' => $dangKy->id]) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Thanh toán
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -99,8 +115,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">Chưa có yêu cầu tham gia lớp học nào</h3>
-                <p class="mt-1 text-sm text-gray-500">Bạn chưa gửi yêu cầu tham gia lớp học nào.</p>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Chưa có đăng ký lớp học nào</h3>
+                <p class="mt-1 text-sm text-gray-500">Bạn chưa đăng ký tham gia lớp học nào.</p>
                 <div class="mt-6">
                     <button onclick="openModal()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,7 +128,7 @@
             </div>
         @endforelse
         
-        {{ $yeuCauDaGui->links() }}
+        {{ $dangKyHoc->links() }}
     </div>
 </div>
 
@@ -134,7 +150,7 @@
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">Tìm lớp học</h3>
                         <div class="mt-2">
-                            <p class="text-sm text-gray-500">Nhập mã lớp học để tìm kiếm và gửi yêu cầu tham gia lớp học.</p>
+                            <p class="text-sm text-gray-500">Nhập mã lớp học để tìm kiếm và đăng ký tham gia lớp học.</p>
                         </div>
                     </div>
                 </div>

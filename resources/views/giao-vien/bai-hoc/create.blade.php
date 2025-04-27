@@ -8,14 +8,18 @@
     $role = 'giao_vien';
 @endphp
 
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+@endsection
+
 @section('content')
     <div class="mb-6">
         <div class="flex items-center mb-4">
-            <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $lopHoc->id]) }}" class="text-red-600 hover:text-red-800 mr-2">
+            <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $lopHocId]) }}" class="text-red-600 hover:text-red-800 mr-2">
                 <i class="fas fa-arrow-left"></i> Quay lại danh sách bài học
             </a>
         </div>
-
+            
         @if(session('success'))
             <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
                 <p class="font-bold">Thành công!</p>
@@ -43,12 +47,12 @@
 
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Tạo bài học mới cho lớp: {{ $lopHoc->ten }}</h3>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Tạo bài học mới</h3>
             </div>
             
             <form method="POST" action="{{ route('giao-vien.bai-hoc.store') }}" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="lop_hoc_id" value="{{ $lopHoc->id }}">
+                <input type="hidden" name="lop_hoc_id" value="{{ $lopHocId }}">
 
                 <div class="border-t border-gray-200">
                     <div class="px-4 py-5 sm:p-6">
@@ -67,7 +71,7 @@
                                     Thứ tự <span class="text-red-500">*</span>
                                 </label>
                                 <div class="mt-1">
-                                    <input type="number" name="thu_tu" id="thu_tu" value="{{ old('thu_tu', $soThuTu) }}" min="1" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <input type="number" name="thu_tu" id="thu_tu" value="{{ old('thu_tu') }}" min="1" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                 </div>
                             </div>
 
@@ -76,7 +80,7 @@
                                     Thời lượng (phút) <span class="text-red-500">*</span>
                                 </label>
                                 <div class="mt-1">
-                                    <input type="number" name="thoi_luong" id="thoi_luong" value="{{ old('thoi_luong', 45) }}" min="1" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <input type="number" name="thoi_luong" id="thoi_luong" value="{{ old('thoi_luong') }}" min="1" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                 </div>
                             </div>
 
@@ -96,12 +100,12 @@
                             </div>
 
 
-                            <div id="video_url_container" class="sm:col-span-6 hidden">
-                                <label for="video_url" class="block text-sm font-medium text-gray-700">
+                            <div id="video_url_container" class="sm:col-span-6 {{ old('loai') != 'video' ? 'hidden' : '' }}">
+                                <label for="url_video" class="block text-sm font-medium text-gray-700">
                                     URL Video (YouTube, Vimeo)
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="video_url" id="video_url" value="{{ old('video_url') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <input type="text" name="url_video" id="url_video" value="{{ old('url_video') }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <p class="mt-2 text-sm text-gray-500">
                                     Nhập URL video từ YouTube hoặc Vimeo. Ví dụ: https://www.youtube.com/watch?v=XXXX
@@ -109,12 +113,12 @@
                             </div>
 
                             <div class="sm:col-span-6">
-                                <x-ckeditor 
-                                    name="noi_dung" 
-                                    label="Nội dung bài học" 
-                                    :value="old('noi_dung')" 
-                                    required="true" 
-                                />
+                                <label for="noi_dung" class="block text-sm font-medium text-gray-700">
+                                    Nội dung bài học <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1">
+                                    <textarea id="noi_dung" name="noi_dung" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" rows="10">{{ old('noi_dung') }}</textarea>
+                                </div>
                             </div>
 
                             <div class="sm:col-span-6">
@@ -146,7 +150,7 @@
                         </div>
                     </div>
                     <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                        <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+                        <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $lopHocId]) }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
                             Hủy
                         </a>
                         <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
@@ -163,7 +167,26 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script>
+    // Khởi tạo CKEditor cho trường nội dung
+    ClassicEditor
+        .create(document.querySelector('#noi_dung'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo'],
+            simpleUpload: {
+                // Endpoint ảnh sẽ được upload đến
+                uploadUrl: "{{ route('ckeditor.upload', ['_token' => csrf_token()]) }}",
+                
+                // Thông tin headers gửi kèm mỗi request
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     function toggleLoaiBaiHoc(loai) {
         const videoUrlContainer = document.getElementById('video_url_container');
         
@@ -173,12 +196,6 @@
             videoUrlContainer.classList.add('hidden');
         }
     }
-    
-    // Khởi tạo dựa vào giá trị ban đầu
-    document.addEventListener('DOMContentLoaded', function() {
-        const loaiBaiHoc = document.getElementById('loai').value;
-        toggleLoaiBaiHoc(loaiBaiHoc);
-    });
     
     // Xử lý thêm file
     document.getElementById('add_file').addEventListener('click', function() {
@@ -210,18 +227,22 @@
         document.querySelectorAll('.delete-file').forEach(button => {
             button.addEventListener('click', function() {
                 const parentDiv = this.parentElement;
-                parentDiv.remove();
-                
-                // Ẩn nút xóa nếu chỉ còn 1 input file
-                const deleteButtons = document.querySelectorAll('.delete-file');
-                if (deleteButtons.length === 1) {
-                    deleteButtons[0].classList.add('hidden');
+                if (document.querySelectorAll('#file_inputs > div').length > 1) {
+                    parentDiv.remove();
+                    
+                    // Nếu chỉ còn 1 input file, ẩn nút xóa
+                    if (document.querySelectorAll('#file_inputs > div').length === 1) {
+                        document.querySelector('.delete-file').classList.add('hidden');
+                    }
+                } else {
+                    // Nếu chỉ còn 1 input file, xóa giá trị của nó
+                    parentDiv.querySelector('input[type="file"]').value = '';
                 }
             });
         });
     }
     
-    // Khởi tạo sự kiện xóa
+    // Thêm sự kiện xóa cho nút đầu tiên
     addDeleteFileEvent();
 </script>
 @endpush 

@@ -391,7 +391,7 @@ class LopHocController extends Controller
         // Lấy danh sách yêu cầu tham gia đang chờ duyệt
         $yeuCauThamGias = \App\Models\YeuCauThamGia::with(['hocVien.nguoiDung'])
             ->where('lop_hoc_id', $id)
-            ->where('trang_thai', 'cho_duyet')
+            ->where('trang_thai', 'cho_xac_nhan')
             ->orderBy('ngay_gui', 'desc')
             ->get();
         
@@ -721,7 +721,7 @@ class LopHocController extends Controller
         
         // Đếm số lượng theo trạng thái
         $tongSo = isset($yeuCauThamGias) ? $yeuCauThamGias->flatten()->count() : 0;
-        $choDuyet = isset($yeuCauThamGias['cho_duyet']) ? $yeuCauThamGias['cho_duyet']->count() : 0;
+        $choDuyet = isset($yeuCauThamGias['cho_xac_nhan']) ? $yeuCauThamGias['cho_xac_nhan']->count() : 0;
         $daDuyet = isset($yeuCauThamGias['da_duyet']) ? $yeuCauThamGias['da_duyet']->count() : 0;
         $daHuy = isset($yeuCauThamGias['da_huy']) ? $yeuCauThamGias['da_huy']->count() : 0;
         
@@ -759,7 +759,7 @@ class LopHocController extends Controller
                 ->findOrFail($yeuCauId);
         
         // Kiểm tra nếu yêu cầu đã được xử lý
-        if ($yeuCau->trang_thai !== 'cho_duyet') {
+        if ($yeuCau->trang_thai !== 'cho_xac_nhan') {
             return back()->with('error', 'Yêu cầu này đã được xử lý trước đó.');
         }
         

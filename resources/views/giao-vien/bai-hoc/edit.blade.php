@@ -48,7 +48,9 @@
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Chỉnh sửa bài học: {{ $baiHoc->tieu_de }}</h3>
-                
+                <div class="text-sm text-gray-600">
+                    Lớp học: {{ $lopHoc->ten }}
+                </div>
             </div>
             
             <form method="POST" action="{{ route('giao-vien.bai-hoc.update', $baiHoc->id) }}" enctype="multipart/form-data">
@@ -72,7 +74,7 @@
                                     Thứ tự <span class="text-red-500">*</span>
                                 </label>
                                 <div class="mt-1">
-                                    <input type="number" name="thu_tu" id="thu_tu" value="{{ old('thu_tu', $baiHoc->thu_tu) }}" min="1" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <input type="number" name="thu_tu" id="thu_tu" value="{{ old('thu_tu', $baiHocLop->so_thu_tu) }}" min="1" required class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                 </div>
                             </div>
 
@@ -102,11 +104,11 @@
 
 
                             <div id="video_url_container" class="sm:col-span-6 {{ $baiHoc->loai != 'video' ? 'hidden' : '' }}">
-                                <label for="video_url" class="block text-sm font-medium text-gray-700">
+                                <label for="url_video" class="block text-sm font-medium text-gray-700">
                                     URL Video (YouTube, Vimeo)
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="video_url" id="video_url" value="{{ old('video_url', $baiHoc->video_url) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <input type="text" name="url_video" id="url_video" value="{{ old('url_video', $baiHoc->url_video) }}" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <p class="mt-2 text-sm text-gray-500">
                                     Nhập URL video từ YouTube hoặc Vimeo. Ví dụ: https://www.youtube.com/watch?v=XXXX
@@ -114,48 +116,40 @@
                             </div>
 
                             <div class="sm:col-span-6">
-                                <x-ckeditor 
-                                    name="noi_dung" 
-                                    label="Nội dung bài học" 
-                                    :value="old('noi_dung', $baiHoc->noi_dung)" 
-                                    required="true" 
-                                />
-                            </div>
-
-                            <div class="sm:col-span-6">
-                                <label class="block text-sm font-medium text-gray-700">
-                                    Tài liệu đính kèm hiện tại
+                                <label for="noi_dung" class="block text-sm font-medium text-gray-700">
+                                    Nội dung bài học <span class="text-red-500">*</span>
                                 </label>
                                 <div class="mt-1">
-                                    @if($baiHoc->files->count() > 0)
-                                        <div class="space-y-2">
-                                            @foreach($baiHoc->files as $file)
-                                                <div class="flex items-center justify-between bg-gray-50 p-2 rounded-md">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                        </svg>
-                                                        <span class="text-sm text-gray-700">{{ $file->ten_goc }}</span>
-                                                    </div>
-                                                    <div class="flex items-center space-x-2">
-                                                        <a href="{{ route('giao-vien.bai-hoc.download-file', $file->id) }}" class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                                            </svg>
-                                                        </a>
-                                                        <div class="flex items-center">
-                                                            <input type="checkbox" id="delete_file_{{ $file->id }}" name="delete_files[]" value="{{ $file->id }}" class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
-                                                            <label for="delete_file_{{ $file->id }}" class="ml-2 text-xs text-red-600">Xóa</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <p class="text-sm text-gray-500">Không có tài liệu đính kèm nào.</p>
-                                    @endif
+                                    <textarea id="noi_dung" name="noi_dung" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" rows="10">{{ old('noi_dung', $baiHoc->noi_dung) }}</textarea>
                                 </div>
                             </div>
+
+                            @if(count($baiHoc->taiLieuBoTros) > 0)
+                            <div class="sm:col-span-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Tài liệu bổ trợ hiện có
+                                </label>
+                                <div class="bg-gray-50 p-4 rounded-md">
+                                    <ul class="divide-y divide-gray-200">
+                                        @foreach($baiHoc->taiLieuBoTros as $taiLieu)
+                                        <li class="py-2 flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                <span class="text-sm">{{ $taiLieu->tieu_de }}</span>
+                                            </div>
+                                            <div>
+                                                <a href="{{ route('giao-vien.tai-lieu.download', $taiLieu->id) }}" class="text-sm text-blue-600 hover:text-blue-800 mr-2">
+                                                    <i class="fas fa-download"></i> Tải xuống
+                                                </a>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                            @endif
 
                             <div class="sm:col-span-6">
                                 <label for="files" class="block text-sm font-medium text-gray-700">
@@ -203,7 +197,17 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script>
+    // Khởi tạo CKEditor cho trường nội dung
+    ClassicEditor
+        .create(document.querySelector('#noi_dung'), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo']
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
     function toggleLoaiBaiHoc(loai) {
         const videoUrlContainer = document.getElementById('video_url_container');
         

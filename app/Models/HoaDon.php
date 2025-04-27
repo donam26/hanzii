@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TaiLieuBoTro extends Model
+class HoaDon extends Model
 {
     use HasFactory;
 
@@ -15,23 +15,26 @@ class TaiLieuBoTro extends Model
      *
      * @var string
      */
-    protected $table = 'tai_lieu_bo_tros';
+    protected $table = 'hoa_dons';
 
     /**
-     * Các trường có thể gán giá trị
+     * Các cột có thể gán giá trị
      *
      * @var array
      */
     protected $fillable = [
+        'thanh_toan_id',
+        'ma_hoa_don',
+        'hoc_vien_id',
         'lop_hoc_id',
-        'bai_hoc_id',
-        'tieu_de',
-        'mo_ta',
-        'duong_dan_file',
+        'tong_tien',
+        'trang_thai',
+        'ngay_tao',
+        'ghi_chu'
     ];
 
     /**
-     * Các trường thời gian tùy chỉnh
+     * Các cột thời gian tùy chỉnh
      *
      * @var array
      */
@@ -39,11 +42,19 @@ class TaiLieuBoTro extends Model
     const UPDATED_AT = 'cap_nhat_luc';
 
     /**
-     * Quan hệ với bài học
+     * Quan hệ với thanh toán
      */
-    public function baiHoc(): BelongsTo
+    public function thanhToan(): BelongsTo
     {
-        return $this->belongsTo(BaiHoc::class, 'bai_hoc_id');
+        return $this->belongsTo(ThanhToan::class, 'thanh_toan_id');
+    }
+
+    /**
+     * Quan hệ với học viên
+     */
+    public function hocVien(): BelongsTo
+    {
+        return $this->belongsTo(HocVien::class, 'hoc_vien_id');
     }
 
     /**

@@ -186,7 +186,7 @@ class LopHocController extends Controller
         
         // Đếm số yêu cầu tham gia đang chờ duyệt
         $countPendingRequests = YeuCauThamGia::where('lop_hoc_id', $id)
-            ->where('trang_thai', 'cho_duyet')
+            ->where('trang_thai', 'cho_xac_nhan')
             ->count();
         
         return view('admin.lop-hoc.show', compact('lopHoc', 'countPendingRequests'));
@@ -199,16 +199,9 @@ class LopHocController extends Controller
     {
         $lopHoc = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung', 'dangKyHocs'])->findOrFail($id);
         
-        // Debug: Kiểm tra thông tin khóa học của lớp
-        Log::info('Thông tin khóa học của lớp: ' . ($lopHoc->khoaHoc ? json_encode($lopHoc->khoaHoc->toArray()) : 'Không có'));
-        Log::info('Thông tin giáo viên của lớp: ' . ($lopHoc->giaoVien && $lopHoc->giaoVien->nguoiDung ? $lopHoc->giaoVien->nguoiDung->ho_ten : 'Không có'));
-        
-        // Lấy tất cả khóa học để hiển thị
         $khoaHocs = KhoaHoc::orderBy('ten')->pluck('ten', 'id');
         
-        // Debug: Kiểm tra số lượng khóa học
         $countKhoaHoc = KhoaHoc::count();
-        Log::info('Số lượng khóa học trong edit: ' . $countKhoaHoc);
         
         // Lấy danh sách giáo viên
         $giaoViens = GiaoVien::whereHas('nguoiDung.vaiTros', function ($query) {
@@ -424,7 +417,7 @@ class LopHocController extends Controller
         $lopHoc = LopHoc::with(['khoaHoc'])->findOrFail($id);
         
         $pendingRequests = YeuCauThamGia::where('lop_hoc_id', $id)
-            ->where('trang_thai', 'cho_duyet')
+            ->where('trang_thai', 'cho_xac_nhan')
             ->with('hocVien.nguoiDung')
             ->get();
             

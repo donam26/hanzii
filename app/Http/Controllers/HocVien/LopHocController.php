@@ -14,7 +14,6 @@ use App\Models\NguoiDung;
 use App\Models\TaiLieuBoTro;
 use App\Models\ThongBaoLopHoc;
 use App\Models\TienDoBaiHoc;
-use App\Models\YeuCauThamGia;
 use App\Models\BaiTapDaNop;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -108,18 +107,6 @@ class LopHocController extends Controller
             ->where('lop_hoc_id', $id)
             ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->exists();
-            
-        // Nếu không tìm thấy đăng ký bằng trạng thái, thử kiểm tra qua quan hệ
-        if (!$kiemTraDangKy) {
-            $lopHocIds = $hocVien->lopHocs->pluck('id')->toArray();
-            if (in_array($id, $lopHocIds)) {
-                $kiemTraDangKy = true;
-                Log::info('Học viên ' . $hocVien->id . ' thuộc lớp ' . $id . ' qua quan hệ lopHocs');
-            } else {
-                return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn không có quyền truy cập lớp học này');
-            }
-        }
         
         $lopHoc = LopHoc::where('id', $id)
             ->with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung'])
@@ -493,10 +480,11 @@ class LopHocController extends Controller
             return redirect()->route('dashboard')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
-        // Lấy 5 yêu cầu tham gia gần đây nhất để hiển thị
-        $yeuCauGanDay = YeuCauThamGia::where('hoc_vien_id', $hocVien->id)
+        // Lấy 5 đăng ký học đang chờ xác nhận gần đây nhất
+        $dangKyGanDay = DangKyHoc::where('hoc_vien_id', $hocVien->id)
+            ->whereIn('trang_thai', ['cho_xac_nhan', 'cho_thanh_toan'])
             ->with(['lopHoc.khoaHoc', 'lopHoc.giaoVien.nguoiDung'])
-            ->orderBy('ngay_gui', 'desc')
+            ->orderBy('ngay_dang_ky', 'desc')
             ->limit(5)
             ->get();
         
@@ -515,7 +503,7 @@ class LopHocController extends Controller
             ->limit(5)
             ->get();
             
-        return view('hoc-vien.lop-hoc.form-tim-kiem', compact('yeuCauGanDay', 'lopHocDangDienRa', 'khoaHocsDangCo'));
+        return view('hoc-vien.lop-hoc.form-tim-kiem', compact('dangKyGanDay', 'lopHocDangDienRa', 'khoaHocsDangCo'));
     }
     
     /**
@@ -569,9 +557,9 @@ class LopHocController extends Controller
         }
         
         // Kiểm tra xem học viên đã gửi yêu cầu tham gia lớp này chưa
-        $daGuiYeuCau = YeuCauThamGia::where('hoc_vien_id', $hocVien->id)
+        $daGuiYeuCau = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $lopHoc->id)
-            ->whereIn('trang_thai', ['cho_duyet', 'da_duyet'])
+            ->whereIn('trang_thai', ['cho_xac_nhan', 'cho_thanh_toan'])
             ->exists();
             
         // Ghi log
@@ -604,35 +592,42 @@ class LopHocController extends Controller
         $lopHoc = LopHoc::find($lopHocId);
         
         // Kiểm tra học viên đã tham gia lớp học chưa
-        $daLaThanhVien = $lopHoc->hocViens()->where('hoc_vien_id', $hocVien->id)->exists();
+        $daLaThanhVien = DangKyHoc::where('hoc_vien_id', $hocVien->id)
+            ->where('lop_hoc_id', $lopHocId)
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->exists();
+            
         if ($daLaThanhVien) {
             return redirect()->route('hoc-vien.lop-hoc.show', $lopHoc->id)
                 ->with('info', 'Bạn đã là thành viên của lớp học này');
         }
         
         // Kiểm tra học viên đã gửi yêu cầu tham gia lớp này chưa
-        $yeuCauHienTai = YeuCauThamGia::where('hoc_vien_id', $hocVien->id)
+        $dangKyHienTai = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $lopHocId)
-            ->whereIn('trang_thai', ['cho_duyet', 'da_duyet'])
+            ->whereIn('trang_thai', ['cho_xac_nhan', 'cho_thanh_toan'])
             ->first();
             
-        if ($yeuCauHienTai) {
-            if ($yeuCauHienTai->trang_thai == 'cho_duyet') {
+        if ($dangKyHienTai) {
+            if ($dangKyHienTai->trang_thai == 'cho_xac_nhan') {
                 return redirect()->route('hoc-vien.lop-hoc.yeu-cau')
                     ->with('info', 'Bạn đã gửi yêu cầu tham gia lớp học này và đang chờ phê duyệt');
+            } else if ($dangKyHienTai->trang_thai == 'cho_thanh_toan') {
+                return redirect()->route('hoc-vien.thanh-toan.create', ['dang_ky_id' => $dangKyHienTai->id])
+                    ->with('info', 'Bạn đã đăng ký lớp học này. Vui lòng hoàn tất thanh toán');
             } else {
                 return redirect()->route('hoc-vien.lop-hoc.show', $lopHoc->id)
                     ->with('info', 'Yêu cầu tham gia của bạn đã được chấp nhận');
             }
         }
         
-        // Tạo yêu cầu tham gia mới
-        YeuCauThamGia::create([
+        // Tạo đăng ký mới với trạng thái "chờ xác nhận"
+        DangKyHoc::create([
             'hoc_vien_id' => $hocVien->id,
             'lop_hoc_id' => $lopHocId,
             'ghi_chu' => $request->input('ghi_chu'),
-            'trang_thai' => 'cho_duyet',
-            'ngay_gui' => now()
+            'trang_thai' => 'cho_xac_nhan', // Trạng thái chờ xác nhận thay vì cho_thanh_toan
+            'ngay_dang_ky' => now()
         ]);
         
         return redirect()->route('hoc-vien.lop-hoc.yeu-cau')
@@ -640,7 +635,7 @@ class LopHocController extends Controller
     }
     
     /**
-     * Hiển thị danh sách yêu cầu tham gia lớp học của học viên
+     * Hiển thị danh sách đăng ký lớp học của học viên
      */
     public function danhSachYeuCau()
     {
@@ -656,23 +651,26 @@ class LopHocController extends Controller
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         
-        // Lấy danh sách tất cả yêu cầu tham gia của học viên
-        $yeuCauDaGui = YeuCauThamGia::where('hoc_vien_id', $hocVien->id)
-            ->with(['lopHoc.khoaHoc', 'lopHoc.giaoVien.nguoiDung', 'nguoiDuyet'])
-            ->orderBy('ngay_gui', 'desc')
+        // Lấy danh sách đăng ký học của học viên
+        $dangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
+            ->with(['lopHoc.khoaHoc', 'lopHoc.giaoVien.nguoiDung'])
+            ->orderBy('ngay_dang_ky', 'desc')
             ->paginate(10);
         
         // Log để debug
-        Log::info('Học viên ' . $hocVien->id . ' có ' . $yeuCauDaGui->count() . ' yêu cầu tham gia');
+        Log::info('Học viên ' . $hocVien->id . ' có ' . $dangKyHoc->count() . ' đăng ký học');
         
         // Thông tin thống kê
         $thongKe = [
-            'total' => YeuCauThamGia::where('hoc_vien_id', $hocVien->id)->count(),
-            'pending' => YeuCauThamGia::where('hoc_vien_id', $hocVien->id)->where('trang_thai', 'cho_duyet')->count(),
-            'approved' => YeuCauThamGia::where('hoc_vien_id', $hocVien->id)->where('trang_thai', 'da_duyet')->count(),
-            'rejected' => YeuCauThamGia::where('hoc_vien_id', $hocVien->id)->where('trang_thai', 'tu_choi')->count(),
+            'total' => DangKyHoc::where('hoc_vien_id', $hocVien->id)->count(),
+            'pending' => DangKyHoc::where('hoc_vien_id', $hocVien->id)
+                            ->whereIn('trang_thai', ['cho_xac_nhan', 'cho_thanh_toan'])->count(),
+            'approved' => DangKyHoc::where('hoc_vien_id', $hocVien->id)
+                            ->whereIn('trang_thai', ['da_duyet', 'da_xac_nhan', 'da_thanh_toan'])->count(),
+            'rejected' => DangKyHoc::where('hoc_vien_id', $hocVien->id)
+                            ->where('trang_thai', 'tu_choi')->count(),
         ];
             
-        return view('hoc-vien.lop-hoc.yeu-cau', compact('yeuCauDaGui', 'thongKe'));
+        return view('hoc-vien.lop-hoc.yeu-cau', compact('dangKyHoc', 'thongKe'));
     }
 } 

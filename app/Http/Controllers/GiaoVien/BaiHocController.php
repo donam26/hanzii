@@ -81,7 +81,7 @@ class BaiHocController extends Controller
             ->with('khoaHoc')
             ->firstOrFail();
             
-        return view('giao-vien.bai-hoc.create', compact('lopHoc'));
+        return view('giao-vien.bai-hoc.create', compact('lopHocId'));
     }
 
     /**
@@ -104,8 +104,8 @@ class BaiHocController extends Controller
             'thu_tu' => 'required|integer|min:1',
             'thoi_luong' => 'required|integer|min:1',
             'loai' => 'required|in:video,van_ban,slide,bai_tap',
-            'url_video' => 'nullable|string|max:255',
-            'trang_thai' => 'required|in:chua_xuat_ban,da_xuat_ban'
+            'video_url' => 'nullable|string|max:255',
+            'files.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar|max:10240',
         ]);
         
         // Kiểm tra lớp học thuộc về giáo viên này không
@@ -124,8 +124,7 @@ class BaiHocController extends Controller
             $baiHoc->so_thu_tu = $validated['thu_tu']; // Sử dụng tên cột đúng
             $baiHoc->thoi_luong = $validated['thoi_luong'];
             $baiHoc->loai = $validated['loai'];
-            $baiHoc->url_video = $validated['url_video'] ?? null;
-            $baiHoc->trang_thai = $validated['trang_thai'];
+            $baiHoc->url_video = $validated['video_url'] ?? null;
             $baiHoc->save();
             
             // Tạo liên kết trong bảng trung gian bai_hoc_lops
@@ -134,20 +133,18 @@ class BaiHocController extends Controller
             $baiHocLop->lop_hoc_id = $validated['lop_hoc_id'];
             $baiHocLop->so_thu_tu = $validated['thu_tu'];
             $baiHocLop->ngay_bat_dau = now();
-            $baiHocLop->trang_thai = 'cho_hoc';
             $baiHocLop->save();
             
             // Xử lý tệp đính kèm nếu có
-            if ($request->hasFile('tai_lieu')) {
-                foreach ($request->file('tai_lieu') as $file) {
-                    $path = $file->store('tai-lieu', 'public');
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $path = $file->store('tai-lieu-bo-tro', 'public');
                     
                     $taiLieu = new \App\Models\TaiLieuBoTro();
-                    $taiLieu->ten = $file->getClientOriginalName();
-                    $taiLieu->duong_dan = $path;
-                    $taiLieu->loai = $file->getClientOriginalExtension();
-                    $taiLieu->kich_thuoc = $file->getSize();
                     $taiLieu->bai_hoc_id = $baiHoc->id;
+                    $taiLieu->tieu_de = $file->getClientOriginalName();
+                    $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
+                    $taiLieu->duong_dan_file = $path;
                     $taiLieu->save();
                 }
             }
@@ -178,7 +175,8 @@ class BaiHocController extends Controller
         $baiHoc = BaiHoc::with([
             'baiHocLops.lopHoc.khoaHoc',
             'baiTaps',
-            'binhLuans.nguoiDung.vaiTros'
+            'binhLuans.nguoiDung.vaiTros',
+            'taiLieuBoTros'
         ])
         ->whereHas('baiHocLops.lopHoc', function($query) use ($giaoVien) {
             $query->where('giao_vien_id', $giaoVien->id);
@@ -191,15 +189,10 @@ class BaiHocController extends Controller
         // Lấy danh sách bài tập của bài học này
         $baiTaps = $baiHoc->baiTaps()->orderBy('han_nop', 'desc')->get();
         
-        // Lấy mã video YouTube nếu có
-        $videoUrl = $baiHoc->url_video ?? '';
-        $youtubeId = '';
+        // Lấy thông tin từ bảng pivot
+        $baiHocLop = $baiHoc->baiHocLops->where('lop_hoc_id', $lopHoc->id)->first();
         
-        if (preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $videoUrl, $matches)) {
-            $youtubeId = $matches[1];
-        }
-        
-        return view('giao-vien.bai-hoc.show', compact('baiHoc', 'lopHoc', 'baiTaps', 'videoUrl', 'youtubeId'));
+        return view('giao-vien.bai-hoc.show', compact('baiHoc', 'lopHoc', 'baiTaps', 'baiHocLop'));
     }
 
     /**
@@ -216,15 +209,21 @@ class BaiHocController extends Controller
         
         // Lấy thông tin bài học và kiểm tra quyền truy cập
         $baiHoc = BaiHoc::with([
-            'lopHoc.khoaHoc',
-            'taiLieus'
+            'baiHocLops.lopHoc.khoaHoc',
+            'taiLieuBoTros'
         ])
-        ->whereHas('lopHoc', function($query) use ($giaoVien) {
+        ->whereHas('baiHocLops.lopHoc', function($query) use ($giaoVien) {
             $query->where('giao_vien_id', $giaoVien->id);
         })
         ->findOrFail($id);
         
-        return view('giao-vien.bai-hoc.edit', compact('baiHoc'));
+        // Lấy lớp học đang xem
+        $lopHoc = $baiHoc->baiHocLops->first()->lopHoc;
+        
+        // Lấy thông tin từ bảng pivot
+        $baiHocLop = $baiHoc->baiHocLops->where('lop_hoc_id', $lopHoc->id)->first();
+        
+        return view('giao-vien.bai-hoc.edit', compact('baiHoc', 'lopHoc', 'baiHocLop'));
     }
 
     /**
@@ -241,7 +240,8 @@ class BaiHocController extends Controller
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         // Lấy thông tin bài học và kiểm tra quyền truy cập
-        $baiHoc = BaiHoc::whereHas('lopHoc', function($query) use ($giaoVien) {
+        $baiHoc = BaiHoc::with('baiHocLops')
+        ->whereHas('baiHocLops.lopHoc', function($query) use ($giaoVien) {
             $query->where('giao_vien_id', $giaoVien->id);
         })
         ->findOrFail($id);
@@ -254,7 +254,7 @@ class BaiHocController extends Controller
             'thoi_luong' => 'required|integer|min:1',
             'loai' => 'required|in:video,van_ban,slide,bai_tap',
             'url_video' => 'nullable|string|max:255',
-            'trang_thai' => 'required|in:chua_xuat_ban,da_xuat_ban'
+            'files.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar|max:10240',
         ]);
         
         try {
@@ -263,14 +263,31 @@ class BaiHocController extends Controller
             // Cập nhật thông tin bài học
             $baiHoc->tieu_de = $validated['tieu_de'];
             $baiHoc->noi_dung = $validated['noi_dung'];
-            $baiHoc->thu_tu = $validated['thu_tu'];
             $baiHoc->thoi_luong = $validated['thoi_luong'];
             $baiHoc->loai = $validated['loai'];
             $baiHoc->url_video = $validated['url_video'] ?? null;
-            $baiHoc->trang_thai = $validated['trang_thai'];
-            $baiHoc->updated_by = $giaoVien->id;
             $baiHoc->save();
-          
+            
+            // Cập nhật thông tin trong bảng bai_hoc_lop
+            foreach ($baiHoc->baiHocLops as $baiHocLop) {
+                $baiHocLop->so_thu_tu = $validated['thu_tu'];
+                $baiHocLop->save();
+            }
+            
+            // Xử lý tệp đính kèm mới nếu có
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $path = $file->store('tai-lieu-bo-tro', 'public');
+                    
+                    $taiLieu = new \App\Models\TaiLieuBoTro();
+                    $taiLieu->bai_hoc_id = $baiHoc->id;
+                    $taiLieu->lop_hoc_id = $baiHoc->baiHocLops->first()->lop_hoc_id;
+                    $taiLieu->tieu_de = $file->getClientOriginalName();
+                    $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
+                    $taiLieu->duong_dan_file = $path;
+                    $taiLieu->save();
+                }
+            }
             
             DB::commit();
             

@@ -65,7 +65,7 @@ class DashboardController extends Controller
                 ->whereHas('lopHoc', function($query) use ($giaoVien) {
                     $query->where('giao_vien_id', $giaoVien->id);
                 })
-                ->where('trang_thai', 'cho_duyet')
+                ->where('trang_thai', 'cho_xac_nhan')
                 ->orderBy('tao_luc', 'desc')
                 ->limit(5)
                 ->get();

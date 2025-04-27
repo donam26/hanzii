@@ -229,7 +229,7 @@ class DashboardController extends Controller
     {
         // Đăng ký học mới
         $dangKyHocMoi = DangKyHoc::with(['hocVien.nguoiDung', 'lopHoc.khoaHoc'])
-            ->where('trang_thai', 'cho_duyet')
+            ->where('trang_thai', 'cho_xac_nhan')
             ->orderBy('tao_luc', 'desc')
             ->take(5)
             ->get();

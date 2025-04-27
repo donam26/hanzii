@@ -68,7 +68,7 @@
                 <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
                 <select name="trang_thai" id="trang_thai" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50">
                     <option value="all" {{ $trangThai == 'all' ? 'selected' : '' }}>Tất cả trạng thái</option>
-                    <option value="cho_duyet" {{ $trangThai == 'cho_duyet' ? 'selected' : '' }}>Chờ duyệt</option>
+                    <option value="cho_xac_nhan" {{ $trangThai == 'cho_xac_nhan' ? 'selected' : '' }}>Chờ duyệt</option>
                     <option value="da_duyet" {{ $trangThai == 'da_duyet' ? 'selected' : '' }}>Đã duyệt</option>
                     <option value="tu_choi" {{ $trangThai == 'tu_choi' ? 'selected' : '' }}>Từ chối</option>
                 </select>
@@ -127,7 +127,7 @@
                                     {{ \Carbon\Carbon::parse($yeuCau->ngay_gui)->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($yeuCau->trang_thai == 'cho_duyet')
+                                    @if($yeuCau->trang_thai == 'cho_xac_nhan')
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                             Chờ duyệt
                                         </span>
@@ -147,7 +147,7 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         
-                                        @if($yeuCau->trang_thai == 'cho_duyet')
+                                        @if($yeuCau->trang_thai == 'cho_xac_nhan')
                                             <button type="button" onclick="document.getElementById('modal-duyet-{{ $yeuCau->id }}').classList.remove('hidden')" class="text-green-600 hover:text-green-900" title="Duyệt yêu cầu">
                                                 <i class="fas fa-check"></i>
                                             </button>

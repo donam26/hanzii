@@ -115,4 +115,5 @@ class BaiHoc extends Model
     {
         return $this->hasMany(Files::class, 'bai_hoc_id');
     }
+
 }

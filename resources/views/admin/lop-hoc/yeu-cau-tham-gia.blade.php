@@ -89,7 +89,7 @@
                                 
                                 <div class="mr-4 mb-3 sm:mb-0">
                                     @switch($yeuCau->trang_thai)
-                                        @case('cho_duyet')
+                                        @case('cho_xac_nhan')
                                             <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
                                                 Chờ duyệt
                                             </span>
@@ -111,7 +111,7 @@
                                     @endswitch
                                 </div>
                                 
-                                @if($yeuCau->trang_thai == 'cho_duyet')
+                                @if($yeuCau->trang_thai == 'cho_xac_nhan')
                                     <div class="flex space-x-2">
                                         <form action="{{ route('admin.lop-hoc.duyet-yeu-cau', ['id' => $lopHoc->id, 'yeuCauId' => $yeuCau->id]) }}" method="POST">
                                             @csrf

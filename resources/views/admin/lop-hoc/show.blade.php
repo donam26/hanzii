@@ -172,7 +172,7 @@
                             Yêu cầu tham gia 
                             @php
                                 $countPendingRequests = \App\Models\YeuCauThamGia::where('lop_hoc_id', $lopHoc->id)
-                                    ->where('trang_thai', 'cho_duyet')
+                                    ->where('trang_thai', 'cho_xac_nhan')
                                     ->count();
                             @endphp
                             @if($countPendingRequests > 0)

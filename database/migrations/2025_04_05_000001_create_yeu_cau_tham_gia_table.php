@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lop_hoc_id')->constrained('lop_hocs')->onDelete('cascade');
             $table->foreignId('hoc_vien_id')->constrained('hoc_viens')->onDelete('cascade');
-            $table->enum('trang_thai', ['cho_duyet', 'da_duyet', 'tu_choi'])->default('cho_duyet');
+            $table->enum('trang_thai', ['cho_xac_nhan', 'da_duyet', 'tu_choi'])->default('cho_xac_nhan');
             $table->timestamp('ngay_dang_ky')->nullable();
             $table->text('ghi_chu')->nullable();
             $table->foreignId('nguoi_duyet_id')->nullable()->constrained('nguoi_dungs');

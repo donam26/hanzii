@@ -83,25 +83,32 @@
 
             <div class="p-6">
                 <!-- Nội dung bài học -->
-                @if($baiHoc->loai == 'video' && $baiHoc->video_url)
+                @if($baiHoc->loai == 'video' && $baiHoc->url_video)
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Video bài học</h3>
-                        <div class="aspect-w-16 aspect-h-9 mb-4">
+                        <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-lg shadow-md max-w-full">
                             @php
-                                $videoUrl = $baiHoc->video_url;
+                                $videoUrl = $baiHoc->url_video;
                                 $youtubeId = '';
-                                if (preg_match('/youtube\.com\/watch\?v=([^\&\?\/]+)/', $videoUrl, $match)) {
-                                    $youtubeId = $match[1];
-                                } elseif (preg_match('/youtu\.be\/([^\&\?\/]+)/', $videoUrl, $match)) {
-                                    $youtubeId = $match[1];
+                                if (preg_match('/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $videoUrl, $matches)) {
+                                    $youtubeId = $matches[1];
                                 }
                             @endphp
                             
                             @if($youtubeId)
-                                <iframe src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full rounded-lg shadow-md"></iframe>
+                                <iframe 
+                                    src="https://www.youtube.com/embed/{{ $youtubeId }}" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowfullscreen 
+                                    class="absolute top-0 left-0 w-full h-full"
+                                ></iframe>
                             @else
-                                <div class="bg-gray-100 p-4 text-center rounded-lg">
-                                    <p>URL video không hợp lệ hoặc không được hỗ trợ. URL hiện tại: {{ $videoUrl }}</p>
+                                <div class="bg-gray-100 p-4 text-center rounded-lg absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                                    <div>
+                                        <p class="text-gray-500 mb-2">URL video không hợp lệ hoặc không được hỗ trợ.</p>
+                                        <p class="text-sm text-gray-400">URL hiện tại: {{ $videoUrl }}</p>
+                                    </div>
                                 </div>
                             @endif
                         </div>
@@ -114,32 +121,6 @@
                         {!! $baiHoc->noi_dung !!}
                     </div>
                 </div>
-
-                @if($baiHoc->files && count($baiHoc->files) > 0)
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Tài liệu đính kèm</h3>
-                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                            <ul class="space-y-2">
-                                @foreach($baiHoc->files as $file)
-                                    <li class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <span class="text-sm text-gray-700">{{ $file->ten_goc }}</span>
-                                        </div>
-                                        <a href="{{ route('giao-vien.bai-hoc.download-file', $file->id) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                            </svg>
-                                            Tải xuống
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                @endif
 
                 <!-- Danh sách bài tập -->
                 <div class="mb-6">
