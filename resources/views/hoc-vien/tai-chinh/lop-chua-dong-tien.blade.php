@@ -69,7 +69,7 @@
                             {{ $dangKy->lopHoc->khoaHoc->ten }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">
-                            {{ number_format($dangKy->lopHoc->hoc_phi, 0, ',', '.') }} VNĐ
+                            {{ number_format($dangKy->lopHoc->khoaHoc->hoc_phi, 0, ',', '.') }} VNĐ
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
@@ -81,13 +81,9 @@
                             {{ \Carbon\Carbon::parse($dangKy->ngay_dang_ky)->format('d/m/Y') }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            @if($dangKy->trang_thai === 'cho_thanh_toan')
-                                <a href="{{ route('hoc-vien.thanh-toan.form', $dangKy->id) }}" class="text-red-600 hover:text-red-900 mr-3">
-                                    Thanh toán ngay
-                                </a>
-                            @else
-                                <span class="text-gray-400">Đang chờ xác nhận</span>
-                            @endif
+                            <a href="{{ route('hoc-vien.tai-chinh.form-thanh-toan', $dangKy->id) }}" class="text-red-600 hover:text-red-900 mr-3">
+                                Thanh toán ngay
+                            </a>
                         </td>
                     </tr>
                     @empty

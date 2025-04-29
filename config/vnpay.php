@@ -1,18 +1,30 @@
 <?php
 
 return [
-    // Mã đơn vị thanh toán
-    'vnp_TmnCode' => env('VNP_TMN_CODE', ''),
+    /*
+    |--------------------------------------------------------------------------
+    | VNPay Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure your settings for VNPay Payment Gateway
+    |
+    */
 
-    // Khóa bí mật cho hash
-    'vnp_HashSecret' => env('VNP_HASH_SECRET', ''),
+    // TMN Code
+    'tmn_code' => env('VNPAY_TMN_CODE', 'your-tmn-code'),
 
-    // URL thanh toán VNPay
-    'vnp_Url' => env('VNP_URL', 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'),
+    // Hash Secret
+    'hash_secret' => env('VNPAY_HASH_SECRET', 'your-hash-secret'),
 
-    // URL trả về sau khi thanh toán 
-    'vnp_ReturnUrl' => env('VNP_RETURN_URL', '/hoc-vien/thanh-toan/ket-qua'),
+    // VNPay URL
+    'url' => env('VNPAY_URL', 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'),
 
-    // URL API kiểm tra giao dịch
-    'vnp_ApiUrl' => env('VNP_API_URL', 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'),
+    // API URL
+    'api_url' => env('VNPAY_API_URL', 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'),
+
+    // Return URL
+    'return_url' => env('VNPAY_RETURN_URL', '/vnpay/return'),
+
+    // Version
+    'version' => '2.1.0',
 ]; 
