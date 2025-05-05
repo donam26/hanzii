@@ -31,9 +31,13 @@ class DashboardController extends Controller
         }
         
         try {
+            // Lấy thông tin người dùng hiện tại
+            $nguoiDung = \App\Models\NguoiDung::findOrFail($nguoiDungId);
+            session(['user_full_name' => $nguoiDung->ho . ' ' . $nguoiDung->ten]);
+            
             // Lấy danh sách lớp học được phân công
             $lopHocs = LopHoc::where('giao_vien_id', $giaoVien->id)
-                        ->where('trang_thai', 'dang_hoat_dong')
+                        ->whereIn('trang_thai', ['dang_dien_ra', 'dang_hoc', 'dang_hoat_dong'])
                         ->get();
                         
             // Thống kê số học viên
@@ -56,12 +60,13 @@ class DashboardController extends Controller
                 ->whereHas('baiTap.baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
                     $query->where('giao_vien_id', $giaoVien->id);
                 })
+                ->where('trang_thai', '!=', 'ban_nhap')
                 ->orderBy('cap_nhat_luc', 'desc')
                 ->limit(5)
                 ->get();
             
             // Lấy yêu cầu tham gia lớp học
-            $yeuCauThamGia = YeuCauThamGia::with(['hocVien.nguoiDung', 'lopHoc'])
+            $yeuCauThamGia = \App\Models\DangKyHoc::with(['hocVien.nguoiDung', 'lopHoc'])
                 ->whereHas('lopHoc', function($query) use ($giaoVien) {
                     $query->where('giao_vien_id', $giaoVien->id);
                 })
@@ -70,7 +75,15 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get();
             
+            // Log chi tiết yêu cầu tham gia để debug
+            Log::info('Chi tiết đăng ký học chờ xác nhận: ', [
+                'so_luong' => $yeuCauThamGia->count(),
+                'trang_thai' => 'cho_xac_nhan',
+                'giao_vien_id' => $giaoVien->id
+            ]);
+            
             return view('giao-vien.dashboard', compact(
+                'nguoiDung',
                 'giaoVien', 
                 'lopHocs', 
                 'tongSoHocVien', 

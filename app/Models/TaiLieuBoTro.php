@@ -28,6 +28,7 @@ class TaiLieuBoTro extends Model
         'tieu_de',
         'mo_ta',
         'duong_dan_file',
+        'ten',
     ];
 
     /**

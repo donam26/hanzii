@@ -220,14 +220,7 @@
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 </form>
-                                                
-                                                <!-- Nút từ chối - mở modal -->
-                                                @php
-                                                    $hoTen = addslashes($dangKy->hocVien->nguoiDung->ho . ' ' . $dangKy->hocVien->nguoiDung->ten);
-                                                @endphp
-                                                <button type="button" onclick="showTuChoiModal('{{ $dangKy->id }}', '{{ $hoTen }}')" class="bg-red-100 text-red-600 p-2 rounded-md hover:bg-red-200" title="Từ chối học viên">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
+                                             
                                             @endif
                                             
                                             @if($trangThai == 'tu_choi' && $dangKy->ly_do_tu_choi)

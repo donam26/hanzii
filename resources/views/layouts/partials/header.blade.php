@@ -30,8 +30,7 @@
                             <a href="{{ route('giao-vien.hoc-vien.index') }}" class="text-gray-700 hover:text-red-600 py-2">Học viên</a>
                         @elseif(auth()->user()->vaiTros->contains('ten', 'tro_giang'))
                             <a href="{{ route('tro-giang.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Dashboard</a>
-                            <a href="{{ route('tro-giang.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Lớp hỗ trợ</a>
-                            <a href="{{ route('tro-giang.hoc-vien.index') }}" class="text-gray-700 hover:text-red-600 py-2">Học viên</a>
+                            <a href="{{ route('tro-giang.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Lớp học</a>
                         @endif
                     @endif
                 @else
@@ -98,8 +97,7 @@
                                     <a href="{{ route('giao-vien.hoc-vien.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Học viên</a>
                                 @elseif(auth()->user()->vaiTros->contains('ten', 'tro_giang'))
                                     <a href="{{ route('tro-giang.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Dashboard</a>
-                                    <a href="{{ route('tro-giang.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Lớp hỗ trợ</a>
-                                    <a href="{{ route('tro-giang.hoc-vien.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Học viên</a>
+                                    <a href="{{ route('tro-giang.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Lớp học</a>
                                 @endif
                                 <a href="{{ route('nhan-vien.profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Thông tin cá nhân</a>
                             @endif

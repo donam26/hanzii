@@ -1,6 +1,6 @@
 @props(['active' => '', 'role' => ''])
 
-<aside class="w-64 bg-gray-800 text-white h-screen fixed left-0 top-0 overflow-y-auto">
+<aside class="w-64 bg-gray-800 text-white h-screen fixed left-0 top-0 overflow-y-auto z-50">
     <div class="px-4 py-6">
         <h1 class="text-xl font-semibold mb-6">{{ config('app.name', 'Trung tâm Tiếng Trung') }}</h1>
         
@@ -96,18 +96,6 @@
                         <span>Quản lý giảng viên</span>
                     </div>
                 </a>
-
-
-
-                <a href="{{ route('admin.thong-ke.hoc-vien') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'thong-ke-hoc-vien' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <span>Thống kê học viên</span>
-                    </div>
-                </a>
-
             @elseif($role === 'giao_vien')
                 <a href="{{ route('giao-vien.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'dashboard' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
                     <div class="flex items-center">
@@ -139,20 +127,20 @@
 
             @elseif($role === 'tro_giang')
                 <a href="{{ route('tro-giang.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'dashboard' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
                         <span>Trang chủ</span>
                     </div>
                 </a>
 
                 <a href="{{ route('tro-giang.lop-hoc.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'lop-hoc' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
                         </svg>
-                        <span>Lớp hỗ trợ</span>
+                        <span>Lớp học</span>
                     </div>
                 </a>
 

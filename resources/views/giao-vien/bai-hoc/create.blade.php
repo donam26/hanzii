@@ -93,8 +93,6 @@
                                         <option value="">-- Chọn loại bài học --</option>
                                         <option value="video" {{ old('loai') == 'video' ? 'selected' : '' }}>Video</option>
                                         <option value="van_ban" {{ old('loai') == 'van_ban' ? 'selected' : '' }}>Văn bản</option>
-                                        <option value="slide" {{ old('loai') == 'slide' ? 'selected' : '' }}>Slide</option>
-                                        <option value="bai_tap" {{ old('loai') == 'bai_tap' ? 'selected' : '' }}>Bài tập</option>
                                     </select>
                                 </div>
                             </div>
@@ -125,10 +123,13 @@
                                 <label for="files" class="block text-sm font-medium text-gray-700">
                                     Tài liệu đính kèm
                                 </label>
+                                @error('files')
+                                <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
+                                @enderror
                                 <div class="mt-1 flex items-center" id="file_container">
                                     <div class="space-y-2 w-full" id="file_inputs">
                                         <div class="flex items-center space-x-2">
-                                            <input type="file" name="files[]" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md">
+                                            <input type="file" name="files[]" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar">
                                             <button type="button" class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 delete-file hidden">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -144,7 +145,7 @@
                                     Thêm tài liệu
                                 </button>
                                 <p class="mt-2 text-sm text-gray-500">
-                                    Đính kèm tài liệu có định dạng: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP, RAR (tối đa 10MB mỗi file)
+                                    Đính kèm tài liệu có định dạng: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP, RAR (tối đa 2MB mỗi file)
                                 </p>
                             </div>
                         </div>
@@ -197,13 +198,27 @@
         }
     }
     
+    // Kiểm tra kích thước file (tối đa 2MB)
+    function checkFileSize(fileInput) {
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        const file = fileInput.files[0];
+        
+        if (file && file.size > maxSize) {
+            alert('Tệp "' + file.name + '" quá lớn. Kích thước tối đa cho phép là 2MB.');
+            fileInput.value = ''; // Xóa file đã chọn
+            return false;
+        }
+        
+        return true;
+    }
+    
     // Xử lý thêm file
     document.getElementById('add_file').addEventListener('click', function() {
         const fileInputs = document.getElementById('file_inputs');
         const newFileInput = document.createElement('div');
         newFileInput.className = 'flex items-center space-x-2';
         newFileInput.innerHTML = `
-            <input type="file" name="files[]" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md">
+            <input type="file" name="files[]" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar">
             <button type="button" class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 delete-file">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -211,6 +226,12 @@
             </button>
         `;
         fileInputs.appendChild(newFileInput);
+        
+        // Thêm event listener cho input file mới
+        const newInput = newFileInput.querySelector('input[type="file"]');
+        newInput.addEventListener('change', function() {
+            checkFileSize(this);
+        });
         
         // Hiển thị nút xóa cho tất cả các input file
         const firstDeleteButton = document.querySelector('.delete-file');
@@ -244,5 +265,27 @@
     
     // Thêm sự kiện xóa cho nút đầu tiên
     addDeleteFileEvent();
+    
+    // Thêm sự kiện kiểm tra kích thước file cho input file đầu tiên
+    document.querySelector('input[name="files[]"]').addEventListener('change', function() {
+        checkFileSize(this);
+    });
+    
+    // Kiểm tra form trước khi submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const allFiles = document.querySelectorAll('input[name="files[]"]');
+        let hasInvalidFiles = false;
+        
+        allFiles.forEach(fileInput => {
+            if (fileInput.files.length > 0 && !checkFileSize(fileInput)) {
+                hasInvalidFiles = true;
+            }
+        });
+        
+        if (hasInvalidFiles) {
+            e.preventDefault();
+            alert('Vui lòng xóa các tệp vượt quá kích thước cho phép trước khi gửi.');
+        }
+    });
 </script>
 @endpush 

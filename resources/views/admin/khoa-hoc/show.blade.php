@@ -142,6 +142,8 @@
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Bài tập</span>
                                                 @elseif($baiHoc->loai == 'tai_lieu')
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Tài liệu</span>
+                                                @elseif($baiHoc->loai == 'van_ban')
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">Văn bản</span>
                                                 @else
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Khác</span>
                                                 @endif
@@ -183,11 +185,7 @@
                             </svg>
                             <h3 class="mt-2 text-sm font-medium text-gray-900">Chưa có bài học nào</h3>
                             <p class="mt-1 text-sm text-gray-500">Bắt đầu tạo bài học mới cho khóa học này</p>
-                            <div class="mt-6">
-                                <a href="{{ route('admin.bai-hoc.create', ['khoa_hoc_id' => $khoaHoc->id]) }}" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:border-red-700 focus:ring ring-red-200 active:bg-red-700 disabled:opacity-25 transition ease-in-out duration-150">
-                                    <i class="fas fa-plus mr-2"></i> Thêm bài học đầu tiên
-                                </a>
-                            </div>
+                           
                         </div>
                     @endif
                 </div>
@@ -259,61 +257,7 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Danh sách lớp học đang diễn ra -->
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-900">Lớp học đang diễn ra</h3>
-                    <form action="{{ route('admin.lop-hoc.create') }}" method="GET">
-                        <input type="hidden" name="khoa_hoc_id" value="{{ $khoaHoc->id }}">
-                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:border-red-700 focus:ring ring-red-200 active:bg-red-700 disabled:opacity-25 transition ease-in-out duration-150">
-                            <i class="fas fa-plus mr-1"></i> Mở lớp
-                        </button>
-                    </form>
-                </div>
-                <div class="p-6">
-                    @if($lopHocDangDienRa->count() > 0)
-                        <div class="space-y-4">
-                            @foreach($lopHocDangDienRa as $lopHoc)
-                                <a href="{{ route('admin.lop-hoc.show', $lopHoc->id) }}" class="block p-4 bg-gray-50 hover:bg-gray-100 rounded-md transition">
-                                    <div class="flex justify-between mb-1">
-                                        <h4 class="text-base font-medium text-gray-900">{{ $lopHoc->ma_lop }}</h4>
-                                        <span class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($lopHoc->ngay_bat_dau)->format('d/m/Y') }}</span>
-                                    </div>
-                                    <p class="flex items-center text-sm text-gray-700 mb-2">
-                                        <i class="fas fa-chalkboard-teacher text-blue-500 mr-2"></i>
-                                        {{ $lopHoc->giaoVien->nguoiDung->ho_ten }}
-                                    </p>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-xs text-gray-600">
-                                            <i class="fas fa-users text-indigo-500 mr-1"></i>
-                                            {{ $lopHoc->dangKyHocs->where('trang_thai', 'da_xac_nhan')->count() }} học viên
-                                        </span>
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                            Đang diễn ra
-                                        </span>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                        @if($lopHocDangDienRa->count() > 5)
-                            <div class="mt-4 text-center">
-                                <a href="{{ route('admin.lop-hoc.index', ['khoa_hoc_id' => $khoaHoc->id]) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
-                                    Xem tất cả lớp học
-                                </a>
-                            </div>
-                        @endif
-                    @else
-                        <div class="py-8 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4M12 20V4" />
-                            </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">Không có lớp học</h3>
-                            <p class="mt-1 text-sm text-gray-500">Hiện chưa có lớp học nào đang diễn ra</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
+           
         </div>
     </div>
 </div>

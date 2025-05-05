@@ -93,7 +93,7 @@
                     <i class="fas fa-chair"></i>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-lg font-medium text-gray-900">{{ $lopHoc->so_luong_toi_da - $confirmedStudents->count() }}</h3>
+                    <h3 class="text-lg font-medium text-gray-900">{{ max(0, $lopHoc->so_luong_toi_da - $confirmedStudents->count()) }}</h3>
                     <p class="text-sm text-gray-500">Còn trống</p>
                 </div>
             </div>
@@ -137,9 +137,6 @@
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Thông tin liên hệ
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Học phí
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Ngày đăng ký
@@ -256,7 +253,9 @@
                         Thêm học viên vào lớp
                     </h3>
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center" data-modal-hide="modalThemHocVien">
-                        <i class="fas fa-times"></i>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
                         <span class="sr-only">Đóng</span>
                     </button>
                 </div>
@@ -264,23 +263,23 @@
                     <form action="{{ route('admin.lop-hoc.add-student', $lopHoc->id) }}" method="POST">
                         @csrf
                         <div class="mb-4">
-                            <label for="hoc_vien_id" class="block mb-2 text-sm font-medium text-gray-900">Chọn học viên</label>
+                            <label for="hoc_vien_id" class="block mb-2 text-sm font-medium text-gray-900">Chọn học viên <span class="text-red-500">*</span></label>
                             <select id="hoc_vien_id" name="hoc_vien_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
                                 <option value="">Chọn học viên</option>
                                 @foreach($availableStudents as $hocVien)
                                     <option value="{{ $hocVien->id }}">
-                                        {{ $hocVien->nguoiDung->ho_ten ?? $hocVien->nguoiDung->ho . ' ' . $hocVien->nguoiDung->ten }} - {{ $hocVien->nguoiDung->email }}
+                                        {{ $hocVien->nguoiDung->ho . ' ' . $hocVien->nguoiDung->ten }} - {{ $hocVien->nguoiDung->email }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label for="hoc_phi" class="block mb-2 text-sm font-medium text-gray-900">Học phí</label>
-                            <input type="number" id="hoc_phi" name="hoc_phi" value="{{ $lopHoc->khoaHoc->hoc_phi }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
+                            <label for="hoc_phi" class="block mb-2 text-sm font-medium text-gray-900">Học phí <span class="text-red-500">*</span></label>
+                            <input type="number" disabled id="hoc_phi" name="hoc_phi" value="{{ $lopHoc->khoaHoc->hoc_phi }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
                             <p class="mt-1 text-xs text-gray-500">Học phí mặc định: {{ number_format($lopHoc->khoaHoc->hoc_phi, 0, ',', '.') }} đ</p>
                         </div>
                         <div class="mb-4">
-                            <label for="phuong_thuc_thanh_toan" class="block mb-2 text-sm font-medium text-gray-900">Phương thức thanh toán</label>
+                            <label for="phuong_thuc_thanh_toan" class="block mb-2 text-sm font-medium text-gray-900">Phương thức thanh toán <span class="text-red-500">*</span></label>
                             <select id="phuong_thuc_thanh_toan" name="phuong_thuc_thanh_toan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
                                 <option value="chuyen_khoan">Chuyển khoản</option>
                                 <option value="tien_mat">Tiền mặt</option>
@@ -302,7 +301,12 @@
     </div>
 @endsection
 
+@section('styles')
+<link href="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.css" rel="stylesheet" />
+@endsection
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flowbite@1.6.5/dist/flowbite.min.js"></script>
 <script>
     // Tabs control
     document.addEventListener('DOMContentLoaded', function () {

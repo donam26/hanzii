@@ -48,11 +48,14 @@ class BaiHocController extends Controller
         
         if ($khoaHocId) {
             $khoaHoc = KhoaHoc::findOrFail($khoaHocId);
+        } else {
+            // Nếu không có khóa học, chuyển hướng về trang danh sách khóa học
+            return redirect()->route('admin.khoa-hoc.index')
+                ->with('warning', 'Vui lòng chọn khóa học trước khi thêm bài học mới');
         }
         
-        $khoaHocs = KhoaHoc::where('trang_thai', 'dang_hoat_dong')->orderBy('ten')->get();
-        
-        return view('admin.bai-hoc.create', compact('khoaHoc', 'khoaHocs'));
+        // Không cần lấy danh sách khóa học khi đã có khóa học cụ thể
+        return view('admin.bai-hoc.create', compact('khoaHoc', 'khoaHocId'));
     }
 
     /**
@@ -67,7 +70,7 @@ class BaiHocController extends Controller
             'noi_dung' => 'required|string',
             'so_thu_tu' => 'required|integer|min:1',
             'thoi_luong' => 'required|integer|min:1',
-            'loai' => 'required|in:video,van_ban,slide,bai_tap',
+            'loai' => 'required|in:video,van_ban',
             'url_video' => 'nullable|string|max:255',
             'trang_thai' => 'required|in:chua_xuat_ban,da_xuat_ban',
             'tai_lieu' => 'nullable|array',
@@ -96,9 +99,9 @@ class BaiHocController extends Controller
                     
                     $taiLieu = new \App\Models\TaiLieuBoTro();
                     $taiLieu->ten = $file->getClientOriginalName();
-                    $taiLieu->duong_dan = $path;
-                    $taiLieu->loai = $file->getClientOriginalExtension();
-                    $taiLieu->kich_thuoc = $file->getSize();
+                    $taiLieu->tieu_de = $file->getClientOriginalName();
+                    $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
+                    $taiLieu->duong_dan_file = $path;
                     $taiLieu->bai_hoc_id = $baiHoc->id;
                     $taiLieu->save();
                 }
@@ -119,7 +122,7 @@ class BaiHocController extends Controller
      */
     public function show($id)
     {
-        $baiHoc = BaiHoc::with(['khoaHoc', 'taiLieus', 'baiTaps'])->findOrFail($id);
+        $baiHoc = BaiHoc::with(['khoaHoc', 'taiLieuBoTros', 'baiTaps'])->findOrFail($id);
         
         return view('admin.bai-hoc.show', compact('baiHoc'));
     }
@@ -129,7 +132,7 @@ class BaiHocController extends Controller
      */
     public function edit($id)
     {
-        $baiHoc = BaiHoc::with(['khoaHoc', 'taiLieus'])->findOrFail($id);
+        $baiHoc = BaiHoc::with(['khoaHoc', 'taiLieuBoTros'])->findOrFail($id);
         $khoaHocs = KhoaHoc::where('trang_thai', 'dang_hoat_dong')->orderBy('ten')->get();
         
         return view('admin.bai-hoc.edit', compact('baiHoc', 'khoaHocs'));
@@ -149,7 +152,7 @@ class BaiHocController extends Controller
             'noi_dung' => 'required|string',
             'so_thu_tu' => 'required|integer|min:1',
             'thoi_luong' => 'required|integer|min:1',
-            'loai' => 'required|in:video,van_ban,slide,bai_tap',
+            'loai' => 'required|in:video,van_ban',
             'url_video' => 'nullable|string|max:255',
             'trang_thai' => 'required|in:chua_xuat_ban,da_xuat_ban',
             'tai_lieu' => 'nullable|array',
@@ -179,9 +182,9 @@ class BaiHocController extends Controller
                     
                     $taiLieu = new \App\Models\TaiLieuBoTro();
                     $taiLieu->ten = $file->getClientOriginalName();
-                    $taiLieu->duong_dan = $path;
-                    $taiLieu->loai = $file->getClientOriginalExtension();
-                    $taiLieu->kich_thuoc = $file->getSize();
+                    $taiLieu->tieu_de = $file->getClientOriginalName();
+                    $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
+                    $taiLieu->duong_dan_file = $path;
                     $taiLieu->bai_hoc_id = $baiHoc->id;
                     $taiLieu->save();
                 }
@@ -192,7 +195,7 @@ class BaiHocController extends Controller
                 foreach ($request->xoa_tai_lieu as $taiLieuId) {
                     $taiLieu = \App\Models\TaiLieuBoTro::find($taiLieuId);
                     if ($taiLieu && $taiLieu->bai_hoc_id == $baiHoc->id) {
-                        Storage::disk('public')->delete($taiLieu->duong_dan);
+                        Storage::disk('public')->delete($taiLieu->duong_dan_file);
                         $taiLieu->delete();
                     }
                 }
@@ -219,8 +222,8 @@ class BaiHocController extends Controller
             DB::beginTransaction();
             
             // Xóa tài liệu đính kèm
-            foreach ($baiHoc->taiLieus as $taiLieu) {
-                Storage::disk('public')->delete($taiLieu->duong_dan);
+            foreach ($baiHoc->taiLieuBoTros as $taiLieu) {
+                Storage::disk('public')->delete($taiLieu->duong_dan_file);
                 $taiLieu->delete();
             }
             

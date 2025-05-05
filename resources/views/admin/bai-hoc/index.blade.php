@@ -106,16 +106,6 @@
                                                 Video
                                             </span>
                                             @break
-                                        @case('slide')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                Slide
-                                            </span>
-                                            @break
-                                        @case('bai_tap')
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                Bài tập
-                                            </span>
-                                            @break
                                         @default
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                                                 Khác

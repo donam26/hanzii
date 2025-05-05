@@ -1,6 +1,12 @@
-@extends('layouts.admin')
+@extends('layouts.dashboard')
 
-@section('title', 'Yêu cầu tham gia lớp học: ' . $lopHoc->ten)
+@section('title', 'Chi tiết lớp học')
+@section('page-heading', 'Chi tiết lớp học')
+
+@php
+    $active = 'lop-hoc';
+    $role = 'admin';
+@endphp
 
 @section('content')
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -204,7 +210,7 @@
         const modal = document.getElementById('tuChoiModal');
         const form = document.getElementById('tuChoiForm');
         
-        form.action = `{{ route('admin.lop-hoc.tu-choi-yeu-cau', ['id' => $lopHoc->id, 'yeuCauId' => '']) }}${yeuCauId}`;
+        form.action = '{{ route('admin.lop-hoc.tu-choi-yeu-cau', ['id' => $lopHoc->id, 'yeuCauId' => '__PLACEHOLDER__']) }}'.replace('__PLACEHOLDER__', yeuCauId);
         modal.classList.remove('hidden');
     }
     

@@ -95,4 +95,12 @@ class HocVien extends Model
                     ->withPivot(['ngay_dang_ky', 'trang_thai'])
                     ->withTimestamps('tao_luc', 'cap_nhat_luc');
     }
+
+    /**
+     * Accessor để lấy họ tên đầy đủ
+     */
+    public function getHoTenAttribute()
+    {
+        return $this->nguoiDung ? "{$this->nguoiDung->ho} {$this->nguoiDung->ten}" : '';
+    }
 }

@@ -21,12 +21,12 @@
                 @method('PUT')
                 
                 <div class="mb-4">
-                    <label for="avatar" class="block text-sm font-medium text-gray-700 mb-2">Ảnh đại diện</label>
+                    <label for="anh_dai_dien" class="block text-sm font-medium text-gray-700 mb-2">Ảnh đại diện</label>
                     <div class="flex items-center">
                         <div class="mr-4">
                             <div class="h-20 w-20 rounded-full overflow-hidden bg-gray-100">
-                                @if($nguoiDung->avatar)
-                                    <img src="{{ asset('storage/' . $nguoiDung->avatar) }}" alt="Avatar" class="h-full w-full object-cover" id="preview">
+                                @if($nguoiDung->anh_dai_dien)
+                                    <img src="{{ asset('storage/' . $nguoiDung->anh_dai_dien) }}" alt="Avatar" class="h-full w-full object-cover" id="preview">
                                 @else
                                     <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24" id="preview-placeholder">
                                         <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -37,24 +37,34 @@
                         </div>
                         
                         <div class="flex items-center">
-                            <input type="file" name="avatar" id="avatar" class="sr-only" accept="image/*" onchange="previewImage()">
-                            <label for="avatar" class="py-2 px-3 border border-gray-300 rounded-md text-sm leading-4 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 cursor-pointer">
+                            <input type="file" name="anh_dai_dien" id="anh_dai_dien" class="sr-only" accept="image/*" onchange="previewImage()">
+                            <label for="anh_dai_dien" class="py-2 px-3 border border-gray-300 rounded-md text-sm leading-4 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 cursor-pointer">
                                 Chọn ảnh
                             </label>
                             <p class="ml-3 text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
                         </div>
                     </div>
-                    @error('avatar')
+                    @error('anh_dai_dien')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
                 
-                <div class="mb-4">
-                    <label for="ho_ten" class="block text-sm font-medium text-gray-700 mb-2">Họ và tên</label>
-                    <input type="text" name="ho_ten" id="ho_ten" value="{{ old('ho_ten', $nguoiDung->ho_ten) }}" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
-                    @error('ho_ten')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="ho" class="block text-sm font-medium text-gray-700 mb-2">Họ</label>
+                        <input type="text" name="ho" id="ho" value="{{ old('ho', $nguoiDung->ho) }}" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                        @error('ho')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
+                    <div>
+                        <label for="ten" class="block text-sm font-medium text-gray-700 mb-2">Tên</label>
+                        <input type="text" name="ten" id="ten" value="{{ old('ten', $nguoiDung->ten) }}" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                        @error('ten')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
                 
                 <div class="mb-4">
@@ -105,7 +115,7 @@
 @section('scripts')
 <script>
     function previewImage() {
-        const file = document.getElementById('avatar').files[0];
+        const file = document.getElementById('anh_dai_dien').files[0];
         const preview = document.getElementById('preview');
         const placeholder = document.getElementById('preview-placeholder');
         

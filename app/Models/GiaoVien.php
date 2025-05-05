@@ -107,4 +107,12 @@ class GiaoVien extends Model
             ->where('trang_thai', 'da_hoan_thanh')
             ->count();
     }
+
+    /**
+     * Accessor để lấy họ tên đầy đủ
+     */
+    public function getHoTenAttribute()
+    {
+        return $this->nguoiDung ? "{$this->nguoiDung->ho} {$this->nguoiDung->ten}" : '';
+    }
 } 

@@ -13,9 +13,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between">
             <h2 class="text-xl font-semibold text-gray-800">Chi tiết lớp học: {{ $lopHoc->ma_lop }}</h2>
             <div class="mt-4 md:mt-0 flex space-x-2">
-                <a href="{{ route('admin.lop-hoc.edit', $lopHoc->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 active:bg-blue-700 disabled:opacity-25 transition">
-                    <i class="fas fa-edit mr-2"></i> Chỉnh sửa
-                </a>
+              
                 <a href="{{ route('admin.lop-hoc.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 active:bg-gray-700 disabled:opacity-25 transition">
                     <i class="fas fa-arrow-left mr-2"></i> Quay lại
                 </a>
@@ -162,10 +160,6 @@
                         <a href="{{ route('admin.lop-hoc.edit', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <i class="fas fa-edit mr-2"></i> Chỉnh sửa
                         </a>
-                        <a href="{{ route('admin.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <i class="fas fa-users mr-2"></i>
-                            Danh sách học viên
-                        </a>
                         
                         <a href="{{ route('admin.lop-hoc.yeu-cau-tham-gia', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             <i class="fas fa-user-plus mr-2"></i>
@@ -297,74 +291,5 @@
         </div>
     </div>
 
-    <!-- Danh sách học viên -->
-    <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-medium text-gray-900">Học viên đã đăng ký ({{ $lopHoc->dangKyHocs->where('trang_thai', 'da_xac_nhan')->count() }})</h3>
-            <a href="{{ route('admin.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
-                Xem tất cả <i class="fas fa-chevron-right ml-1"></i>
-            </a>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Học viên</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số điện thoại</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đăng ký</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($lopHoc->dangKyHocs->where('trang_thai', 'da_xac_nhan')->take(5) as $dangKy)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
-                                        {{ strtoupper(substr($dangKy->hocVien->nguoiDung->ho_ten ?? 'U', 0, 1)) }}
-                                    </div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ $dangKy->hocVien->nguoiDung->ho_ten ?? 'N/A' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $dangKy->hocVien->nguoiDung->email ?? 'N/A' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $dangKy->hocVien->nguoiDung->so_dien_thoai ?? 'N/A' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $dangKy->ngay_dang_ky ? \Carbon\Carbon::parse($dangKy->ngay_dang_ky)->format('d/m/Y') : 'N/A' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Đã xác nhận
-                                </span>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                Chưa có học viên nào đăng ký lớp học này
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="px-6 py-4 border-t border-gray-200">
-            <div class="flex justify-between items-center">
-                <div>
-                    <span class="text-sm text-gray-600">Tổng số học viên đã xác nhận: {{ $lopHoc->dangKyHocs->where('trang_thai', 'da_xac_nhan')->count() }}</span>
-                </div>
-                <a href="{{ route('admin.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <i class="fas fa-users mr-2"></i> Xem chi tiết
-                </a>
-            </div>
-        </div>
-    </div>
+   
 @endsection 

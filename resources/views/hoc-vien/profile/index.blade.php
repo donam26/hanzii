@@ -29,8 +29,8 @@
                 <div class="w-2/3 px-6 py-4">
                     <div class="flex items-center">
                         <div class="h-20 w-20 rounded-full overflow-hidden bg-gray-100">
-                            @if($nguoiDung->avatar)
-                                <img src="{{ asset('storage/' . $nguoiDung->avatar) }}" alt="Avatar" class="h-full w-full object-cover">
+                            @if($nguoiDung->anh_dai_dien)
+                                <img src="{{ asset('storage/' . $nguoiDung->anh_dai_dien) }}" alt="Avatar" class="h-full w-full object-cover">
                             @else
                                 <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -42,8 +42,8 @@
             </div>
 
             <div class="flex border-b border-gray-200">
-                <div class="w-1/3 px-6 py-4 bg-gray-50 text-right text-sm font-medium text-gray-500">Họ và tên</div>
-                <div class="w-2/3 px-6 py-4 text-sm text-gray-900">{{ $nguoiDung->ho_ten }}</div>
+                <div class="w-1/3 px-6 py-4 font-medium text-gray-500">Họ và tên</div>
+                <div class="w-2/3 px-6 py-4 text-sm text-gray-900">{{ $nguoiDung->ho }} {{ $nguoiDung->ten }}</div>
             </div>
 
             <div class="flex border-b border-gray-200">
@@ -63,7 +63,7 @@
 
             <div class="flex border-b border-gray-200">
                 <div class="w-1/3 px-6 py-4 bg-gray-50 text-right text-sm font-medium text-gray-500">Địa chỉ</div>
-                <div class="w-2/3 px-6 py-4 text-sm text-gray-900">{{ $hocVien->dia_chi }}</div>
+                <div class="w-2/3 px-6 py-4 text-sm text-gray-900">{{ $nguoiDung->dia_chi }}</div>
             </div>
 
             <div class="flex">
@@ -73,59 +73,6 @@
         </div>
     </div>
 
-    <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Thống kê học tập</h3>
-            <p class="mt-1 max-w-2xl text-sm text-gray-500">Tổng quan về quá trình học tập của bạn</p>
-        </div>
-
-        <div class="border-t border-gray-200">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Tổng số khóa học</p>
-                            <p class="text-2xl font-semibold text-gray-900">{{ $tongSoKhoaHoc }}</p>
-                        </div>
-                        <div class="bg-red-100 rounded-md p-3">
-                            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Khóa học đang tham gia</p>
-                            <p class="text-2xl font-semibold text-gray-900">{{ $dangHoc }}</p>
-                        </div>
-                        <div class="bg-blue-100 rounded-md p-3">
-                            <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Khóa học đã hoàn thành</p>
-                            <p class="text-2xl font-semibold text-gray-900">{{ $daHoanThanh }}</p>
-                        </div>
-                        <div class="bg-green-100 rounded-md p-3">
-                            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">

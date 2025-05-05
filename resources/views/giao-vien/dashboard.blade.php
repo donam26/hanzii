@@ -6,19 +6,6 @@
 @php
     $active = 'dashboard';
     $role = 'giao_vien';
-    
-    function formatFileSize($size) {
-        if (!$size) return '0 B';
-        if ($size < 1024) {
-            return $size . ' B';
-        } elseif ($size < 1024*1024) {
-            return round($size/1024, 2) . ' KB';
-        } elseif ($size < 1024*1024*1024) {
-            return round($size/(1024*1024), 2) . ' MB';
-        } else {
-            return round($size/(1024*1024*1024), 2) . ' GB';
-        }
-    }
 @endphp
 
 @section('content')
@@ -238,14 +225,14 @@
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-medium text-gray-900 truncate">
-                                                {{ $yeuCau->hocVien->nguoiDung->ho_ten }}
+                                                {{ $yeuCau->hocVien->nguoiDung->ho }} {{ $yeuCau->hocVien->nguoiDung->ten }}
                                             </p>
                                             <p class="text-sm text-gray-500 truncate">
                                                 Yêu cầu tham gia: {{ $yeuCau->lopHoc->ten }}
                                             </p>
                                         </div>
                                         <div>
-                                            <a href="{{ route('giao-vien.lop-hoc.yeu-cau-tham-gia', $yeuCau->lopHoc->id) }}" class="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                            <a href="{{ route('giao-vien.lop-hoc.show', $yeuCau->lopHoc->id) }}" class="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                 Duyệt
                                             </a>
                                         </div>

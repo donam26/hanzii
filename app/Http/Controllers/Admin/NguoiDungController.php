@@ -24,23 +24,43 @@ class NguoiDungController extends Controller
         // Lọc theo loại tài khoản
         $loaiTaiKhoan = $request->input('loai_tai_khoan');
         $vaiTroId = $request->input('vai_tro_id');
+        $search = $request->input('search');
         
         $query = NguoiDung::with('vaiTros');
         
+        // Tìm kiếm
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('ho', 'like', "%{$search}%")
+                  ->orWhere('ten', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('so_dien_thoai', 'like', "%{$search}%")
+                  ->orWhereRaw("CONCAT(ho, ' ', ten) LIKE ?", ["%{$search}%"]);
+            });
+        }
+        
+        // Lọc theo loại tài khoản
         if ($loaiTaiKhoan) {
             $query->where('loai_tai_khoan', $loaiTaiKhoan);
         }
         
+        // Lọc theo vai trò
         if ($vaiTroId) {
             $query->whereHas('vaiTros', function ($q) use ($vaiTroId) {
                 $q->where('vai_tros.id', $vaiTroId);
             });
         }
         
-        $nguoiDungs = $query->orderBy('tao_luc', 'desc')->paginate(10);
+        // Sắp xếp
+        $sortField = $request->input('sort', 'tao_luc');
+        $sortDirection = $request->input('direction', 'desc');
+        
+        $query->orderBy($sortField, $sortDirection);
+        
+        $nguoiDungs = $query->paginate(10);
         $vaiTros = VaiTro::pluck('ten', 'id');
         
-        return view('admin.nguoi-dung.index', compact('nguoiDungs', 'vaiTros', 'loaiTaiKhoan', 'vaiTroId'));
+        return view('admin.nguoi-dung.index', compact('nguoiDungs', 'vaiTros', 'loaiTaiKhoan', 'vaiTroId', 'search'));
     }
     
     /**
@@ -57,6 +77,12 @@ class NguoiDungController extends Controller
      */
     public function store(Request $request)
     {
+        // Thiết lập giá trị mặc định cho chuyên môn nếu loại tài khoản là giáo viên hoặc trợ giảng
+        if (($request->loai_tai_khoan == 'giao_vien' || $request->loai_tai_khoan == 'tro_giang') 
+            && empty($request->chuyen_mon)) {
+            $request->merge(['chuyen_mon' => 'hsk1']);
+        }
+        
         $validator = Validator::make($request->all(), [
             'ho' => 'required|string|max:255',
             'ten' => 'required|string|max:255',
@@ -65,7 +91,7 @@ class NguoiDungController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'dia_chi' => 'nullable|string',
             'loai_tai_khoan' => 'required|in:giao_vien,tro_giang,hoc_vien',
-            'vai_tro_ids' => 'required|array',
+            'vai_tro_ids' => 'nullable|array',
             'vai_tro_ids.*' => 'exists:vai_tros,id',
             // Thông tin học viên
             'ngay_sinh' => 'nullable|required_if:loai_tai_khoan,hoc_vien|date',
@@ -94,8 +120,28 @@ class NguoiDungController extends Controller
                 'loai_tai_khoan' => $request->loai_tai_khoan,
             ]);
             
+            // Tự động xác định vai trò nếu không có vai trò nào được chọn
+            $vaiTroIds = $request->vai_tro_ids ?? [];
+            
+            if (empty($vaiTroIds)) {
+                // Map loại tài khoản với vai trò mặc định
+                $vaiTroMap = [
+                    'hoc_vien' => 'hoc_vien',
+                    'giao_vien' => 'giao_vien',
+                    'tro_giang' => 'tro_giang'
+                ];
+                
+                // Tìm vai trò tương ứng
+                if (isset($vaiTroMap[$request->loai_tai_khoan])) {
+                    $vaiTro = VaiTro::where('ten', $vaiTroMap[$request->loai_tai_khoan])->first();
+                    if ($vaiTro) {
+                        $vaiTroIds = [$vaiTro->id];
+                    }
+                }
+            }
+            
             // Gán vai trò
-            $nguoiDung->vaiTros()->attach($request->vai_tro_ids);
+            $nguoiDung->vaiTros()->attach($vaiTroIds);
             
             // Tạo hồ sơ phụ tùy theo loại tài khoản
             if ($request->loai_tai_khoan == 'hoc_vien') {
@@ -105,14 +151,14 @@ class NguoiDungController extends Controller
                     'trinh_do_hoc_van' => $request->trinh_do_hoc_van,
                     'trang_thai' => 'hoat_dong',
                 ]);
-            } elseif ($request->loai_tai_khoan == 'giao_vien' || in_array(2, $request->vai_tro_ids)) {
+            } elseif ($request->loai_tai_khoan == 'giao_vien' || in_array(2, $vaiTroIds)) {
                 GiaoVien::create([
                     'nguoi_dung_id' => $nguoiDung->id,
                     'bang_cap' => $request->bang_cap,
                     'chuyen_mon' => $request->chuyen_mon,
                     'so_nam_kinh_nghiem' => $request->so_nam_kinh_nghiem,
                 ]);
-            } elseif ($request->loai_tai_khoan == 'tro_giang' || in_array(3, $request->vai_tro_ids)) {
+            } elseif ($request->loai_tai_khoan == 'tro_giang' || in_array(3, $vaiTroIds)) {
                 TroGiang::create([
                     'nguoi_dung_id' => $nguoiDung->id,
                     'bang_cap' => $request->bang_cap,

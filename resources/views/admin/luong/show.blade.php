@@ -37,7 +37,7 @@
                             <div>
                                 <h3 class="text-sm font-medium text-gray-500">Thông tin người nhận lương</h3>
                                 <div class="mt-2 p-4 bg-gray-50 rounded-md">
-                                    <p class="mb-2"><span class="font-medium">Họ tên:</span> {{ $luong->nguoiDung->ho_ten }}</p>
+                                    <p class="mb-2"><span class="font-medium">Họ tên:</span> {{ $luong->nguoiDung->ho }} {{ $luong->nguoiDung->ten }}</p>
                                     <p class="mb-2"><span class="font-medium">Email:</span> {{ $luong->nguoiDung->email }}</p>
                                     <p class="mb-2"><span class="font-medium">Số điện thoại:</span> {{ $luong->nguoiDung->so_dien_thoai }}</p>
                                     <p><span class="font-medium">Vai trò:</span> {{ $luong->vai_tro == 'giao_vien' ? 'Giáo viên' : 'Trợ giảng' }}</p>

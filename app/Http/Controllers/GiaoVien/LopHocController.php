@@ -38,7 +38,17 @@ class LopHocController extends Controller
             
         // Lọc theo trạng thái nếu có
         if (request()->has('trang_thai') && !empty(request('trang_thai'))) {
-            $lopHocsQuery->where('trang_thai', request('trang_thai'));
+            $trangThai = request('trang_thai');
+            
+            // Cải thiện cách lọc theo trạng thái
+            if ($trangThai == 'sap_khai_giang') {
+                $lopHocsQuery->where('ngay_bat_dau', '>', now());
+            } elseif ($trangThai == 'dang_dien_ra') {
+                $lopHocsQuery->where('ngay_bat_dau', '<=', now())
+                             ->where('ngay_ket_thuc', '>=', now());
+            } elseif ($trangThai == 'da_ket_thuc') {
+                $lopHocsQuery->where('ngay_ket_thuc', '<', now());
+            }
         }
         
         // Lọc theo khóa học nếu có
@@ -53,6 +63,15 @@ class LopHocController extends Controller
         // Đếm số học viên mỗi lớp (đã đăng ký và được duyệt)
         foreach ($lopHocs as $lopHoc) {
             $lopHoc->soHocVien = $lopHoc->dangKyHocs()->where('trang_thai', 'da_duyet')->count();
+            
+            // Cập nhật trạng thái hiển thị
+            if ($lopHoc->ngay_bat_dau > now()) {
+                $lopHoc->trang_thai_hien_thi = 'sap_khai_giang';
+            } elseif ($lopHoc->ngay_ket_thuc > now()) {
+                $lopHoc->trang_thai_hien_thi = 'dang_dien_ra';
+            } else {
+                $lopHoc->trang_thai_hien_thi = 'da_ket_thuc';
+            }
         }
         
         // Lấy danh sách tất cả khóa học để hiển thị trong dropdown lọc

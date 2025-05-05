@@ -156,7 +156,7 @@
                             <div class="flex-grow">
                                 <h5 class="font-medium text-gray-800">{{ $baiTapDaNop->ten_file ?? 'Tệp đính kèm' }}</h5>
                                 @if($baiTapDaNop->file_size)
-                                    <span class="text-sm text-gray-500">Kích thước: {{ formatFileSize($baiTapDaNop->file_size) }}</span>
+                                    <span class="text-sm text-gray-500">Kích thước: {{ \App\Helpers\FileHelper::formatFileSize($baiTapDaNop->file_size) }}</span>
                                 @endif
                             </div>
                             <div>
@@ -183,16 +183,4 @@
         </div>
     </div>
 </div>
-
-@php 
-function formatFileSize($size) {
-    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    
-    for ($i = 0; $size > 1024; $i++) {
-        $size /= 1024;
-    }
-    
-    return round($size, 2) . ' ' . $units[$i];
-}
-@endphp
 @endsection 

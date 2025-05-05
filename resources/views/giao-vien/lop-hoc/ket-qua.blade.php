@@ -124,20 +124,6 @@
     
     <!-- Danh sách kết quả học tập -->
     <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-medium text-gray-900">Kết quả học tập chi tiết</h3>
-                <div class="flex space-x-2">
-                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500" onclick="printTable()">
-                        <i class="fas fa-print mr-1"></i> In báo cáo
-                    </button>
-                    <a href="#" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" onclick="exportToExcel()">
-                        <i class="fas fa-file-excel mr-1"></i> Xuất Excel
-                    </a>
-                </div>
-            </div>
-        </div>
-        
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200" id="ketQuaTable">
                 <thead class="bg-gray-50">
@@ -278,11 +264,6 @@
         
         window.print();
         document.body.innerHTML = originalContents;
-    }
-    
-    function exportToExcel() {
-        // Thông báo tính năng chưa khả dụng
-        alert('Tính năng xuất Excel đang được phát triển');
     }
 </script>
 @endpush 

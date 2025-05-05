@@ -102,24 +102,16 @@
                                 @enderror
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Vai trò</label>
-                                <div class="mt-2 space-y-2">
-                                    @forelse($vaiTros as $vaiTro)
-                                        <div class="flex items-center">
-                                            <input type="checkbox" name="vai_tro_ids[]" id="vai_tro_{{ $vaiTro->id }}" value="{{ $vaiTro->id }}" {{ in_array($vaiTro->id, old('vai_tro_ids', [])) ? 'checked' : '' }} class="focus:ring-red-500 h-4 w-4 text-red-600 border-gray-300 rounded">
-                                            <label for="vai_tro_{{ $vaiTro->id }}" class="ml-2 block text-sm text-gray-700">
-                                                {{ $vaiTro->ten }}
-                                            </label>
-                                        </div>
-                                    @empty
-                                        <p class="text-sm text-gray-500">Không có vai trò nào.</p>
-                                    @endforelse
-                                </div>
-                                @error('vai_tro_ids')
-                                    <span class="text-red-500 text-xs">{{ $message }}</span>
-                                @enderror
+                            <!-- Ẩn phần chọn vai trò và sử dụng input hidden thay thế -->
+                            <div class="hidden">
+                                @foreach($vaiTros as $vaiTro)
+                                    <input type="checkbox" name="vai_tro_ids[]" id="vai_tro_{{ $vaiTro->id }}" value="{{ $vaiTro->id }}" class="hidden-checkbox" data-vai-tro="{{ $vaiTro->ten }}">
+                                @endforeach
                             </div>
+                            
+                            @error('vai_tro_ids')
+                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     
@@ -215,7 +207,7 @@
                 </div>
                 
                 <div class="mt-6 flex justify-end">
-                    <button type="button" onclick="processCacChuyenMon()" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
                         <i class="fas fa-save mr-2"></i> Thêm người dùng
                     </button>
                 </div>
@@ -231,14 +223,83 @@
         const hocVienInfo = document.getElementById('hoc_vien_info');
         const giaoVienTroGiangInfo = document.getElementById('giao_vien_tro_giang_info');
         
+        // Checkboxes vai trò
+        const checkboxes = document.querySelectorAll('.hidden-checkbox');
+        
+        // Map các loại tài khoản với vai trò tương ứng
+        const vaiTroMap = {
+            'hoc_vien': 'hoc_vien',
+            'giao_vien': 'giao_vien',
+            'tro_giang': 'tro_giang'
+        };
+        
         // Kiểm tra trạng thái ban đầu
         checkTaiKhoanType();
         
         // Bắt sự kiện thay đổi
         loaiTaiKhoanSelect.addEventListener('change', checkTaiKhoanType);
         
+        // Thiết lập sự kiện cho các checkbox chuyên môn để cập nhật ngay khi chọn/bỏ chọn
+        const chuyenMonCheckboxes = document.querySelectorAll('input[id^="chuyen_mon_hsk"]');
+        chuyenMonCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateChuyenMon);
+        });
+        
+        // Cập nhật giá trị chuyên môn ban đầu nếu có
+        updateChuyenMon();
+        
+        // Xử lý form submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Cập nhật chuyên môn trước khi submit
+            updateChuyenMon();
+            
+            // Submit form
+            this.submit();
+        });
+        
+        // Hàm cập nhật giá trị chuyên môn
+        function updateChuyenMon() {
+            const chuyenMonCheckboxes = ['chuyen_mon_hsk1', 'chuyen_mon_hsk2', 'chuyen_mon_hsk3', 'chuyen_mon_hsk4', 'chuyen_mon_hsk5'];
+            const chuyenMonInput = document.getElementById('chuyen_mon');
+            
+            const selectedChuyenMon = [];
+            chuyenMonCheckboxes.forEach(function(id) {
+                if (document.getElementById(id) && document.getElementById(id).checked) {
+                    selectedChuyenMon.push(document.getElementById(id).value);
+                }
+            });
+            
+            // Cập nhật giá trị cho input chuyen_mon
+            chuyenMonInput.value = selectedChuyenMon.join(',');
+            
+            // Đặt giá trị mặc định nếu không có gì được chọn và loại tài khoản là giáo viên/trợ giảng
+            if (selectedChuyenMon.length === 0 && 
+                (loaiTaiKhoanSelect.value === 'giao_vien' || loaiTaiKhoanSelect.value === 'tro_giang')) {
+                // Đặt giá trị mặc định là HSK 1 nếu không có gì được chọn
+                document.getElementById('chuyen_mon_hsk1').checked = true;
+                chuyenMonInput.value = 'hsk1';
+            }
+        }
+        
         function checkTaiKhoanType() {
             const selectedValue = loaiTaiKhoanSelect.value;
+            
+            // Bỏ chọn tất cả các vai trò
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Chọn vai trò tương ứng nếu có
+            if (selectedValue) {
+                const vaiTroTen = vaiTroMap[selectedValue];
+                checkboxes.forEach(cb => {
+                    if (cb.dataset.vaiTro === vaiTroTen) {
+                        cb.checked = true;
+                    }
+                });
+            }
             
             // Ẩn hiện phần thông tin học viên
             if (selectedValue === 'hoc_vien') {
@@ -249,6 +310,8 @@
             else if (selectedValue === 'giao_vien' || selectedValue === 'tro_giang') {
                 hocVienInfo.style.display = 'none';
                 giaoVienTroGiangInfo.style.display = 'block';
+                // Cập nhật chuyên môn ngay khi loại tài khoản thay đổi
+                updateChuyenMon();
             } 
             // Ẩn cả hai nếu không chọn hoặc chọn khác
             else {
@@ -257,22 +320,5 @@
             }
         }
     });
-    
-    function processCacChuyenMon() {
-        // Lấy các checkbox đã chọn
-        const chuyenMonArr = [];
-        
-        if (document.getElementById('chuyen_mon_hsk1').checked) chuyenMonArr.push('hsk1');
-        if (document.getElementById('chuyen_mon_hsk2').checked) chuyenMonArr.push('hsk2');
-        if (document.getElementById('chuyen_mon_hsk3').checked) chuyenMonArr.push('hsk3');
-        if (document.getElementById('chuyen_mon_hsk4').checked) chuyenMonArr.push('hsk4');
-        if (document.getElementById('chuyen_mon_hsk5').checked) chuyenMonArr.push('hsk5');
-        
-        // Gán giá trị vào input hidden
-        document.getElementById('chuyen_mon').value = chuyenMonArr.join(',');
-        
-        // Submit form
-        document.querySelector('form').submit();
-    }
 </script>
 @endpush 

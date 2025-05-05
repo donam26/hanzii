@@ -109,7 +109,8 @@ class ProfileController extends Controller
         
         // Validate thông tin
         $request->validate([
-            'ho_ten' => 'required|string|max:255',
+            'ho' => 'required|string|max:255',
+            'ten' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
@@ -123,31 +124,31 @@ class ProfileController extends Controller
             ],
             'ngay_sinh' => 'required|date',
             'dia_chi' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'anh_dai_dien' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
         // Cập nhật thông tin người dùng
-        $nguoiDung->ho_ten = $request->ho_ten;
+        $nguoiDung->ho = $request->ho;
+        $nguoiDung->ten = $request->ten;
         $nguoiDung->email = $request->email;
         $nguoiDung->so_dien_thoai = $request->so_dien_thoai;
         
         // Xử lý avatar nếu có
-        if ($request->hasFile('avatar')) {
+        if ($request->hasFile('anh_dai_dien')) {
             // Xóa ảnh cũ nếu có
-            if ($nguoiDung->avatar && $nguoiDung->avatar !== 'avatars/default.png') {
-                Storage::disk('public')->delete($nguoiDung->avatar);
+            if ($nguoiDung->anh_dai_dien && $nguoiDung->anh_dai_dien !== 'avatars/default.png') {
+                Storage::disk('public')->delete($nguoiDung->anh_dai_dien);
             }
             
             // Lưu ảnh mới
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $nguoiDung->avatar = $avatarPath;
+            $avatarPath = $request->file('anh_dai_dien')->store('avatars', 'public');
+            $nguoiDung->anh_dai_dien = $avatarPath;
         }
         
         $nguoiDung->save();
         
         // Cập nhật thông tin học viên
         $hocVien->ngay_sinh = $request->ngay_sinh;
-        $hocVien->dia_chi = $request->dia_chi;
         $hocVien->save();
         
         return redirect()->route('hoc-vien.profile.index')->with('success', 'Cập nhật thông tin thành công');

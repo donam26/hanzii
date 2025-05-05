@@ -27,15 +27,7 @@
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
                 <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Tên khóa học..." class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
             </div>
-            
-            <div>
-                <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
-                <select id="trang_thai" name="trang_thai" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="dang_hoat_dong" {{ request('trang_thai') == 'dang_hoat_dong' ? 'selected' : '' }}>Đang hoạt động</option>
-                    <option value="tam_ngung" {{ request('trang_thai') == 'tam_ngung' ? 'selected' : '' }}>Tạm ngưng</option>
-                </select>
-            </div>
+        
             
             <div class="flex items-end">
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md">
@@ -60,23 +52,12 @@
                             <i class="fas fa-book text-gray-400 text-4xl"></i>
                         </div>
                     @endif
-                    
-                    <div class="absolute top-0 right-0 mt-2 mr-2">
-                        @if($khoaHoc->trang_thai == 'dang_hoat_dong')
-                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                                Đang hoạt động
-                            </span>
-                        @else
-                            <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
-                                Tạm ngưng
-                            </span>
-                        @endif
-                    </div>
+                
                 </div>
                 
                 <div class="p-4">
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $khoaHoc->ten }}</h3>
-                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ $khoaHoc->mo_ta_ngan }}</p>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ $khoaHoc->mo_ta }}</p>
                     
                     <div class="flex items-center text-sm text-gray-500 mb-3">
                         <i class="fas fa-money-bill-wave text-gray-400 mr-2"></i>
@@ -85,12 +66,12 @@
                     
                     <div class="grid grid-cols-2 gap-2 mb-4">
                         <div class="flex flex-col items-center bg-gray-50 p-2 rounded">
-                            <span class="text-xs text-gray-500">Thời lượng</span>
-                            <span class="font-medium">{{ $khoaHoc->thoi_luong }} buổi</span>
+                            <span class="text-xs text-gray-500">Số bài học</span>
+                            <span class="font-medium">{{ $khoaHoc->tong_so_bai }} bài</span>
                         </div>
                         <div class="flex flex-col items-center bg-gray-50 p-2 rounded">
                             <span class="text-xs text-gray-500">Lớp đang mở</span>
-                            <span class="font-medium">{{ $khoaHoc->lopHocs->where('trang_thai', 'dang_dien_ra')->count() }}</span>
+                            <span class="font-medium">{{ $khoaHoc->lopHocs->whereIn('trang_thai', ['dang_dien_ra', 'dang_hoc'])->count() }}</span>
                         </div>
                     </div>
                     
@@ -113,7 +94,7 @@
                 <div class="bg-gray-50 px-4 py-3 border-t border-gray-200">
                     <div class="flex justify-between items-center">
                         <span class="text-xs text-gray-500">
-                            <i class="fas fa-calendar-alt mr-1"></i> Cập nhật: {{ \Carbon\Carbon::parse($khoaHoc->updated_at)->format('d/m/Y') }}
+                            <i class="fas fa-calendar-alt mr-1"></i> Cập nhật: {{ \Carbon\Carbon::parse($khoaHoc->cap_nhat_luc)->format('d/m/Y') }}
                         </span>
                         <form action="{{ route('admin.khoa-hoc.destroy', $khoaHoc->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa khóa học này?')">
                             @csrf

@@ -180,27 +180,7 @@
             </div>
         </section>
 
-        <!-- Tham gia lớp học -->
-        <section class="py-16 bg-red-600 text-white">
-            <div class="container mx-auto px-4">
-                <div class="flex flex-col md:flex-row items-center justify-between">
-                    <div class="mb-8 md:mb-0 md:w-2/3">
-                        <h2 class="text-2xl font-bold mb-4">Bạn đã có mã lớp học?</h2>
-                        <p class="text-red-100">Nhập mã lớp học để tham gia ngay lớp học của bạn. Mã lớp thường được cung cấp bởi giáo viên.</p>
-                    </div>
-                    <div class="w-full md:w-1/3">
-                        <form action="{{ route('hoc-vien.lop-hoc.tim-kiem') }}" method="POST" class="flex flex-col sm:flex-row">
-                            @csrf
-                            <input type="text" name="ma_lop" placeholder="Nhập mã lớp học..." class="flex-grow px-4 py-3 rounded-l text-gray-900 focus:outline-none">
-                            <button type="submit" class="bg-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-r hover:bg-yellow-400 transition duration-300">
-                                Tìm kiếm
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+       
         <!-- Liên hệ -->
         <section id="lien-he" class="py-20 bg-white">
             <div class="container mx-auto px-4">

@@ -76,7 +76,7 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900">Chi tiết bài làm</h3>
                     </div>
                     <div class="border-t border-gray-200">
-                        @if($baiTapDaNop->chiTietCauTraLois->count() > 0)
+                        @if(isset($baiTapDaNop->chiTietCauTraLois) && $baiTapDaNop->chiTietCauTraLois->count() > 0)
                             @foreach ($baiTapDaNop->chiTietCauTraLois as $index => $chiTiet)
                                 <div class="px-4 py-5 sm:px-6 {{ $loop->odd ? 'bg-white' : 'bg-gray-50' }} border-b border-gray-200">
                                     <div class="flex items-center mb-2">
@@ -84,7 +84,11 @@
                                             {{ $index + 1 }}
                                         </span>
                                         <h4 class="text-md font-medium text-gray-900">
-                                            {!! $chiTiet->cauHoi->noi_dung !!}
+                                            @if(isset($chiTiet->cauHoi) && isset($chiTiet->cauHoi->noi_dung))
+                                                {!! $chiTiet->cauHoi->noi_dung !!}
+                                            @else
+                                                <span class="text-yellow-600">Không tìm thấy nội dung câu hỏi</span>
+                                            @endif
                                         </h4>
                                         @if ($chiTiet->la_dap_an_dung)
                                             <span class="ml-2 h-5 w-5 text-green-600">
@@ -116,7 +120,13 @@
                                             </span>
                                             <div>
                                                 <p class="text-sm font-medium">Đáp án của bạn:</p>
-                                                <p class="text-sm">{!! $chiTiet->dapAn->noi_dung !!}</p>
+                                                <p class="text-sm">
+                                                    @if(isset($chiTiet->dapAn) && isset($chiTiet->dapAn->noi_dung))
+                                                        {!! $chiTiet->dapAn->noi_dung !!}
+                                                    @else
+                                                        <span class="text-yellow-600">Không tìm thấy nội dung đáp án</span>
+                                                    @endif
+                                                </p>
                                             </div>
                                         </div>
                                         
@@ -130,11 +140,15 @@
                                                 <div>
                                                     <p class="text-sm font-medium">Đáp án đúng:</p>
                                                     <p class="text-sm">
-                                                        @foreach ($chiTiet->cauHoi->dapAns as $dapAn)
-                                                            @if ($dapAn->la_dap_an_dung)
-                                                                {!! $dapAn->noi_dung !!}
-                                                            @endif
-                                                        @endforeach
+                                                        @if(isset($chiTiet->cauHoi) && isset($chiTiet->cauHoi->dapAns))
+                                                            @foreach ($chiTiet->cauHoi->dapAns as $dapAn)
+                                                                @if ($dapAn->la_dap_an_dung)
+                                                                    {!! $dapAn->noi_dung !!}
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                            <span class="text-yellow-600">Không tìm thấy thông tin đáp án</span>
+                                                        @endif
                                                     </p>
                                                 </div>
                                             </div>

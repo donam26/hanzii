@@ -32,6 +32,7 @@ class NguoiDung extends Model
         'mat_khau',
         'loai_tai_khoan',
         'dia_chi',
+        'anh_dai_dien',
     ];
 
     /**

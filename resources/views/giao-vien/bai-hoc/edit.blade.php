@@ -96,8 +96,6 @@
                                         <option value="">-- Chọn loại bài học --</option>
                                         <option value="video" {{ old('loai', $baiHoc->loai) == 'video' ? 'selected' : '' }}>Video</option>
                                         <option value="van_ban" {{ old('loai', $baiHoc->loai) == 'van_ban' ? 'selected' : '' }}>Văn bản</option>
-                                        <option value="slide" {{ old('loai', $baiHoc->loai) == 'slide' ? 'selected' : '' }}>Slide</option>
-                                        <option value="bai_tap" {{ old('loai', $baiHoc->loai) == 'bai_tap' ? 'selected' : '' }}>Bài tập</option>
                                     </select>
                                 </div>
                             </div>

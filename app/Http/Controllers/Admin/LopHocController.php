@@ -143,7 +143,7 @@ class LopHocController extends Controller
             'lich_hoc' => 'required|string',
             'ngay_bat_dau' => 'required|date',
             'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
-            'trang_thai' => 'required|in:sap_,dang_dien_ra,da_ket_thuc',
+            'trang_thai' => 'required|in:sap_khai_giang,dang_dien_ra,da_ket_thuc',
             'so_luong_toi_da' => 'required|integer|min:1|max:100',
         ]);
 
@@ -368,7 +368,12 @@ class LopHocController extends Controller
 
         $lopHoc = LopHoc::findOrFail($id);
         
-      
+        // Kiểm tra sĩ số tối đa của lớp
+        $currentStudents = $lopHoc->dangKyHocs()->where('trang_thai', 'da_xac_nhan')->count();
+        
+        if ($currentStudents >= $lopHoc->so_luong_toi_da) {
+            return back()->with('error', 'Lớp học đã đạt sĩ số tối đa (' . $lopHoc->so_luong_toi_da . ' học viên)');
+        }
         
         // Kiểm tra học viên đã đăng ký chưa
         $exists = DangKyHoc::where('lop_hoc_id', $id)
@@ -416,26 +421,13 @@ class LopHocController extends Controller
     {
         $lopHoc = LopHoc::with(['khoaHoc'])->findOrFail($id);
         
-        $pendingRequests = YeuCauThamGia::where('lop_hoc_id', $id)
-            ->where('trang_thai', 'cho_xac_nhan')
+        $yeuCauThamGia = YeuCauThamGia::where('lop_hoc_id', $id)
             ->with('hocVien.nguoiDung')
-            ->get();
-            
-        $approvedRequests = YeuCauThamGia::where('lop_hoc_id', $id)
-            ->where('trang_thai', 'da_duyet')
-            ->with('hocVien.nguoiDung')
-            ->get();
-            
-        $rejectedRequests = YeuCauThamGia::where('lop_hoc_id', $id)
-            ->where('trang_thai', 'tu_choi')
-            ->with('hocVien.nguoiDung')
-            ->get();
+            ->paginate(10);
         
         return view('admin.lop-hoc.yeu-cau-tham-gia', compact(
             'lopHoc',
-            'pendingRequests',
-            'approvedRequests',
-            'rejectedRequests'
+            'yeuCauThamGia'
         ));
     }
     

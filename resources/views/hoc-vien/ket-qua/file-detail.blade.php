@@ -6,17 +6,7 @@
 @php
     $active = 'ket-qua';
     $role = 'hoc_vien';
-    
-    function formatFileSize($size)
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $i = 0;
-        while ($size >= 1024 && $i < count($units) - 1) {
-            $size /= 1024;
-            $i++;
-        }
-        return round($size, 2) . ' ' . $units[$i];
-    }
+    // Hàm formatFileSize đã được chuyển vào App\Helpers\FileHelper
 @endphp
 
 @section('content')
@@ -177,7 +167,7 @@
                                     <p class="text-sm text-gray-500">
                                         {{ strtoupper(pathinfo($baiTapDaNop->file_path, PATHINFO_EXTENSION)) }} 
                                         @if(isset($baiTapDaNop->kich_thuoc))
-                                            - {{ formatFileSize($baiTapDaNop->kich_thuoc) }}
+                                            - {{ \App\Helpers\FileHelper::formatFileSize($baiTapDaNop->kich_thuoc) }}
                                         @endif
                                     </p>
                                 </div>

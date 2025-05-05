@@ -65,10 +65,10 @@
                             $statusClass = '';
                             $statusText = '';
                             
-                            if ($lopHoc->ngay_bat_dau > now()) {
+                            if ($lopHoc->trang_thai_hien_thi == 'sap_khai_giang') {
                                 $statusClass = 'bg-yellow-100 text-yellow-800';
                                 $statusText = 'Sắp diễn ra';
-                            } elseif ($lopHoc->ngay_ket_thuc > now()) {
+                            } elseif ($lopHoc->trang_thai_hien_thi == 'dang_dien_ra') {
                                 $statusClass = 'bg-green-100 text-green-800';
                                 $statusText = 'Đang diễn ra';
                             } else {

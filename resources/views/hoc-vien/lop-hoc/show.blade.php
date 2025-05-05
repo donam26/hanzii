@@ -303,8 +303,11 @@
     <!-- Học viên tab -->
     <div id="tab-hoc-vien" class="tab-content hidden">
         <div class="bg-white shadow rounded-lg overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                 <h2 class="text-lg font-medium text-gray-900">Danh sách học viên trong lớp ({{ $danhSachHocVien->count() }})</h2>
+                <a href="{{ route('hoc-vien.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    <i class="fas fa-list mr-2"></i> Xem đầy đủ
+                </a>
             </div>
             
             @if($danhSachHocVien->isEmpty())

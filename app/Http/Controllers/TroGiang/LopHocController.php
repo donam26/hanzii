@@ -37,9 +37,7 @@ class LopHocController extends Controller
         $trangThai = $request->input('trang_thai');
         
         // Lấy danh sách lớp học được phân công
-        $query = LopHoc::whereHas('phanCongGiangDays', function ($query) use ($troGiang) {
-                $query->where('tro_giang_id', $troGiang->id);
-            })
+        $query = LopHoc::where('tro_giang_id', $troGiang->id)
             ->with(['khoaHoc', 'giaoVien.nguoiDung'])
             ->withCount(['dangKyHocs' => function ($query) {
                 $query->whereIn('trang_thai', ['dang_hoc', 'da_duyet']);
@@ -74,25 +72,22 @@ class LopHocController extends Controller
                 ->with('error', 'Không tìm thấy thông tin trợ giảng');
         }
         
-        // Kiểm tra lớp học có được phân công cho trợ giảng này không
-        $phanCong = PhanCongGiangDay::where('tro_giang_id', $troGiang->id)
-            ->where('lop_hoc_id', $id)
-            ->first();
+        // Kiểm tra lớp học có phải của trợ giảng này không
+        $lopHoc = LopHoc::where('id', $id)
+            ->where('tro_giang_id', $troGiang->id)
+            ->with([
+                'khoaHoc',
+                'giaoVien.nguoiDung',
+                'baiHocLops' => function ($query) {
+                    $query->orderBy('so_thu_tu', 'asc');
+                },
+                'baiHocLops.baiHoc',
+            ])->first();
             
-        if (!$phanCong) {
+        if (!$lopHoc) {
             return redirect()->route('tro-giang.lop-hoc.index')
                 ->with('error', 'Bạn không có quyền truy cập vào lớp học này');
         }
-        
-        // Lấy thông tin lớp học
-        $lopHoc = LopHoc::with([
-            'khoaHoc',
-            'giaoVien.nguoiDung',
-            'baiHocLops' => function ($query) {
-                $query->orderBy('so_thu_tu', 'asc');
-            },
-            'baiHocLops.baiHoc',
-        ])->findOrFail($id);
         
         // Lấy danh sách học viên của lớp
         $hocViens = DangKyHoc::where('lop_hoc_id', $id)
@@ -100,24 +95,9 @@ class LopHocController extends Controller
             ->with('hocVien.nguoiDung')
             ->get();
             
-        // Thống kê tổng số bài tập đã nộp và cần chấm
-        $thongKeBaiTap = DB::table('bai_tap_da_nops')
-            ->join('bai_taps', 'bai_tap_da_nops.bai_tap_id', '=', 'bai_taps.id')
-            ->join('bai_hocs', 'bai_taps.bai_hoc_id', '=', 'bai_hocs.id')
-            ->join('bai_hoc_lops', function ($join) use ($id) {
-                $join->on('bai_hocs.id', '=', 'bai_hoc_lops.bai_hoc_id')
-                     ->where('bai_hoc_lops.lop_hoc_id', '=', $id);
-            })
-            ->select(
-                DB::raw('COUNT(*) as tong_bai_nop'),
-                DB::raw('SUM(CASE WHEN bai_tap_da_nops.trang_thai = "da_nop" AND bai_tap_da_nops.diem IS NULL THEN 1 ELSE 0 END) as can_cham')
-            )
-            ->first();
-            
         return view('tro-giang.lop-hoc.show', compact(
             'lopHoc',
-            'hocViens',
-            'thongKeBaiTap'
+            'hocViens'
         ));
     }
 

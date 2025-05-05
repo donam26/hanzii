@@ -97,16 +97,36 @@ class BaiHocController extends Controller
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         // Validate dữ liệu đầu vào
-        $validated = $request->validate([
-            'lop_hoc_id' => 'required|exists:lop_hocs,id',
-            'tieu_de' => 'required|string|max:255',
-            'noi_dung' => 'required|string',
-            'thu_tu' => 'required|integer|min:1',
-            'thoi_luong' => 'required|integer|min:1',
-            'loai' => 'required|in:video,van_ban,slide,bai_tap',
-            'video_url' => 'nullable|string|max:255',
-            'files.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar|max:10240',
-        ]);
+        try {
+            $validated = $request->validate([
+                'lop_hoc_id' => 'required|exists:lop_hocs,id',
+                'tieu_de' => 'required|string|max:255',
+                'noi_dung' => 'required|string',
+                'thu_tu' => 'required|integer|min:1',
+                'thoi_luong' => 'required|integer|min:1',
+                'loai' => 'required|in:video,van_ban',
+                'video_url' => 'nullable|string|max:255',
+                'files.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar|max:2048',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Xử lý lỗi liên quan đến file quá lớn
+            $errors = $e->validator->errors();
+            $fileErrors = [];
+            
+            foreach ($errors->get('files.*') as $key => $messages) {
+                if (strpos($key, 'files.') === 0 && str_contains(implode('', $messages), 'kilobytes')) {
+                    $fileErrors[] = 'Tệp quá lớn. Kích thước tối đa cho phép là 2MB.';
+                } else {
+                    $fileErrors = array_merge($fileErrors, $messages);
+                }
+            }
+            
+            if (!empty($fileErrors)) {
+                return back()->withErrors(['files' => $fileErrors])->withInput();
+            }
+            
+            throw $e;
+        }
         
         // Kiểm tra lớp học thuộc về giáo viên này không
         $lopHoc = LopHoc::where('id', $validated['lop_hoc_id'])
@@ -137,22 +157,44 @@ class BaiHocController extends Controller
             
             // Xử lý tệp đính kèm nếu có
             if ($request->hasFile('files')) {
-                foreach ($request->file('files') as $file) {
-                    $path = $file->store('tai-lieu-bo-tro', 'public');
-                    
-                    $taiLieu = new \App\Models\TaiLieuBoTro();
-                    $taiLieu->bai_hoc_id = $baiHoc->id;
-                    $taiLieu->tieu_de = $file->getClientOriginalName();
-                    $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
-                    $taiLieu->duong_dan_file = $path;
-                    $taiLieu->save();
+                $uploadedFiles = 0;
+                $failedFiles = [];
+                
+                foreach ($request->file('files') as $index => $file) {
+                    if ($file->isValid()) {
+                        try {
+                            $path = $file->store('tai-lieu-bo-tro', 'public');
+                            
+                            $taiLieu = new \App\Models\TaiLieuBoTro();
+                            $taiLieu->bai_hoc_id = $baiHoc->id;
+                            $taiLieu->tieu_de = $file->getClientOriginalName();
+                            $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
+                            $taiLieu->duong_dan_file = $path;
+                            $taiLieu->save();
+                            
+                            $uploadedFiles++;
+                        } catch (\Exception $e) {
+                            $failedFiles[] = $file->getClientOriginalName() . ' (Lỗi: ' . $e->getMessage() . ')';
+                        }
+                    } else {
+                        $failedFiles[] = $file->getClientOriginalName() . ' (Tệp không hợp lệ)';
+                    }
+                }
+                
+                if (!empty($failedFiles)) {
+                    \Illuminate\Support\Facades\Log::error('Lỗi tải tệp: ', $failedFiles);
                 }
             }
             
             DB::commit();
             
+            if (isset($failedFiles) && !empty($failedFiles)) {
+                return redirect()->route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $validated['lop_hoc_id']])
+                    ->with('warning', 'Đã tạo bài học mới, nhưng một số tệp tải lên không thành công: ' . implode(', ', $failedFiles));
+            }
+            
             return redirect()->route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $validated['lop_hoc_id']])
-                ->with('success', 'Đã tạo bài học mới thành công');
+                ->with('success', 'Đã tạo bài học mới thành công' . (isset($uploadedFiles) && $uploadedFiles > 0 ? ' với ' . $uploadedFiles . ' tài liệu đính kèm' : ''));
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage())->withInput();
@@ -252,7 +294,7 @@ class BaiHocController extends Controller
             'noi_dung' => 'required|string',
             'thu_tu' => 'required|integer|min:1',
             'thoi_luong' => 'required|integer|min:1',
-            'loai' => 'required|in:video,van_ban,slide,bai_tap',
+            'loai' => 'required|in:video,van_ban',
             'url_video' => 'nullable|string|max:255',
             'files.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar|max:10240',
         ]);

@@ -9,17 +9,6 @@
 @endphp
 
 @section('content')
-    <div class="mb-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Thống kê đánh giá của học viên</h2>
-            <div class="mt-4 md:mt-0 flex">
-                <a href="{{ route('admin.thong-ke.danh-gia.export') }}" class="inline-flex items-center justify-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 active:bg-green-700 disabled:opacity-25 transition">
-                    <i class="fas fa-file-excel mr-2"></i> Xuất Excel
-                </a>
-            </div>
-        </div>
-    </div>
-
     <!-- Bộ lọc -->
     <div class="bg-white shadow rounded-lg mb-6 p-4">
         <form action="{{ route('admin.thong-ke.danh-gia') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

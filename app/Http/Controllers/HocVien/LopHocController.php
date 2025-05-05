@@ -673,4 +673,59 @@ class LopHocController extends Controller
             
         return view('hoc-vien.lop-hoc.yeu-cau', compact('dangKyHoc', 'thongKe'));
     }
+
+    /**
+     * Hiển thị danh sách học viên trong lớp học
+     */
+    public function danhSachHocVien($id)
+    {
+        $nguoiDungId = session('nguoi_dung_id');
+        if (!$nguoiDungId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục');
+        }
+        
+        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        if (!$hocVien) {
+            return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
+        }
+        
+        // Kiểm tra học viên có thuộc lớp này không
+        $kiemTraDangKy = DangKyHoc::where('hoc_vien_id', $hocVien->id)
+            ->where('lop_hoc_id', $id)
+            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->exists();
+            
+        if (!$kiemTraDangKy) {
+            // Thử kiểm tra qua quan hệ
+            $lopHocIds = $hocVien->lopHocs->pluck('id')->toArray();
+            if (!in_array($id, $lopHocIds)) {
+                return redirect()->route('hoc-vien.lop-hoc.index')
+                    ->with('error', 'Bạn không có quyền truy cập lớp học này');
+            }
+        }
+        
+        // Lấy thông tin lớp học 
+        $lopHoc = LopHoc::with([
+            'khoaHoc', 
+            'giaoVien.nguoiDung',
+            'troGiang.nguoiDung'
+        ])
+        ->findOrFail($id);
+        
+        // Lấy danh sách học viên đã đăng ký
+        $dangKyHocs = DangKyHoc::with(['hocVien.nguoiDung'])
+            ->where('lop_hoc_id', $id)
+            ->whereIn('trang_thai', ['da_duyet', 'dang_hoc', 'da_xac_nhan', 'da_thanh_toan'])
+            ->get();
+            
+        // Đếm số lượng học viên
+        $tongSoHocVien = $dangKyHocs->count();
+        
+        return view('hoc-vien.lop-hoc.danh-sach-hoc-vien', compact(
+            'lopHoc', 
+            'dangKyHocs', 
+            'tongSoHocVien',
+            'hocVien'
+        ));
+    }
 } 
