@@ -96,6 +96,7 @@
                         <span>Quản lý giảng viên</span>
                     </div>
                 </a>
+          
             @elseif($role === 'giao_vien')
                 <a href="{{ route('giao-vien.dashboard') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'dashboard' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
                     <div class="flex items-center">

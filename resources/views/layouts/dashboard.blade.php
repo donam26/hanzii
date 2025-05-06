@@ -264,7 +264,7 @@
                                 x-transition:leave-start="transform opacity-100 scale-100" 
                                 x-transition:leave-end="transform opacity-0 scale-95" 
                                 class="absolute right-0 w-80 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
-                                style="max-height: 400px; overflow-y: auto;">
+                                style="max-height: 400px; overflow-y: auto; z-index: 100;">
                                 
                                 <div class="py-2 px-3 border-b border-gray-100 flex justify-between items-center">
                                     <h3 class="text-sm font-semibold text-gray-800">Thông báo</h3>
@@ -283,13 +283,13 @@
                                 
                                 <template x-for="notification in notifications" :key="notification.id">
                                     <div @click="readNotification(notification)" 
-                                        :class="{ 'bg-blue-50': !notification.da_doc }"
+                                        :class="{ 'bg-blue-50': !notification.read_at }"
                                         class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
                                         <div class="flex justify-between items-start">
-                                            <p class="text-sm font-medium text-gray-900" x-text="notification.tieu_de"></p>
-                                            <span x-show="!notification.da_doc" class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+                                            <p class="text-sm font-medium text-gray-900" x-text="notification.data.tieu_de || 'Thông báo mới'"></p>
+                                            <span x-show="!notification.read_at" class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
                                         </div>
-                                        <p class="text-xs text-gray-600 mt-1 line-clamp-2" x-text="notification.noi_dung"></p>
+                                        <p class="text-xs text-gray-600 mt-1 line-clamp-2" x-text="notification.data.noi_dung || ''"></p>
                                         <p class="text-xs text-gray-500 mt-1" x-text="formatDateTime(notification.created_at)"></p>
                                     </div>
                                 </template>
@@ -447,10 +447,13 @@
                 
                 loadNotifications() {
                     this.loading = true;
+                    console.log('Đang tải thông báo...');
                     
                     fetch(`/api/notifications?page=${this.page}`)
                         .then(response => response.json())
                         .then(data => {
+                            console.log('Dữ liệu thông báo từ API:', data);
+                            
                             if (data.success) {
                                 if (this.page === 1) {
                                     this.notifications = data.data.data;
@@ -458,7 +461,11 @@
                                     this.notifications = [...this.notifications, ...data.data.data];
                                 }
                                 
+                                console.log('Danh sách thông báo sau khi xử lý:', this.notifications);
+                                
                                 this.hasMore = data.data.current_page < data.data.last_page;
+                            } else {
+                                console.error('API trả về lỗi:', data.message || 'Không xác định');
                             }
                             this.loading = false;
                         })
@@ -477,7 +484,9 @@
                     fetch('/api/notifications/unread-count')
                         .then(response => response.json())
                         .then(data => {
-                            this.unreadCount = data.unread_count;
+                            if (data.success) {
+                                this.unreadCount = data.unread_count;
+                            }
                         })
                         .catch(error => {
                             console.error('Lỗi khi tải số lượng thông báo chưa đọc:', error);
@@ -485,7 +494,7 @@
                 },
                 
                 readNotification(notification) {
-                    if (!notification.da_doc) {
+                    if (!notification.read_at) {
                         fetch(`/api/notifications/${notification.id}/mark-as-read`, {
                             method: 'PATCH',
                             headers: {
@@ -496,7 +505,7 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                notification.da_doc = true;
+                                notification.read_at = new Date().toISOString();
                                 this.updateUnreadCount();
                             }
                         })
@@ -506,8 +515,8 @@
                     }
                     
                     // Chuyển hướng đến URL của thông báo nếu có
-                    if (notification.url) {
-                        window.location.href = notification.url;
+                    if (notification.data && notification.data.url) {
+                        window.location.href = notification.data.url;
                     }
                 },
                 
@@ -523,7 +532,7 @@
                     .then(data => {
                         if (data.success) {
                             this.notifications.forEach(notification => {
-                                notification.da_doc = true;
+                                notification.read_at = new Date().toISOString();
                             });
                             this.unreadCount = 0;
                         }

@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class NguoiDung extends Model
+class NguoiDung extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * Tên bảng tương ứng trong cơ sở dữ liệu
@@ -42,6 +43,16 @@ class NguoiDung extends Model
      */
     const CREATED_AT = 'tao_luc';
     const UPDATED_AT = 'cap_nhat_luc';
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'mat_khau',
+        'remember_token',
+    ];
 
     /**
      * Quan hệ 1-1 với giáo viên
@@ -90,5 +101,26 @@ class NguoiDung extends Model
     public function getHoTenAttribute()
     {
         return "{$this->ho} {$this->ten}";
+    }
+
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->mat_khau;
+    }
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return array|string
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
     }
 }

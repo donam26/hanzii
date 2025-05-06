@@ -12,6 +12,8 @@ use App\Http\Controllers\HocVien\BaiTapController as HocVienBaiTapController;
 use App\Http\Controllers\HocVien\KetQuaController as HocVienKetQuaController;
 use App\Http\Controllers\GiaoVien\DashboardController as GiaoVienDashboardController;
 use App\Http\Controllers\TroGiang\DashboardController as TroGiangDashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LienHeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,17 @@ use App\Http\Controllers\TroGiang\DashboardController as TroGiangDashboardContro
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+// Route cho form liên hệ
+Route::get('/lien-he', [LienHeController::class, 'index'])->name('lien-he');
+Route::post('/lien-he', [LienHeController::class, 'store'])->name('lien-he.store');
+
+// Route thử nghiệm thông báo (chỉ để test)
+Route::get('/test-thong-bao', [LienHeController::class, 'testNotification'])->name('test-thong-bao');
+
+// Route cho danh sách khóa học và chi tiết khóa học (public)
+Route::get('/khoa-hoc-all', [HomeController::class, 'allCourses'])->name('all-courses');
+Route::get('/khoa-hoc/{id}', [HomeController::class, 'showCourse'])->name('course.show');
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -300,6 +313,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/luong/{id}/thanh-toan', [App\Http\Controllers\Admin\LuongController::class, 'thanhToan'])->name('luong.thanh-toan');
     Route::get('/luong/{id}/huy', [App\Http\Controllers\Admin\LuongController::class, 'huy'])->name('luong.huy');
     Route::get('/luong-thong-ke', [App\Http\Controllers\Admin\LuongController::class, 'thongKe'])->name('luong.thong-ke');
+    
+    // Quản lý liên hệ
+    Route::prefix('lien-he')->name('lien-he.')->group(function () {
+        Route::get('/', [LienHeController::class, 'danhSach'])->name('index');
+        Route::get('/{id}', [LienHeController::class, 'show'])->name('show');
+        Route::put('/{id}/cap-nhat-trang-thai', [LienHeController::class, 'capNhatTrangThai'])->name('cap-nhat-trang-thai');
+        Route::post('/{id}/send-response', [LienHeController::class, 'sendResponse'])->name('send-response');
+    });
 });
 
 // Routes cho quản lý lương

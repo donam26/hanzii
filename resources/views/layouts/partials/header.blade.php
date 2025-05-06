@@ -11,6 +11,8 @@
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex space-x-6">
                 <a href="{{ route('welcome') }}" class="text-gray-700 hover:text-red-600 py-2">Trang chủ</a>
+                <a href="{{ route('all-courses') }}" class="text-gray-700 hover:text-red-600 py-2">Khóa học</a>
+                <a href="{{ route('lien-he') }}" class="text-gray-700 hover:text-red-600 py-2">Liên hệ</a>
                 
                 @auth
                     @if(auth()->user()->loai_tai_khoan == 'hoc_vien')
@@ -77,6 +79,8 @@
                 <div x-show="open" @click.away="open = false" class="absolute top-20 right-0 left-0 bg-white shadow-md z-50">
                     <div class="px-2 pt-2 pb-3 space-y-1">
                         <a href="{{ route('welcome') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Trang chủ</a>
+                        <a href="{{ route('all-courses') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Khóa học</a>
+                        <a href="{{ route('lien-he') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Liên hệ</a>
                         
                         @auth
                             @if(auth()->user()->loai_tai_khoan == 'hoc_vien')
