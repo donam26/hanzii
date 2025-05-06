@@ -42,4 +42,42 @@ class TaiLieuController extends Controller
         // Trả về file để tải xuống
         return response()->download(storage_path('app/public/' . $filePath), $taiLieu->tieu_de);
     }
+    
+    /**
+     * Xóa tài liệu bổ trợ
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        // Lấy ID người dùng từ session
+        $nguoiDungId = session('nguoi_dung_id');
+        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$giaoVien) {
+            return redirect()->route('login')->with('error', 'Không tìm thấy thông tin giáo viên.');
+        }
+        
+        try {
+            // Lấy thông tin tài liệu và kiểm tra quyền truy cập
+            $taiLieu = TaiLieuBoTro::with('baiHoc.baiHocLops.lopHoc')
+                ->whereHas('baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
+                    $query->where('giao_vien_id', $giaoVien->id);
+                })
+                ->findOrFail($id);
+            
+            // Xóa file khỏi storage nếu tồn tại
+            if ($taiLieu->duong_dan_file && Storage::disk('public')->exists($taiLieu->duong_dan_file)) {
+                Storage::disk('public')->delete($taiLieu->duong_dan_file);
+            }
+            
+            // Xóa tài liệu khỏi database
+            $taiLieu->delete();
+            
+            return back()->with('success', 'Đã xóa tài liệu thành công.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra khi xóa tài liệu: ' . $e->getMessage());
+        }
+    }
 } 

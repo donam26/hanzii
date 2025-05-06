@@ -112,78 +112,42 @@
                     </div>
                 </div>
 
-                <!-- Danh sách bài tập -->
+                <!-- Danh sách tài liệu bổ trợ -->
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Bài tập liên quan</h3>
-                        <a href="{{ route('giao-vien.bai-tap.create', ['bai_hoc_id' => $baiHoc->id]) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Thêm bài tập
+                        <h3 class="text-lg font-semibold text-gray-900">Tài liệu đính kèm</h3>
+                        <a href="{{ route('giao-vien.bai-hoc.edit', $baiHoc->id) }}#tai-lieu" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-plus mr-1.5"></i>
+                            Thêm tài liệu
                         </a>
                     </div>
 
-                    @if($baiTaps->count() > 0)
+                    @if($baiHoc->taiLieuBoTros->count() > 0)
                         <div class="bg-white shadow overflow-hidden sm:rounded-md">
                             <ul class="divide-y divide-gray-200">
-                                @foreach($baiTaps as $baiTap)
-                                    <li>
-                                        <div class="px-4 py-4 sm:px-6">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
-                                                        <span class="text-lg font-medium">{{ $loop->iteration }}</span>
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <h4 class="text-base font-medium text-gray-900">
-                                                            <a href="{{ route('giao-vien.bai-tap.show', $baiTap->id) }}" class="hover:text-red-600">
-                                                                {{ $baiTap->tieu_de }}
-                                                            </a>
-                                                        </h4>
-                                                        <div class="flex space-x-4 mt-1">
-                                                            <span class="flex items-center text-sm text-gray-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                </svg>
-                                                                {{ $baiTap->thoi_gian_lam }} phút
-                                                            </span>
-                                                            <span class="flex items-center text-sm text-gray-500">
-                                                                @if($baiTap->loai == 'tu_luan')
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                                    </svg>
-                                                                    Tự luận
-                                                                @elseif($baiTap->loai == 'file')
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                                    </svg>
-                                                                    Nộp File
-                                                                @else
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                                    </svg>
-                                                                    {{ $baiTap->loai }}
-                                                                @endif
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                @foreach($baiHoc->taiLieuBoTros as $taiLieu)
+                                    <li class="px-4 py-3 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
+                                                    <i class="fas fa-file-alt"></i>
                                                 </div>
-                                                <div class="flex items-center space-x-2">
-                                                    <div class="ml-4 flex-shrink-0 flex space-x-2">
-                                                        <a href="{{ route('giao-vien.bai-tap.show', $baiTap->id) }}" class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                            </svg>
-                                                        </a>
-                                                        <a href="{{ route('giao-vien.bai-tap.edit', $baiTap->id) }}" class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                            </svg>
-                                                        </a>
-                                                    </div>
+                                                <div class="ml-4">
+                                                    <h4 class="text-sm font-medium text-gray-900">{{ $taiLieu->tieu_de }}</h4>
+                                                    <p class="text-xs text-gray-500">{{ $taiLieu->created_at ? $taiLieu->created_at->format('d/m/Y H:i') : 'Chưa có thông tin' }}</p>
                                                 </div>
+                                            </div>
+                                            <div>
+                                                <a href="{{ Storage::url($taiLieu->duong_dan_file) }}" target="_blank" class="inline-flex items-center py-1.5 px-3 rounded-md bg-blue-100 text-blue-700 text-sm hover:bg-blue-200 transition-colors">
+                                                    <i class="fas fa-download mr-1"></i> Tải xuống
+                                                </a>
+                                                <form action="{{ route('giao-vien.tai-lieu.destroy', $taiLieu->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="bg-red-100 text-sm text-red-600 hover:text-red-800  px-2 py-1 rounded-md" onclick="return confirm('Bạn có chắc chắn muốn xóa tài liệu này?')">
+                                                            <i class="fas fa-trash-alt"></i> Xóa
+                                                        </button>
+                                                    </form>
                                             </div>
                                         </div>
                                     </li>
@@ -192,24 +156,18 @@
                         </div>
                     @else
                         <div class="bg-white shadow overflow-hidden sm:rounded-md">
-                            <div class="px-4 py-12 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                                </svg>
-                                <h3 class="mt-2 text-lg font-medium text-gray-900">Chưa có bài tập nào</h3>
-                                <p class="mt-1 text-sm text-gray-500">Tạo bài tập để đánh giá kiến thức của học viên.</p>
-                                <div class="mt-6">
-                                    <a href="{{ route('giao-vien.bai-tap.create', ['bai_hoc_id' => $baiHoc->id]) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                        Thêm bài tập mới
-                                    </a>
-                                </div>
+                            <div class="px-4 py-8 text-center">
+                                <i class="fas fa-file-alt text-gray-300 text-4xl mb-3"></i>
+                                <p class="text-gray-500">Chưa có tài liệu đính kèm cho bài học này</p>
+                                <a href="{{ route('giao-vien.bai-hoc.edit', $baiHoc->id) }}#tai-lieu" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <i class="fas fa-plus mr-2"></i> Thêm tài liệu
+                                </a>
                             </div>
                         </div>
                     @endif
                 </div>
+
+        
             </div>
             
             <div class="flex justify-between px-6 py-3 bg-gray-50 border-t border-gray-200">

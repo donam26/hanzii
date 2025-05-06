@@ -245,4 +245,26 @@ class BaiHocController extends Controller
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Xóa tài liệu bổ trợ
+     */
+    public function xoaTaiLieu($id)
+    {
+        try {
+            $taiLieu = \App\Models\TaiLieuBoTro::findOrFail($id);
+            $baiHocId = $taiLieu->bai_hoc_id;
+            
+            // Xóa file vật lý
+            Storage::disk('public')->delete($taiLieu->duong_dan_file);
+            
+            // Xóa record trong database
+            $taiLieu->delete();
+            
+            return redirect()->route('admin.bai-hoc.show', $baiHocId)
+                ->with('success', 'Tài liệu đã được xóa thành công');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
+    }
 } 

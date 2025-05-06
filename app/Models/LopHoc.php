@@ -35,6 +35,7 @@ class LopHoc extends Model
         'ngay_bat_dau',
         'ngay_ket_thuc',
         'trang_thai',
+        'so_luong_toi_da',
     ];
 
     /**

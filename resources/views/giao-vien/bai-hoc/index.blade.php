@@ -10,195 +10,165 @@
 
 @section('content')
     <div class="mb-6">
-        <div class="flex items-center mb-4">
-            <a href="{{ route('giao-vien.lop-hoc.index') }}" class="text-red-600 hover:text-red-800 mr-2">
-                <i class="fas fa-arrow-left"></i> Danh sách lớp
-            </a>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800">Danh sách bài học lớp {{ $lopHoc->ten }}</h2>
+                <p class="mt-1 text-sm text-gray-600">Khóa học: {{ $lopHoc->khoaHoc->ten }}</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex space-x-2">
+                <a href="{{ route('giao-vien.lop-hoc.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 active:bg-gray-700 disabled:opacity-25 transition">
+                    <i class="fas fa-arrow-left mr-2"></i> Danh sách lớp
+                </a>
+                <a href="{{ route('giao-vien.bai-hoc.create', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 active:bg-red-700 disabled:opacity-25 transition">
+                    <i class="fas fa-plus mr-2"></i> Thêm bài học mới
+                </a>
+            </div>
         </div>
-        
-        <!-- Thông tin lớp học -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-            <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <div>
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Thông tin lớp học: {{ $lopHoc->ten }}</h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">{{ $lopHoc->khoaHoc->ten }}</p>
-                </div>
-                <div>
+    </div>
+    
+    <!-- Thông báo -->
+    @if(session('success'))
+        <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+            <p class="font-bold">Thành công!</p>
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+            <p class="font-bold">Lỗi!</p>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
+    <!-- Thông tin lớp học -->
+    <div class="bg-white shadow rounded-lg mb-6 p-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Thông tin lớp học</h3>
+                <p class="mt-1 text-sm text-gray-900">Mã lớp: {{ $lopHoc->ma_lop }}</p>
+                <p class="mt-1 text-sm text-gray-900">Hình thức: {{ $lopHoc->hinh_thuc_hoc == 'online' ? 'Trực tuyến' : 'Tại trung tâm' }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Lịch học</h3>
+                <p class="mt-1 text-sm text-gray-900">Lịch học: {{ $lopHoc->lich_hoc }}</p>
+                <p class="mt-1 text-sm text-gray-900">Thời gian: {{ \Carbon\Carbon::parse($lopHoc->ngay_bat_dau)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($lopHoc->ngay_ket_thuc)->format('d/m/Y') }}</p>
+            </div>
+            <div>
+                <h3 class="text-sm font-medium text-gray-500">Trạng thái</h3>
+                <p class="mt-1 text-sm text-gray-900">
                     @php
-                        $statusClass = '';
                         $statusText = '';
                         
                         if ($lopHoc->ngay_bat_dau > now()) {
-                            $statusClass = 'bg-yellow-100 text-yellow-800';
                             $statusText = 'Sắp diễn ra';
                         } elseif ($lopHoc->ngay_ket_thuc > now()) {
-                            $statusClass = 'bg-green-100 text-green-800';
                             $statusText = 'Đang diễn ra';
                         } else {
-                            $statusClass = 'bg-gray-100 text-gray-800';
                             $statusText = 'Đã kết thúc';
                         }
                     @endphp
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
-                        {{ $statusText }}
-                    </span>
-                </div>
-            </div>
-            <div class="border-t border-gray-200">
-                <dl>
-                    <div class="bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Mã lớp</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $lopHoc->ma_lop }}</dd>
-                    </div>
-                    <div class="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Thời gian</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            {{ \Carbon\Carbon::parse($lopHoc->thoi_gian_bat_dau)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($lopHoc->thoi_gian_ket_thuc)->format('d/m/Y') }}
-                        </dd>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Số buổi</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $lopHoc->so_buoi }}</dd>
-                    </div>
-                    <div class="bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Lịch học</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $lopHoc->lich_hoc }}</dd>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Địa điểm</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $lopHoc->dia_diem }}</dd>
-                    </div>
-                </dl>
+                    {{ $statusText }}
+                </p>
+                <p class="mt-1 text-sm text-gray-900">Địa điểm: {{ $lopHoc->dia_diem }}</p>
             </div>
         </div>
+    </div>
 
-        @if(session('success'))
-            <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
-                <p class="font-bold">Thành công!</p>
-                <p>{{ session('success') }}</p>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
-                <p class="font-bold">Lỗi!</p>
-                <p>{{ session('error') }}</p>
-            </div>
-        @endif
-
-        <!-- Danh sách bài học -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Danh sách bài học</h3>
-                <a href="{{ route('giao-vien.bai-hoc.create', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Thêm bài học mới
-                </a>
-            </div>
-            
-            <div class="border-t border-gray-200">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">STT</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời lượng</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại bài học</th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($baiHocs as $index => $baiHoc)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ $baiHoc->thu_tu }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
-                                            {{ $baiHoc->tieu_de }}
-                                        </a>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $baiHoc->thoi_luong }} phút
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @if($baiHoc->loai == 'video')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                Video
-                                            </span>
-                                        @elseif($baiHoc->loai == 'van_ban')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                                Văn bản
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                {{ $baiHoc->loai }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex justify-end space-x-2">
-                                            <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                            </a>
-                                            <a href="{{ route('giao-vien.bai-hoc.edit', $baiHoc->id) }}" class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </a>
-                                            <button type="button" onclick="openDeleteModal('{{ $baiHoc->id }}', '{{ $baiHoc->tieu_de }}')" class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-6 py-10 text-center">
-                                        <div class="flex flex-col items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <p class="text-gray-500 mb-3">Chưa có bài học nào cho lớp học này</p>
-                                            <a href="{{ route('giao-vien.bai-hoc.create', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                                </svg>
-                                                Thêm bài học mới
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="px-4 py-3 bg-gray-50 border-t border-gray-200">
-                {{ $baiHocs->appends(['lop_hoc_id' => $lopHoc->id])->links() }}
-            </div>
+    <!-- Danh sách bài học -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Danh sách bài học</h3>
+            <a href="{{ route('giao-vien.bai-hoc.create', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                <i class="fas fa-plus mr-2"></i> Thêm bài học mới
+            </a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">STT</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời lượng</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại bài học</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($baiHocs as $index => $baiHoc)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{{ $baiHoc->thu_tu }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
+                                    {{ $baiHoc->tieu_de }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $baiHoc->thoi_luong }} phút
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($baiHoc->loai == 'video')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        Video
+                                    </span>
+                                @elseif($baiHoc->loai == 'van_ban')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        Văn bản
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        {{ $baiHoc->loai }}
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end space-x-2">
+                                    <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="bg-blue-100 text-blue-600 p-2 rounded-md hover:bg-blue-200" title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('giao-vien.bai-hoc.edit', $baiHoc->id) }}" class="bg-yellow-100 text-yellow-600 p-2 rounded-md hover:bg-yellow-200" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" onclick="openDeleteModal('{{ $baiHoc->id }}', '{{ $baiHoc->tieu_de }}')" class="bg-red-100 text-red-600 p-2 rounded-md hover:bg-red-200" title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-10 text-center">
+                                <div class="flex flex-col items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <p class="text-gray-500 mb-3">Chưa có bài học nào cho lớp học này</p>
+                                    <a href="{{ route('giao-vien.bai-hoc.create', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Thêm bài học mới
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="px-4 py-3 bg-gray-50 border-t border-gray-200">
+            {{ $baiHocs->appends(['lop_hoc_id' => $lopHoc->id])->links() }}
         </div>
     </div>
 
     <div class="flex space-x-4 mt-6">
         <a href="{{ route('giao-vien.lop-hoc.show', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Chi tiết lớp học
+            <i class="fas fa-info-circle mr-2"></i> Chi tiết lớp học
         </a>
         <a href="{{ route('giao-vien.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            Danh sách học viên
+            <i class="fas fa-users mr-2"></i> Danh sách học viên
         </a>
     </div>
 
@@ -250,32 +220,13 @@
 @push('scripts')
 <script>
     function openDeleteModal(id, title) {
-        const modal = document.getElementById('deleteModal');
-        const form = document.getElementById('deleteForm');
-        const message = document.getElementById('delete-message');
-        
-        form.action = `{{ route('giao-vien.bai-hoc.destroy', '') }}/${id}`;
-        message.textContent = `Bạn có chắc chắn muốn xóa bài học "${title}"? Hành động này không thể hoàn tác.`;
-        modal.classList.remove('hidden');
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('delete-message').textContent = `Bạn có chắc chắn muốn xóa bài học "${title}"? Hành động này không thể hoàn tác.`;
+        document.getElementById('deleteForm').action = `/giao-vien/bai-hoc/${id}?redirect_lop_hoc_id={{ $lopHoc->id }}`;
     }
     
     function closeDeleteModal() {
         document.getElementById('deleteModal').classList.add('hidden');
     }
-    
-    // Đóng modal khi click bên ngoài
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('deleteModal');
-        if (event.target === modal) {
-            closeDeleteModal();
-        }
-    });
-    
-    // Đóng modal khi nhấn ESC
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeDeleteModal();
-        }
-    });
 </script>
 @endpush 

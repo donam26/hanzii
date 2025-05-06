@@ -8,6 +8,27 @@
     $role = 'admin';
 @endphp
 
+@section('styles')
+<style>
+    @media (max-width: 640px) {
+        .search-form-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .search-form-buttons > * {
+            margin-top: 0.5rem;
+            margin-left: 0 !important;
+            width: 100%;
+        }
+        
+        .search-form-buttons > *:first-child {
+            margin-top: 0;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="space-y-6">
     <!-- Thống kê tổng quan -->
@@ -81,8 +102,8 @@
 
     <!-- Bộ lọc -->
     <div class="bg-white p-4 rounded-lg shadow-md">
-        <form action="{{ route('admin.lop-hoc.index') }}" method="GET" class="flex flex-wrap gap-4 items-end">
-            <div class="min-w-max flex-1">
+        <form action="{{ route('admin.lop-hoc.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <div class="min-w-max col-span-1 md:col-span-2 lg:col-span-1">
                 <label for="search" class="block text-sm font-medium text-gray-700">Tìm kiếm</label>
                 <div class="mt-1 relative rounded-md shadow-sm">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -91,7 +112,7 @@
                     <input type="text" name="search" id="search" value="{{ request('search') }}" class="focus:ring-red-500 focus:border-red-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="Tên lớp, mã lớp">
                 </div>
             </div>
-            <div class="w-full sm:w-auto">
+            <div class="w-full">
                 <label for="khoa_hoc_id" class="block text-sm font-medium text-gray-700">Khóa học</label>
                 <select id="khoa_hoc_id" name="khoa_hoc_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
                     <option value="">Tất cả khóa học</option>
@@ -102,7 +123,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="w-full sm:w-auto">
+            <div class="w-full">
                 <label for="trang_thai" class="block text-sm font-medium text-gray-700">Trạng thái</label>
                 <select id="trang_thai" name="trang_thai" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
                     <option value="tat_ca">Tất cả trạng thái</option>
@@ -111,11 +132,11 @@
                     <option value="da_ket_thuc" {{ request('trang_thai') == 'da_ket_thuc' ? 'selected' : '' }}>Đã kết thúc</option>
                 </select>
             </div>
-            <div class="flex space-x-2">
-                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            <div class="flex space-x-2 col-span-1 lg:justify-end search-form-buttons">
+                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 w-full md:w-auto">
                     <i class="fas fa-filter mr-2"></i> Lọc
                 </button>
-                <a href="{{ route('admin.lop-hoc.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="{{ route('admin.lop-hoc.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full md:w-auto">
                     <i class="fas fa-redo mr-2"></i> Đặt lại
                 </a>
             </div>

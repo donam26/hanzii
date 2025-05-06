@@ -217,9 +217,6 @@ class KhoaHocController extends Controller
         // Xóa các bài học liên quan
         $khoaHoc->baiHocs()->delete();
         
-        // Xóa các đăng ký quan tâm
-        $khoaHoc->dangKyQuanTams()->delete();
-        
         // Xóa khóa học
         $khoaHoc->delete();
         

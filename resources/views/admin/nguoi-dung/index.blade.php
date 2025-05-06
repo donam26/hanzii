@@ -64,14 +64,7 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-medium text-gray-900">Danh sách người dùng ({{ $nguoiDungs->total() }})</h3>
-                <div class="flex space-x-2">
-                    <a href="{{ route('admin.nguoi-dung.index', array_merge(request()->query(), ['sort' => 'ten', 'direction' => request('direction') == 'asc' && request('sort') == 'ten' ? 'desc' : 'asc'])) }}" class="px-3 py-1 border border-gray-300 rounded-md text-sm {{ request('sort') == 'ten' ? 'bg-gray-100' : 'bg-white' }}">
-                        Tên
-                        @if(request('sort') == 'ten')
-                            <i class="fas fa-sort-{{ request('direction') == 'asc' ? 'up' : 'down' }} ml-1"></i>
-                        @endif
-                    </a>
-                </div>
+              
             </div>
         </div>
         

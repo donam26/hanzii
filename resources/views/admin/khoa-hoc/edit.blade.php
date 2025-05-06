@@ -82,10 +82,9 @@
                     <div>
                         <label for="hinh_anh" class="block text-sm font-medium text-gray-700 mb-1">Hình ảnh</label>
                         <div class="mt-1 flex items-center">
-                            <input type="file" id="hinh_anh" name="hinh_anh" accept="image/*" class="sr-only" onchange="updateFileLabel(this)">
+                            <input type="file" id="hinh_anh" name="hinh_anh" accept="image/*" class="hidden" onchange="updateFileLabel(this)">
                             <label for="hinh_anh" class="relative cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                 <span id="file-label">Chọn hình ảnh mới (nếu cần)</span>
-                                <input type="file" class="sr-only" id="hinh_anh" name="hinh_anh" accept="image/*">
                             </label>
                         </div>
                         @if($khoaHoc->hinh_anh)

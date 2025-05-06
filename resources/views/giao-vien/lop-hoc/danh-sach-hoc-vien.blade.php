@@ -19,9 +19,6 @@
                 <a href="{{ route('giao-vien.lop-hoc.show', $lopHoc->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 active:bg-gray-700 disabled:opacity-25 transition">
                     <i class="fas fa-arrow-left mr-2"></i> Quay lại
                 </a>
-                <a href="{{ route('giao-vien.lop-hoc.add-student-form', $lopHoc->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 active:bg-red-700 disabled:opacity-25 transition ml-2">
-                    <i class="fas fa-user-plus mr-2"></i> Thêm học viên
-                </a>
             </div>
         </div>
     </div>

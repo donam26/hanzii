@@ -67,20 +67,7 @@ class BinhLuanController extends Controller
         
         // Lấy ID người dùng hiện tại
         $nguoiDungId = session('nguoi_dung_id');
-        
-        // Kiểm tra xem giáo viên có quyền bình luận trong bài học này không
-        $lopHoc = LopHoc::where('id', $request->lop_hoc_id)
-            ->whereHas('giaoVien', function($query) use ($nguoiDungId) {
-                $query->whereHas('nguoiDung', function($q) use ($nguoiDungId) {
-                    $q->where('id', $nguoiDungId);
-                });
-            })
-            ->first();
-            
-        if (!$lopHoc) {
-            return redirect()->back()->with('error', 'Bạn không có quyền bình luận trong bài học này.');
-        }
-        
+   
         // Tạo bình luận mới
         $binhLuan = new BinhLuan();
         $binhLuan->nguoi_dung_id = $nguoiDungId;

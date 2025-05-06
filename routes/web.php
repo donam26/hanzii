@@ -186,6 +186,7 @@ Route::prefix('giao-vien')->name('giao-vien.')->middleware(['auth', 'role:giao_v
     
     // Quản lý tài liệu bổ trợ
     Route::get('/tai-lieu/download/{id}', 'App\Http\Controllers\GiaoVien\TaiLieuController@download')->name('tai-lieu.download');
+    Route::delete('/tai-lieu/{id}', 'App\Http\Controllers\GiaoVien\TaiLieuController@destroy')->name('tai-lieu.destroy');
     
     // Quản lý bài tập
     Route::resource('bai-tap', 'App\Http\Controllers\GiaoVien\BaiTapController');
@@ -280,6 +281,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('thong-bao', 'App\Http\Controllers\Admin\ThongBaoController');
     Route::resource('tai-lieu', 'App\Http\Controllers\Admin\TaiLieuController');
     Route::resource('bai-hoc', 'App\Http\Controllers\Admin\BaiHocController');
+    Route::delete('bai-hoc/xoa-tai-lieu/{id}', [App\Http\Controllers\Admin\BaiHocController::class, 'xoaTaiLieu'])->name('bai-hoc.xoa-tai-lieu');
     
     // Tài liệu bổ trợ
     Route::get('tai-lieu/download/{id}', [App\Http\Controllers\Admin\TaiLieuController::class, 'download'])->name('tai-lieu.download');

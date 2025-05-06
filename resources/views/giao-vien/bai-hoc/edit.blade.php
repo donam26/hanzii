@@ -122,58 +122,70 @@
                                 </div>
                             </div>
 
-                            @if(count($baiHoc->taiLieuBoTros) > 0)
-                            <div class="sm:col-span-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Tài liệu bổ trợ hiện có
-                                </label>
-                                <div class="bg-gray-50 p-4 rounded-md">
-                                    <ul class="divide-y divide-gray-200">
-                                        @foreach($baiHoc->taiLieuBoTros as $taiLieu)
-                                        <li class="py-2 flex items-center justify-between">
-                                            <div class="flex items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                </svg>
-                                                <span class="text-sm">{{ $taiLieu->tieu_de }}</span>
-                                            </div>
-                                            <div>
-                                                <a href="{{ route('giao-vien.tai-lieu.download', $taiLieu->id) }}" class="text-sm text-blue-600 hover:text-blue-800 mr-2">
-                                                    <i class="fas fa-download"></i> Tải xuống
-                                                </a>
-                                            </div>
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                            @endif
-
-                            <div class="sm:col-span-6">
-                                <label for="files" class="block text-sm font-medium text-gray-700">
-                                    Thêm tài liệu đính kèm mới
-                                </label>
-                                <div class="mt-1 flex items-center" id="file_container">
-                                    <div class="space-y-2 w-full" id="file_inputs">
-                                        <div class="flex items-center space-x-2">
-                                            <input type="file" name="files[]" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md">
-                                            <button type="button" class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 delete-file hidden">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
-                                        </div>
+                            <!-- Phần tài liệu đính kèm -->
+                            <div id="tai-lieu" class="sm:col-span-6">
+                                <h4 class="text-lg font-medium text-gray-900 mb-4">Tài liệu đính kèm</h4>
+                                
+                                @if(count($baiHoc->taiLieuBoTros) > 0)
+                                <div class="sm:col-span-6 mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Tài liệu bổ trợ hiện có
+                                    </label>
+                                    <div class="bg-gray-50 p-4 rounded-md">
+                                        <ul class="divide-y divide-gray-200">
+                                            @foreach($baiHoc->taiLieuBoTros as $taiLieu)
+                                            <li class="py-2 flex items-center justify-between">
+                                                <div class="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                    </svg>
+                                                    <span class="text-sm">{{ $taiLieu->tieu_de }}</span>
+                                                </div>
+                                                <div>
+                                                    <a href="{{ route('giao-vien.tai-lieu.download', $taiLieu->id) }}" class="text-sm text-blue-600 hover:text-blue-800 mr-2">
+                                                        <i class="fas fa-download"></i> Tải xuống
+                                                    </a>
+                                                    <form action="{{ route('giao-vien.tai-lieu.destroy', $taiLieu->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="bg-red-100 text-sm text-red-600 hover:text-red-800  px-2 py-1 rounded-md" onclick="return confirm('Bạn có chắc chắn muốn xóa tài liệu này?')">
+                                                            <i class="fas fa-trash-alt"></i> Xóa
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 </div>
-                                <button type="button" id="add_file" class="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    Thêm tài liệu
-                                </button>
-                                <p class="mt-2 text-sm text-gray-500">
-                                    Đính kèm tài liệu có định dạng: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP, RAR (tối đa 10MB mỗi file)
-                                </p>
+                                @endif
+
+                                <div class="sm:col-span-6">
+                                    <label for="files" class="block text-sm font-medium text-gray-700">
+                                        Thêm tài liệu đính kèm mới
+                                    </label>
+                                    <div class="mt-1 flex items-center" id="file_container">
+                                        <div class="space-y-2 w-full" id="file_inputs">
+                                            <div class="flex items-center space-x-2">
+                                                <input type="file" name="files[]" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm border-gray-300 rounded-md">
+                                                <button type="button" class="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 delete-file hidden">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="add_file" class="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                        Thêm tài liệu
+                                    </button>
+                                    <p class="mt-2 text-sm text-gray-500">
+                                        Đính kèm tài liệu có định dạng: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP, RAR (tối đa 10MB mỗi file)
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

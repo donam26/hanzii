@@ -138,9 +138,18 @@
                             <td class="px-6 py-4 text-sm text-gray-500">{{ Str::limit($taiLieu->mo_ta, 50) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $taiLieu->tao_luc ? $taiLieu->tao_luc->format('d/m/Y H:i') : 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ route('admin.tai-lieu.download', $taiLieu->id) }}" class="text-blue-600 hover:text-blue-900">
-                                    <i class="fas fa-download mr-1"></i>Tải xuống
-                                </a>
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('admin.tai-lieu.download', $taiLieu->id) }}" class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-download mr-1"></i>Tải xuống
+                                    </a>
+                                    <form action="{{ route('admin.bai-hoc.xoa-tai-lieu', $taiLieu->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài liệu này?');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash-alt mr-1"></i>Xóa
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @endforeach

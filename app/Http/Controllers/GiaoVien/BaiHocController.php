@@ -167,6 +167,7 @@ class BaiHocController extends Controller
                             
                             $taiLieu = new \App\Models\TaiLieuBoTro();
                             $taiLieu->bai_hoc_id = $baiHoc->id;
+                            $taiLieu->lop_hoc_id = $validated['lop_hoc_id'];
                             $taiLieu->tieu_de = $file->getClientOriginalName();
                             $taiLieu->mo_ta = 'Tài liệu bổ trợ cho bài học';
                             $taiLieu->duong_dan_file = $path;
@@ -344,28 +345,37 @@ class BaiHocController extends Controller
     /**
      * Xóa bài học
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         // Lấy ID người dùng từ session
         $nguoiDungId = session('nguoi_dung_id');
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         // Lấy thông tin bài học và kiểm tra quyền truy cập
-        $baiHoc = BaiHoc::whereHas('lopHoc', function($query) use ($giaoVien) {
+        $baiHoc = BaiHoc::with('baiHocLops.lopHoc')
+        ->whereHas('baiHocLops.lopHoc', function($query) use ($giaoVien) {
             $query->where('giao_vien_id', $giaoVien->id);
         })
         ->findOrFail($id);
         
-        $lopHocId = $baiHoc->lop_hoc_id;
+        // Lấy lớp học ID từ request hoặc từ bài học
+        $lopHocId = $request->query('redirect_lop_hoc_id');
+        if (!$lopHocId && !$baiHoc->baiHocLops->isEmpty()) {
+            $lopHocId = $baiHoc->baiHocLops->first()->lop_hoc_id;
+        }
         
         try {
             DB::beginTransaction();
             
             // Xóa các bài tập liên quan
             \App\Models\BaiTap::where('bai_hoc_id', $id)->delete();
+            
+            // Xóa tài liệu bổ trợ liên quan
+            \App\Models\TaiLieuBoTro::where('bai_hoc_id', $id)->delete();
             
             // Xóa bài học
             $baiHoc->delete();
