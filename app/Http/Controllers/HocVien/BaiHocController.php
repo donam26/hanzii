@@ -34,19 +34,6 @@ class BaiHocController extends Controller
         // Lấy thông tin học viên từ người dùng đăng nhập
         $hocVien = HocVien::where('nguoi_dung_id', session('nguoi_dung_id'))->first();
         
-        // Kiểm tra học viên đã đăng ký lớp học chưa
-        $dangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('lop_hoc_id', $lopHocId)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-            ->first();
-        logger($dangKyHoc);
-        logger($lopHocId);
-
-        if (!$dangKyHoc) {
-            return redirect()->route('hoc-vien.lop-hoc.index')
-                ->with('error', 'Bạn chưa đăng ký lớp học này hoặc đăng ký chưa được duyệt');
-        }
-        
         // Lấy thông tin lớp học
         $lopHoc = LopHoc::findOrFail($lopHocId);
         
@@ -154,18 +141,7 @@ class BaiHocController extends Controller
         if (!$hocVien) {
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
         }
-        
-        // Kiểm tra học viên đã đăng ký lớp học chưa
-        $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
-            ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-            ->exists();
-                    
-        if (!$kiemTraDangKy) {
-            return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
-        }
-        
+     
         // Cập nhật tiến độ
         $tienDo = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
                     ->where('bai_hoc_id', $baiHocId)
@@ -228,16 +204,7 @@ class BaiHocController extends Controller
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
         }
         
-        // Kiểm tra học viên đã đăng ký lớp học chưa
-        $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
-            ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-            ->first();
-                    
-        if (!$kiemTraDangKy) {
-            return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
-        }
+      
         
         // Lấy thông tin bài tập
         $baiTap = BaiTap::findOrFail($baiTapId);
@@ -287,16 +254,7 @@ class BaiHocController extends Controller
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
         }
         
-        // Kiểm tra học viên đã đăng ký lớp học chưa
-        $kiemTraDangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
-            ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-            ->first();
-                    
-        if (!$kiemTraDangKy) {
-            return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
-        }
+    
         
         // Validate
         $validator = Validator::make($request->all(), [
@@ -357,22 +315,13 @@ class BaiHocController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Kiểm tra tài liệu tồn tại
         $taiLieu = TaiLieuBoTro::findOrFail($taiLieuId);
         
-        // Kiểm tra đăng ký học
-        $dangKy = DangKyHoc::where('lop_hoc_id', $lopHocId)
-                    ->where('hoc_vien_id', $hocVien->id)
-                    ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-                    ->first();
-                    
-        if (!$dangKy) {
-            return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn chưa đăng ký hoặc chưa được phê duyệt vào lớp học này');
-        }
+      
         
         // Kiểm tra file tồn tại
         if (!Storage::disk('public')->exists($taiLieu->duong_dan_file)) {

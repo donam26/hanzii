@@ -121,7 +121,7 @@ class BaiTapController extends Controller
         $validated = $request->validate([
             'bai_hoc_id' => 'required|exists:bai_hocs,id',
             'tieu_de' => 'required|string|max:255',
-            'loai' => 'required|in:tu_luan,trac_nghiem,file',
+            'loai' => 'required|in:tu_luan,file',
             'diem_toi_da' => 'required|numeric|min:1|max:100',
             'han_nop' => 'required|date',
             'file' => 'nullable|file|max:10240', // Tối đa 10MB

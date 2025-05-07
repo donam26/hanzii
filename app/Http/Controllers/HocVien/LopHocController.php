@@ -27,7 +27,7 @@ class LopHocController extends Controller
     /**
      * Hiển thị danh sách lớp học của học viên
      */
-    public function index()
+    public function index(Request $request)
     {
         $nguoiDungId = session('nguoi_dung_id');
         if (!$nguoiDungId) {
@@ -39,50 +39,46 @@ class LopHocController extends Controller
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
         }
         
-        // Lấy tất cả đăng ký học của học viên để debug
-        $tatCaDangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)->get();
-        Log::info('Tất cả đăng ký học của học viên ' . $hocVien->id . ': ' . $tatCaDangKyHoc->count());
-        foreach ($tatCaDangKyHoc as $dangKy) {
-            Log::info('Đăng ký ID=' . $dangKy->id . ', Lớp ID=' . $dangKy->lop_hoc_id . ', Trạng thái=' . $dangKy->trang_thai);
-        }
+        // Lấy tham số tìm kiếm và lọc
+        $keyword = $request->input('keyword');
+        $trangThai = $request->input('trang_thai');
         
-        // Mở rộng danh sách trạng thái để bao gồm cả các trạng thái khác có thể có
+        // Xây dựng query dựa trên đăng ký học
         $dangKyHocs = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
             ->pluck('lop_hoc_id')
             ->toArray();
         
         Log::info('Học viên ' . $hocVien->id . ' có ' . count($dangKyHocs) . ' lớp học');
-        Log::info('Danh sách lớp: ' . implode(', ', $dangKyHocs));
         
         if (empty($dangKyHocs)) {
             Log::warning('Không tìm thấy lớp học nào cho học viên ' . $hocVien->id);
-            // Thử truy vấn trực tiếp các lớp học thông qua quan hệ nhiều-nhiều
-            $lopHocs = $hocVien->lopHocs;
-            Log::info('Lấy qua quan hệ nhiều-nhiều: ' . $lopHocs->count() . ' lớp học');
-        } else {
-            $lopHocs = LopHoc::whereIn('id', $dangKyHocs)
-                ->with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung'])
-                ->get();
+            // Nếu không có lớp học nào, trả về view với danh sách trống
+            $lopHocs = collect([]);
+            return view('hoc-vien.lop-hoc.index', compact('lopHocs'));
         }
         
-        Log::info('Số lớp học lấy được: ' . $lopHocs->count());
+        // Xây dựng query lớp học
+        $lopHocsQuery = LopHoc::whereIn('id', $dangKyHocs)
+            ->with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung']);
         
-        // Thêm debug để kiểm tra chi tiết từng lớp học
-        foreach ($lopHocs as $lopHoc) {
-            Log::info('Chi tiết lớp học: ID=' . $lopHoc->id . 
-                    ', Tên=' . $lopHoc->ten . 
-                    ', Trạng thái=' . $lopHoc->trang_thai);
+        // Thêm điều kiện tìm kiếm nếu có
+        if (!empty($keyword)) {
+            $lopHocsQuery->where(function($query) use ($keyword) {
+                $query->where('ten', 'like', '%' . $keyword . '%')
+                      ->orWhere('ma_lop', 'like', '%' . $keyword . '%');
+            });
         }
         
-        // Phân loại lớp học theo trạng thái
-        $lopDangDienRa = $lopHocs->where('trang_thai', 'dang_dien_ra');
-        $lopSapDienRa = $lopHocs->where('trang_thai', 'sap_khai_giang');
-        $lopDaHoanThanh = $lopHocs->where('trang_thai', 'da_hoan_thanh');
+        // Thêm điều kiện lọc theo trạng thái nếu có
+        if (!empty($trangThai)) {
+            $lopHocsQuery->where('trang_thai', $trangThai);
+        }
         
-        Log::info('Phân loại lớp học: Đang diễn ra=' . $lopDangDienRa->count() . 
-                ', Sắp diễn ra=' . $lopSapDienRa->count() . 
-                ', Đã hoàn thành=' . $lopDaHoanThanh->count());
+        // Lấy kết quả query
+        $lopHocs = $lopHocsQuery->get();
+        
+        Log::info('Số lớp học lấy được sau khi lọc: ' . $lopHocs->count());
         
         return view('hoc-vien.lop-hoc.index', compact('lopHocs'));
     }
@@ -144,16 +140,14 @@ class LopHocController extends Controller
             return $baiTap;
         });
         
-     
-        
-            
         // Lấy danh sách học viên trong lớp
         $danhSachHocVien = HocVien::whereHas('dangKyHocs', function($query) use ($id) {
             $query->where('lop_hoc_id', $id)
-                ->whereIn('trang_thai', ['da_duyet', 'dang_hoc']);
+                ->whereIn('trang_thai', ['da_duyet', 'dang_hoc', 'da_xac_nhan', 'da_thanh_toan' ]);
         })
         ->with('nguoiDung')
         ->get();
+        
         
         return view('hoc-vien.lop-hoc.show', compact(
             'lopHoc',
@@ -179,23 +173,7 @@ class LopHocController extends Controller
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
         }
         
-        // Kiểm tra học viên có thuộc lớp này không
-        $kiemTraDangKy = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('lop_hoc_id', $id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-            ->exists();
-            
-        if (!$kiemTraDangKy) {
-            // Thử kiểm tra qua quan hệ
-            $lopHocIds = $hocVien->lopHocs->pluck('id')->toArray();
-            if (in_array($id, $lopHocIds)) {
-                $kiemTraDangKy = true;
-                Log::info('Học viên ' . $hocVien->id . ' thuộc lớp ' . $id . ' qua quan hệ lopHocs (progress)');
-            } else {
-                return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn không có quyền truy cập lớp học này');
-            }
-        }
+     
         
         $lopHoc = LopHoc::where('id', $id)
             ->with(['khoaHoc'])
@@ -361,7 +339,7 @@ class LopHocController extends Controller
         $hocVien = HocVien::where('user_id', $user->id)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Lấy danh sách lớp học đang mở đăng ký
@@ -396,7 +374,7 @@ class LopHocController extends Controller
         $hocVien = HocVien::where('user_id', $user->id)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Kiểm tra lớp học
@@ -477,7 +455,7 @@ class LopHocController extends Controller
         
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         if (!$hocVien) {
-            return redirect()->route('dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Lấy 5 đăng ký học đang chờ xác nhận gần đây nhất
@@ -522,7 +500,7 @@ class LopHocController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('dashboard')
+            return redirect()->route('hoc-vien.lop-hoc.index')
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         
@@ -584,7 +562,7 @@ class LopHocController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('dashboard')
+            return redirect()->route('hoc-vien.lop-hoc.index')
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         
@@ -647,7 +625,7 @@ class LopHocController extends Controller
         
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         if (!$hocVien) {
-            return redirect()->route('dashboard')
+            return redirect()->route('hoc-vien.lop-hoc.index')
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         
@@ -689,20 +667,7 @@ class LopHocController extends Controller
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
         }
         
-        // Kiểm tra học viên có thuộc lớp này không
-        $kiemTraDangKy = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('lop_hoc_id', $id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
-            ->exists();
-            
-        if (!$kiemTraDangKy) {
-            // Thử kiểm tra qua quan hệ
-            $lopHocIds = $hocVien->lopHocs->pluck('id')->toArray();
-            if (!in_array($id, $lopHocIds)) {
-                return redirect()->route('hoc-vien.lop-hoc.index')
-                    ->with('error', 'Bạn không có quyền truy cập lớp học này');
-            }
-        }
+      
         
         // Lấy thông tin lớp học 
         $lopHoc = LopHoc::with([
@@ -712,18 +677,22 @@ class LopHocController extends Controller
         ])
         ->findOrFail($id);
         
-        // Lấy danh sách học viên đã đăng ký
+        // Lấy tất cả danh sách học viên đã đăng ký và nhóm theo trạng thái
         $dangKyHocs = DangKyHoc::with(['hocVien.nguoiDung'])
             ->where('lop_hoc_id', $id)
-            ->whereIn('trang_thai', ['da_duyet', 'dang_hoc', 'da_xac_nhan', 'da_thanh_toan'])
             ->get();
             
+        // Lọc các học viên đang học thực tế
+        $danhSachHocVien = $dangKyHocs->filter(function($dangKy) {
+            return in_array($dangKy->trang_thai, ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan']);
+        });
+            
         // Đếm số lượng học viên
-        $tongSoHocVien = $dangKyHocs->count();
+        $tongSoHocVien = $danhSachHocVien->count();
         
         return view('hoc-vien.lop-hoc.danh-sach-hoc-vien', compact(
             'lopHoc', 
-            'dangKyHocs', 
+            'danhSachHocVien', 
             'tongSoHocVien',
             'hocVien'
         ));

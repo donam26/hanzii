@@ -72,7 +72,7 @@
                 <div class="flex items-center space-x-4">
                     @if (Route::has('login'))
                         @auth
-                            <a href="{{ route('hoc-vien.dashboard') }}" class="px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition duration-300">
+                            <a href="{{ route('hoc-vien.lop-hoc.index') }}" class="px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition duration-300">
                                 Vào học
                             </a>
                         @else

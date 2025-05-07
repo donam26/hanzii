@@ -122,7 +122,7 @@ class KhoaHocController extends Controller
         $hocVien = HocVien::where('user_id', $user->id)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Lấy danh sách khóa học đã đăng ký

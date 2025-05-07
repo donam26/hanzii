@@ -93,7 +93,7 @@
                 
                 <div class="mb-6">
                     <label for="dia_chi" class="block text-sm font-medium text-gray-700 mb-2">Địa chỉ</label>
-                    <textarea name="dia_chi" id="dia_chi" rows="3" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">{{ old('dia_chi', $hocVien->dia_chi) }}</textarea>
+                    <textarea name="dia_chi" id="dia_chi" rows="3" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">{{ old('dia_chi', $nguoiDung->dia_chi) }}</textarea>
                     @error('dia_chi')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror

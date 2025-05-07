@@ -21,7 +21,7 @@ class ThongBaoController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
+            return redirect()->route('hoc-vien.lop-hoc.index')
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         
@@ -104,7 +104,7 @@ class ThongBaoController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
+            return redirect()->route('hoc-vien.d')
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         
@@ -158,7 +158,7 @@ class ThongBaoController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')
+            return redirect()->route('hoc-vien.d')
                 ->with('error', 'Không tìm thấy thông tin học viên');
         }
         

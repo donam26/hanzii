@@ -49,10 +49,6 @@
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         Nộp file
                                     </span>
-                                @elseif($baiTap->loai == 'trac_nghiem')
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                        Trắc nghiệm
-                                    </span>
                                 @endif
                             </dd>
                         </div>
@@ -179,10 +175,10 @@
                                 </div>
                             @else
                                 <div class="mt-4">
-                                    @if($baiTap->loai == 'trac_nghiem')
-                                        <a href="{{ route('hoc-vien.bai-tap.lam-bai-trac-nghiem', ['id' => $baiTap->id]) }}" 
+                                    @if($baiTap->loai == 'tu_luan')
+                                        <a href="{{ route('hoc-vien.bai-tap.lam-bai-tu-luan', ['id' => $baiTap->id]) }}" 
                                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                            <i class="fas fa-edit mr-2"></i> Làm bài trắc nghiệm
+                                            <i class="fas fa-edit mr-2"></i> Làm bài tự luận
                                         </a>
                                     @else
                                         <a href="{{ route('hoc-vien.bai-tap.form-nop-bai', ['id' => $baiTap->id]) }}" 

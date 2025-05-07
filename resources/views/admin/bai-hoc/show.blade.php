@@ -186,9 +186,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $baiTap->tieu_de }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 @switch($baiTap->loai)
-                                    @case('trac_nghiem')
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Trắc nghiệm</span>
-                                        @break
+                                  
                                     @case('tu_luan')
                                         <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Tự luận</span>
                                         @break

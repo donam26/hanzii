@@ -7,6 +7,7 @@ use App\Models\NguoiDung;
 use App\Models\VaiTro;
 use App\Models\GiaoVien;
 use App\Models\TroGiang;
+use App\Models\DangKyQuanTam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -56,6 +57,15 @@ class AuthController extends Controller
             $vaiTros = $nguoiDung->vaiTros->pluck('ten')->toArray();
             $request->session()->put('vai_tros', $vaiTros);
             
+            // Thêm thông tin cần thiết cho layout dashboard
+            $request->session()->put('user_full_name', $nguoiDung->ho . ' ' . $nguoiDung->ten);
+            $request->session()->put('vai_tro', $vaiTros[0] ?? 'hoc_vien');
+            
+            // Thêm avatar nếu có
+            if ($nguoiDung->anh_dai_dien) {
+                $request->session()->put('avatar', asset('storage/' . $nguoiDung->anh_dai_dien));
+            }
+            
             Log::debug('Thông tin người dùng: ID=' . $nguoiDung->id . ', Loại=' . $nguoiDung->loai_tai_khoan);
             Log::debug('Vai trò: ' . implode(', ', $vaiTros));
 
@@ -71,7 +81,7 @@ class AuthController extends Controller
                 return redirect()->route('tro-giang.dashboard');
             } elseif (in_array('hoc_vien', $vaiTros) || $nguoiDung->loai_tai_khoan == 'hoc_vien') {
                 Log::debug('Chuyển hướng đến trang học viên');
-                return redirect()->route('hoc-vien.dashboard');
+                return redirect()->route('hoc-vien.lop-hoc.index');
             } else {
                 // Chuyển về welcome nếu không có vai trò cụ thể
                 Log::debug('Không có vai trò cụ thể, chuyển về trang chủ');
@@ -138,7 +148,7 @@ class AuthController extends Controller
         $request->session()->put('loai_tai_khoan', $nguoiDung->loai_tai_khoan);
         $request->session()->put('vai_tros', ['hoc_vien']);
 
-        return redirect()->route('hoc-vien.dashboard')->with('success', 'Đăng ký thành công!');
+        return redirect()->route('hoc-vien.lop-hoc.index')->with('success', 'Đăng ký thành công!');
     }
 
     /**

@@ -159,4 +159,22 @@ class LopHoc extends Model
         
         return $tienDo;
     }
+    
+    /**
+     * Trả về text hiển thị tương ứng với trạng thái
+     * 
+     * @return string
+     */
+    public function getTrangThaiTextAttribute()
+    {
+        $trangThaiMap = [
+            'chua_bat_dau' => 'Chưa bắt đầu',
+            'dang_hoat_dong' => 'Đang hoạt động',
+            'tam_dung' => 'Tạm dừng',
+            'da_ket_thuc' => 'Đã kết thúc',
+            'da_huy' => 'Đã hủy'
+        ];
+        
+        return $trangThaiMap[$this->trang_thai] ?? 'Không xác định';
+    }
 }

@@ -99,16 +99,7 @@ class KetQuaController extends Controller
         // Xác định loại bài tập để hiển thị view phù hợp
         $loaiBaiTap = $baiTapDaNop->baiTap->loai ?? 'tu_luan';
         
-        // Ghi log thông tin bài tập đã nộp
-        Log::info('Chi tiết bài tập đã nộp #' . $id . ': ' . json_encode([
-            'id' => $baiTapDaNop->id,
-            'bai_tap_id' => $baiTapDaNop->bai_tap_id,
-            'loai' => $loaiBaiTap,
-            'diem' => $baiTapDaNop->diem,
-            'trang_thai' => $baiTapDaNop->trang_thai
-        ]));
-        
-        if ($loaiBaiTap == 'trac_nghiem') {
+        if ($loaiBaiTap == 'tu_luan') {
             return $this->showTracNghiem($baiTapDaNop);
         } elseif ($loaiBaiTap == 'file') {
             return $this->showFile($baiTapDaNop);

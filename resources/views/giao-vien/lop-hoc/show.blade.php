@@ -165,18 +165,9 @@
                             </div>
                         </div>
                         <div class="flex space-x-2">
-                            @if($baiHoc->ngay_day && $baiHoc->ngay_day <= now())
-                                <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="inline-flex items-center py-1.5 px-3 rounded-md bg-blue-100 text-blue-700 text-sm hover:bg-blue-200 transition-colors">
-                                    <i class="fas fa-eye mr-1"></i> Xem
+                            <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="inline-flex items-center py-1.5 px-3 rounded-md bg-blue-100 text-blue-700 text-sm hover:bg-blue-200 transition-colors">
+                            <i class="fas fa-eye mr-1"></i> Xem
                                 </a>
-                                <a href="{{ route('giao-vien.bai-tap.index', ['bai_hoc_id' => $baiHoc->id]) }}" class="inline-flex items-center py-1.5 px-3 rounded-md bg-purple-100 text-purple-700 text-sm hover:bg-purple-200 transition-colors">
-                                    <i class="fas fa-tasks mr-1"></i> Bài tập
-                                </a>
-                            @else
-                                <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="inline-flex items-center py-1.5 px-3 rounded-md bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 transition-colors">
-                                    <i class="fas fa-eye mr-1"></i> Xem
-                                </a>
-                            @endif
                         </div>
                     </div>
                 </div>

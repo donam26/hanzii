@@ -199,10 +199,6 @@
                                                 <a href="{{ route('giao-vien.cham-diem.tu-luan', $baiTapDaNop->id) }}" class="text-red-600 hover:text-red-800 mr-3">
                                                     <i class="fas fa-check-circle mr-1"></i> Chấm điểm
                                                 </a>
-                                            @elseif($baiTap->loai == 'trac_nghiem')
-                                                <a href="{{ route('giao-vien.cham-diem.trac-nghiem', $baiTapDaNop->id) }}" class="text-red-600 hover:text-red-800 mr-3">
-                                                    <i class="fas fa-check-circle mr-1"></i> Xem kết quả
-                                                </a>
                                             @else
                                                 <a href="{{ asset('storage/' . $baiTapDaNop->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-800 mr-3">
                                                     <i class="fas fa-download mr-1"></i> Tải file

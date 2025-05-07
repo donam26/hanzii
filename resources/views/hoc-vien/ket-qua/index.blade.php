@@ -127,9 +127,7 @@
                                 <td class="px-4 py-3">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
                                         @if(isset($baiLam->baiTap) && isset($baiLam->baiTap->loai))
-                                            @if($baiLam->baiTap->loai == 'trac_nghiem')
-                                                bg-blue-100 text-blue-800
-                                            @elseif($baiLam->baiTap->loai == 'tu_luan')
+                                            @if($baiLam->baiTap->loai == 'tu_luan')
                                                 bg-green-100 text-green-800
                                             @elseif($baiLam->baiTap->loai == 'file')
                                                 bg-purple-100 text-purple-800
@@ -244,9 +242,7 @@
                                     <span class="block text-xs font-medium text-gray-500">Loại bài:</span>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
                                         @if(isset($baiLam->baiTap) && isset($baiLam->baiTap->loai))
-                                            @if($baiLam->baiTap->loai == 'trac_nghiem')
-                                                bg-blue-100 text-blue-800
-                                            @elseif($baiLam->baiTap->loai == 'tu_luan')
+                                            @if($baiLam->baiTap->loai == 'tu_luan')
                                                 bg-green-100 text-green-800
                                             @elseif($baiLam->baiTap->loai == 'file')
                                                 bg-purple-100 text-purple-800

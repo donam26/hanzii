@@ -61,7 +61,6 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
     // Lớp học
     Route::prefix('lop-hoc')->name('lop-hoc.')->group(function() {
         Route::get('/', [App\Http\Controllers\HocVien\LopHocController::class, 'index'])->name('index');
-        Route::get('/{id}', [App\Http\Controllers\HocVien\LopHocController::class, 'show'])->name('show');
         Route::get('/{id}/progress', [App\Http\Controllers\HocVien\LopHocController::class, 'progress'])->name('progress');
         Route::get('/{id}/danh-sach-hoc-vien', [App\Http\Controllers\HocVien\LopHocController::class, 'danhSachHocVien'])->name('danh-sach-hoc-vien');
         Route::get('/tim-kiem', [App\Http\Controllers\HocVien\LopHocController::class, 'formTimKiem'])->name('form-tim-kiem');
@@ -70,6 +69,7 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
         Route::post('/tham-gia/{id}', [App\Http\Controllers\HocVien\LopHocController::class, 'thamGia'])->name('tham-gia');
         Route::post('/gui-yeu-cau', [App\Http\Controllers\HocVien\LopHocController::class, 'guiYeuCau'])->name('gui-yeu-cau');
         Route::get('/yeu-cau', [App\Http\Controllers\HocVien\LopHocController::class, 'danhSachYeuCau'])->name('yeu-cau');
+        Route::get('/{id}', [App\Http\Controllers\HocVien\LopHocController::class, 'show'])->name('show');
         Route::post('/complete-bai-hoc', [App\Http\Controllers\HocVien\LopHocController::class, 'completeBaiHoc'])->name('complete-bai-hoc');
     });
     
@@ -265,12 +265,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::post('lop-hoc/{id}/yeu-cau-tham-gia/{yeuCauId}/tu-choi', 'App\Http\Controllers\Admin\LopHocController@tuChoiYeuCauThamGia')->name('lop-hoc.tu-choi-yeu-cau');
     Route::post('lop-hoc/{id}/add-student', 'App\Http\Controllers\Admin\LopHocController@addStudent')->name('lop-hoc.add-student');
     Route::delete('lop-hoc/{id}/remove-student/{dangKyId}', 'App\Http\Controllers\Admin\LopHocController@removeStudent')->name('lop-hoc.remove-student');
-    Route::put('dang-ky-hoc/{id}/xac-nhan', 'App\Http\Controllers\Admin\DangKyHocController@xacNhan')->name('dang-ky-hoc.xac-nhan');
+    // Route::put('dang-ky-hoc/{id}/xac-nhan', 'App\Http\Controllers\Admin\DangKyHocController@xacNhan')->name('dang-ky-hoc.xac-nhan');
     Route::resource('hoc-vien', 'App\Http\Controllers\Admin\HocVienController');
     Route::resource('giao-vien', 'App\Http\Controllers\Admin\GiaoVienController');
     Route::resource('tro-giang', 'App\Http\Controllers\Admin\TroGiangController');
-    Route::resource('vai-tro', 'App\Http\Controllers\Admin\VaiTroController');
-    Route::resource('quyen', 'App\Http\Controllers\Admin\QuyenController');
+    // Route::resource('vai-tro', 'App\Http\Controllers\Admin\VaiTroController');
+    // Route::resource('quyen', 'App\Http\Controllers\Admin\QuyenController');
     Route::get('hoc-phi', 'App\Http\Controllers\Admin\HocPhiController@index')->name('hoc-phi.index');
     Route::get('thanh-toan', 'App\Http\Controllers\Admin\ThanhToanController@index')->name('thanh-toan.index');
     Route::get('luong', 'App\Http\Controllers\Admin\LuongController@index')->name('luong.index');
@@ -343,7 +343,7 @@ Route::middleware(['auth', 'giao_vien'])->prefix('giao-vien')->name('giao-vien.'
 
 // Trợ giảng
 Route::middleware(['auth', 'tro_giang'])->prefix('tro-giang')->name('tro-giang.')->group(function () {
-    Route::get('/luong', [\App\Http\Controllers\TroGiang\LuongController::class, 'index'])->name('luong.index');
+    // Route::get('/luong', [\App\Http\Controllers\TroGiang\LuongController::class, 'index'])->name('luong.index');
 });
 
 // Routes cho thông báo

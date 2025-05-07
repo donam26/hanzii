@@ -31,7 +31,7 @@ class ProfileController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Lấy thống kê của học viên
@@ -80,7 +80,7 @@ class ProfileController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         return view('hoc-vien.profile.edit', compact('nguoiDung', 'hocVien'));
@@ -104,7 +104,7 @@ class ProfileController extends Controller
         $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         if (!$hocVien) {
-            return redirect()->route('hoc-vien.dashboard')->with('error', 'Không tìm thấy thông tin học viên');
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
         }
         
         // Validate thông tin
@@ -132,6 +132,7 @@ class ProfileController extends Controller
         $nguoiDung->ten = $request->ten;
         $nguoiDung->email = $request->email;
         $nguoiDung->so_dien_thoai = $request->so_dien_thoai;
+        $nguoiDung->dia_chi = $request->dia_chi;
         
         // Xử lý avatar nếu có
         if ($request->hasFile('anh_dai_dien')) {
@@ -143,6 +144,9 @@ class ProfileController extends Controller
             // Lưu ảnh mới
             $avatarPath = $request->file('anh_dai_dien')->store('avatars', 'public');
             $nguoiDung->anh_dai_dien = $avatarPath;
+            
+            // Cập nhật session cho avatar
+            session(['avatar' => Storage::url($avatarPath)]);
         }
         
         $nguoiDung->save();

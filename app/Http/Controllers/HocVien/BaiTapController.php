@@ -41,17 +41,7 @@ class BaiTapController extends Controller
         
         $lopHocIds = $baiTap->baiHoc->baiHocLops->pluck('lop_hoc_id')->toArray();
         
-        // Kiểm tra học viên có thuộc lớp học này không
-        $quyenTruyCap = DB::table('dang_ky_hocs')
-            ->where('hoc_vien_id', $hocVien->id)
-            ->whereIn('lop_hoc_id', $lopHocIds)
-            ->whereIn('trang_thai', ['da_thanh_toan', 'da_xac_nhan'])
-            ->exists();
-            
-        if (!$quyenTruyCap) {
-            return redirect()->route('hoc-vien.lop-hoc.index')
-                ->with('error', 'Bạn không có quyền truy cập bài tập này.');
-        }
+     
         
         // Lấy kết quả đã làm (nếu có)
         $baiTapDaNop = BaiTapDaNop::where('bai_tap_id', $id)
@@ -102,16 +92,7 @@ class BaiTapController extends Controller
             return redirect()->route('home')->with('error', 'Không tìm thấy thông tin lớp học');
         }
         
-        // Kiểm tra quyền truy cập
-        $quyenTruyCap = DB::table('dang_ky_hocs')
-            ->where('hoc_vien_id', $hocVien->id)
-            ->where('lop_hoc_id', $lopHoc->id)
-            ->whereIn('trang_thai', ['da_thanh_toan', 'da_xac_nhan'])
-            ->exists();
-            
-        if (!$quyenTruyCap) {
-            return redirect()->route('home')->with('error', 'Bạn không thuộc lớp học này');
-        }
+     
         
         $baiTapDaNop = BaiTapDaNop::where('bai_tap_id', $baiTap->id)
             ->where('hoc_vien_id', $hocVien->id)
@@ -286,7 +267,7 @@ class BaiTapController extends Controller
             
         // Kiểm tra quyền truy cập
         if ($baiTapDaNop->hoc_vien_id != $hocVien->id) {
-            return redirect()->route('hoc-vien.dashboard')
+            return redirect()->route('hoc-vien.lop-hoc.index')
                 ->with('error', 'Bạn không có quyền xem kết quả này.');
         }
         
