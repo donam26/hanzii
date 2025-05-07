@@ -13,6 +13,43 @@ use Illuminate\Support\Facades\Auth;
 class BinhLuanController extends Controller
 {
     /**
+     * Hiển thị danh sách bình luận cho trợ giảng
+     */
+    public function index(Request $request)
+    {
+        // Lấy ID người dùng từ session
+        $nguoiDungId = session('nguoi_dung_id');
+        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$troGiang) {
+            return redirect()->route('tro-giang.dashboard')
+                ->with('error', 'Không tìm thấy thông tin trợ giảng');
+        }
+        
+        // Lấy danh sách lớp học mà trợ giảng phụ trách
+        $lopHocIds = LopHoc::where('tro_giang_id', $troGiang->id)->pluck('id')->toArray();
+        
+        // Filter theo lớp học nếu có
+        $lopHocId = $request->input('lop_hoc_id');
+        $query = BinhLuan::with(['nguoiDung', 'baiHoc', 'lopHoc'])
+            ->whereIn('lop_hoc_id', $lopHocIds)
+            ->orderBy('tao_luc', 'desc');
+            
+        if ($lopHocId && in_array($lopHocId, $lopHocIds)) {
+            $query->where('lop_hoc_id', $lopHocId);
+        }
+        
+        $binhLuans = $query->paginate(20);
+        
+        // Danh sách lớp học để filter
+        $lopHocs = LopHoc::where('tro_giang_id', $troGiang->id)
+            ->with('khoaHoc')
+            ->get();
+            
+        return view('tro-giang.binh-luan.index', compact('binhLuans', 'lopHocs', 'lopHocId'));
+    }
+    
+    /**
      * Lưu bình luận mới
      *
      * @param  \Illuminate\Http\Request  $request

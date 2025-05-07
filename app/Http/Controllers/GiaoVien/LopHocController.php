@@ -33,7 +33,7 @@ class LopHocController extends Controller
         $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
         
         // Tìm các lớp học của giáo viên
-        $lopHocsQuery = \App\Models\LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung'])
+        $lopHocsQuery = \App\Models\LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung', 'baiHocLops', 'dangKyHocs'])
             ->where('giao_vien_id', $giaoVien->id);
             
         // Lọc theo trạng thái nếu có
@@ -62,7 +62,27 @@ class LopHocController extends Controller
             
         // Đếm số học viên mỗi lớp (đã đăng ký và được duyệt)
         foreach ($lopHocs as $lopHoc) {
-            $lopHoc->soHocVien = $lopHoc->dangKyHocs()->where('trang_thai', 'da_duyet')->count();
+            // Đếm số học viên có trạng thái hợp lệ
+            $lopHoc->soHocVien = $lopHoc->dangKyHocs()
+                ->whereIn('trang_thai', ['da_duyet', 'dang_hoc', 'da_xac_nhan', 'da_thanh_toan'])
+                ->count();
+            
+            // Đếm số buổi học từ lịch học hoặc bài học lớp
+            if (!empty($lopHoc->lich_hoc)) {
+                $lichHoc = json_decode($lopHoc->lich_hoc, true);
+                if (is_array($lichHoc)) {
+                    $lopHoc->so_buoi = count($lichHoc);
+                } else {
+                    $lopHoc->so_buoi = $lopHoc->baiHocLops->count();
+                }
+            } else {
+                $lopHoc->so_buoi = $lopHoc->baiHocLops->count();
+            }
+            
+            // Đảm bảo có giá trị mặc định cho số học viên tối đa
+            if (empty($lopHoc->so_luong_toi_da)) {
+                $lopHoc->so_luong_toi_da = 30; // Giá trị mặc định
+            }
             
             // Cập nhật trạng thái hiển thị
             if ($lopHoc->ngay_bat_dau > now()) {
@@ -77,7 +97,10 @@ class LopHocController extends Controller
         // Lấy danh sách tất cả khóa học để hiển thị trong dropdown lọc
         $khoaHocs = \App\Models\KhoaHoc::orderBy('ten', 'asc')->get();
         
-        return view('giao-vien.lop-hoc.index', compact('lopHocs', 'khoaHocs'));
+        // Lấy các tham số lọc hiện tại
+        $currentFilters = request()->all();
+        
+        return view('giao-vien.lop-hoc.index', compact('lopHocs', 'khoaHocs', 'currentFilters'));
     }
     
     /**

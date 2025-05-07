@@ -113,20 +113,7 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
     Route::post('/binh-luan', [App\Http\Controllers\HocVien\BinhLuanController::class, 'store'])->name('binh-luan.store');
     Route::delete('/binh-luan/{id}', [App\Http\Controllers\HocVien\BinhLuanController::class, 'destroy'])->name('binh-luan.destroy');
     
-    // Quản lý tài chính
-    Route::prefix('tai-chinh')->name('tai-chinh.')->group(function() {
-        Route::get('/', [App\Http\Controllers\HocVien\TaiChinhController::class, 'index'])->name('index');
-        Route::get('/lich-su', [App\Http\Controllers\HocVien\TaiChinhController::class, 'lichSuThanhToan'])->name('lich-su');
-        Route::get('/chi-tiet/{id}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'chiTiet'])->name('chi-tiet');
-        Route::get('/lop-chua-dong-tien', [App\Http\Controllers\HocVien\TaiChinhController::class, 'lopChuaDongTien'])->name('lop-chua-dong-tien');
-        Route::get('/form-thanh-toan/{dangKyHocId}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'formThanhToan'])->name('form-thanh-toan');
-        Route::post('/thanh-toan-vnpay/{dangKyHocId}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'thanhToanVNPay'])->name('thanh-toan-vnpay');
-        Route::get('/vnpay-return', [App\Http\Controllers\HocVien\TaiChinhController::class, 'vnpayReturn'])->name('vnpay-return');
-        Route::get('/thanh-toan-thanh-cong/{maThanhToan}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'thanhToanThanhCong'])->name('thanh-toan-thanh-cong');
-        Route::get('/thanh-toan-that-bai/{maThanhToan}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'thanhToanThatBai'])->name('thanh-toan-that-bai');
-        Route::get('/hoa-don/{id}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'xemHoaDon'])->name('hoa-don');
-    });
-    
+   
     // VNPay
     Route::prefix('vnpay')->name('vnpay.')->group(function() {
         Route::get('/create', [App\Http\Controllers\HocVien\VNPayController::class, 'create'])->name('create');
@@ -239,6 +226,7 @@ Route::prefix('tro-giang')->name('tro-giang.')->middleware(['auth', 'role:tro_gi
     
     // Bình luận
     Route::prefix('binh-luan')->name('binh-luan.')->group(function() {
+        Route::get('/', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'index'])->name('index');
         Route::post('/', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'store'])->name('store');
         Route::delete('/{id}', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'destroy'])->name('destroy');
     });

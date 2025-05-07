@@ -114,6 +114,19 @@ class LopHocController extends Controller
             ->orderBy('so_thu_tu')
             ->get();
             
+        // Lấy tiến độ học tập của học viên
+        $tienDoBaiHocs = TienDoBaiHoc::where('hoc_vien_id', $hocVien->id)
+            ->whereIn('bai_hoc_id', $baiHocs->pluck('bai_hoc_id')->toArray())
+            ->get()
+            ->keyBy('bai_hoc_id');
+            
+        // Gán tiến độ học tập vào bài học
+        foreach ($baiHocs as $baiHoc) {
+            if (isset($tienDoBaiHocs[$baiHoc->bai_hoc_id])) {
+                $baiHoc->tien_do_hoc_tap = $tienDoBaiHocs[$baiHoc->bai_hoc_id];
+            }
+        }
+        
         // Lấy danh sách bài tập của lớp
         $baiTaps = BaiTap::whereHas('baiHoc.baiHocLops', function($query) use ($id) {
             $query->where('lop_hoc_id', $id);

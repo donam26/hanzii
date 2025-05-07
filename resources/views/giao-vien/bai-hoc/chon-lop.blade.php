@@ -57,7 +57,7 @@
                                 
                                 if ($lopHoc->ngay_bat_dau > now()) {
                                     $statusClass = 'bg-yellow-100 text-yellow-800';
-                                    $statusText = 'Sắp diễn ra';
+                                    $statusText = 'Sắp khai giảng;
                                 } elseif ($lopHoc->ngay_ket_thuc > now()) {
                                     $statusClass = 'bg-green-100 text-green-800';
                                     $statusText = 'Đang diễn ra';

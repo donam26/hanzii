@@ -39,10 +39,13 @@
                     @endforeach
                 </select>
             </div>
-            <div class="flex items-end">
+            <div class="flex items-end space-x-2">
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md">
                     Lọc lớp học
                 </button>
+                <a href="{{ route('giao-vien.lop-hoc.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-md">
+                    Reset
+                </a>
             </div>
         </form>
     </div>
@@ -63,7 +66,7 @@
                             
                             if ($lopHoc->trang_thai_hien_thi == 'sap_khai_giang') {
                                 $statusClass = 'bg-yellow-100 text-yellow-800';
-                                $statusText = 'Sắp diễn ra';
+                                $statusText = 'Sắp khai giảng';
                             } elseif ($lopHoc->trang_thai_hien_thi == 'dang_dien_ra') {
                                 $statusClass = 'bg-green-100 text-green-800';
                                 $statusText = 'Đang diễn ra';
@@ -99,9 +102,6 @@
                     </div>
                     
                     <div class="mt-5 flex flex-col space-y-2">
-                        <a href="{{ route('giao-vien.lop-hoc.show', $lopHoc->id) }}" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md text-center text-sm font-medium">
-                            Quản lý lớp
-                        </a>
                         <a href="{{ route('giao-vien.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="bg-white hover:bg-gray-50 text-gray-700 py-2 px-4 border border-gray-300 rounded-md text-center text-sm font-medium">
                             Danh sách học viên
                         </a>

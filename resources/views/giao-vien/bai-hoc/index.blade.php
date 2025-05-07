@@ -61,7 +61,7 @@
                         $statusText = '';
                         
                         if ($lopHoc->ngay_bat_dau > now()) {
-                            $statusText = 'Sắp diễn ra';
+                            $statusText = 'Sắp khai giảng';
                         } elseif ($lopHoc->ngay_ket_thuc > now()) {
                             $statusText = 'Đang diễn ra';
                         } else {

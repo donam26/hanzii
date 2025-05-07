@@ -55,11 +55,11 @@
                         Thông tin bài tập
                     </h6>
                     
-                    @if ($baiTap->mo_ta)
+                    @if ($baiTap->noi_dung)
                         <div class="mb-4">
                             <h6 class="text-sm font-medium text-gray-700 mb-2">Mô tả bài tập:</h6>
                             <div class="p-4 bg-white rounded border border-gray-200 prose prose-sm max-w-none">
-                                {!! $baiTap->mo_ta !!}
+                                {!! $baiTap->noi_dung !!}
                             </div>
                         </div>
                     @endif

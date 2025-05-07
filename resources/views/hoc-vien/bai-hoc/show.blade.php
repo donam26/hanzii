@@ -104,6 +104,60 @@
             </div>
         </div>
 
+        <!-- Danh sách tài liệu bổ trợ -->
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="font-medium text-gray-900">Tài liệu bổ trợ</h3>
+            </div>
+            <div class="p-6">
+                @if(isset($taiLieuBoTros) && count($taiLieuBoTros) > 0)
+                    <ul class="divide-y divide-gray-200">
+                        @foreach($taiLieuBoTros as $taiLieu)
+                            <li class="py-3 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-gray-900">{{ $taiLieu->tieu_de }}</h4>
+                                        @if($taiLieu->mo_ta)
+                                            <p class="text-xs text-gray-500 mt-1">{{ $taiLieu->mo_ta }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div>
+                                    <a href="{{ route('hoc-vien.bai-hoc.xem-tai-lieu', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id, 'taiLieuId' => $taiLieu->id]) }}" 
+                                       class="inline-flex items-center text-sm text-green-600 hover:text-green-800 mr-3" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        Xem trực tiếp
+                                    </a>
+                                    <a href="{{ route('hoc-vien.bai-hoc.tai-tai-lieu', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id, 'taiLieuId' => $taiLieu->id]) }}" 
+                                       class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Tải xuống
+                                    </a>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <div class="text-center py-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="text-gray-500 text-sm">Không có tài liệu bổ trợ nào cho bài học này</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
         <!-- Danh sách bài tập -->
         @if(isset($baiHoc->baiTaps) && count($baiHoc->baiTaps) > 0)
             <div class="bg-white rounded-lg shadow">

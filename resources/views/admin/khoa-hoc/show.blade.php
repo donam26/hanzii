@@ -226,7 +226,7 @@
                         
                         <div>
                             <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-gray-700">Lớp sắp diễn ra:</span>
+                                <span class="text-sm font-medium text-gray-700">Lớp sắp khai giảng:</span>
                                 <span class="text-sm font-semibold text-gray-900">{{ $khoaHoc->lopHocs->where('trang_thai', 'sap_khai_giang')->count() }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2.5">

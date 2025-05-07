@@ -79,6 +79,20 @@ class BaiHocController extends Controller
             'binhLuans.nguoiDung.vaiTros', // Thêm quan hệ bình luận và người dùng
         ])->findOrFail($baiHocId);
         
+        // Lấy danh sách tài liệu bổ trợ của bài học
+        $taiLieuBoTros = TaiLieuBoTro::where(function($query) use ($lopHocId, $baiHocId) {
+                // Lấy tài liệu cho bài học này trong lớp học cụ thể
+                $query->where('bai_hoc_id', $baiHocId)
+                      ->where('lop_hoc_id', $lopHocId);
+            })
+            ->orWhere(function($query) use ($baiHocId) {
+                // Lấy tài liệu chung cho bài học này (không gắn với lớp cụ thể)
+                $query->where('bai_hoc_id', $baiHocId)
+                      ->whereNull('lop_hoc_id');
+            })
+            ->orderBy('tao_luc', 'desc')
+            ->get();
+        
         // Tạo mảng bài tập đã nộp để dễ truy cập trong view
         $baiTapDaNop = [];
         if ($baiHoc->baiTaps) {
@@ -121,7 +135,8 @@ class BaiHocController extends Controller
             'daHoanThanhBaiHocTruoc',
             'danhSachBaiHoc',
             'tienDoBaiHocs',
-            'baiTapDaNop'
+            'baiTapDaNop',
+            'taiLieuBoTros'
         ));
     }
     
@@ -329,5 +344,57 @@ class BaiHocController extends Controller
         }
         
         return response()->file(storage_path('app/public/' . $taiLieu->duong_dan_file));
+    }
+    
+    /**
+     * Xem trực tiếp tài liệu bài học
+     */
+    public function xemTaiLieu($lopHocId, $baiHocId, $taiLieuId)
+    {
+        $nguoiDungId = session('nguoi_dung_id');
+        if (!$nguoiDungId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục');
+        }
+        
+        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$hocVien) {
+            return redirect()->route('hoc-vien.lop-hoc.index')->with('error', 'Không tìm thấy thông tin học viên');
+        }
+        
+        // Kiểm tra tài liệu tồn tại
+        $taiLieu = TaiLieuBoTro::findOrFail($taiLieuId);
+        
+        // Kiểm tra file tồn tại
+        if (!Storage::disk('public')->exists($taiLieu->duong_dan_file)) {
+            return back()->with('error', 'Tài liệu không tồn tại hoặc đã bị xóa');
+        }
+        
+        $filePath = storage_path('app/public/' . $taiLieu->duong_dan_file);
+        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+        
+        // Lấy MIME type dựa trên phần mở rộng của file
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'txt' => 'text/plain',
+        ];
+        
+        $contentType = $mimeTypes[$fileExtension] ?? 'application/octet-stream';
+        
+        // Trả về file với inline disposition để hiển thị trên trình duyệt thay vì tải xuống
+        return response()->file($filePath, [
+            'Content-Type' => $contentType,
+            'Content-Disposition' => 'inline; filename="' . $taiLieu->tieu_de . '.' . $fileExtension . '"'
+        ]);
     }
 } 

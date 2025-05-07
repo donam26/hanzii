@@ -108,8 +108,24 @@
                         <span>Trang chủ</span>
                     </div>
                 </a>
-
-
+                
+                <a href="{{ route('tro-giang.lop-hoc.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'lop-hoc' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <span>Lớp học</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('tro-giang.binh-luan.index') }}" class="block py-2.5 px-4 rounded transition duration-200 {{ $active === 'binh-luan' ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-white' }}">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                        </svg>
+                        <span>Bình luận</span>
+                    </div>
+                </a>
             @endif
             
       
