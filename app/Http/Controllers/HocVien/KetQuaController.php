@@ -34,7 +34,7 @@ class KetQuaController extends Controller
         
         // Lấy danh sách lớp học của học viên thông qua đăng ký học
         $dangKyHocs = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_xac_nhan'])
             ->pluck('lop_hoc_id')
             ->toArray();
             
@@ -100,7 +100,7 @@ class KetQuaController extends Controller
         $loaiBaiTap = $baiTapDaNop->baiTap->loai ?? 'tu_luan';
         
         if ($loaiBaiTap == 'tu_luan') {
-            return $this->showTracNghiem($baiTapDaNop);
+            return $this->showTuLuan($baiTapDaNop);
         } elseif ($loaiBaiTap == 'file') {
             return $this->showFile($baiTapDaNop);
         } else {

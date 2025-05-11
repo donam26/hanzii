@@ -16,7 +16,7 @@
                 <p class="mt-1 text-sm text-gray-600">Khóa học: {{ $lopHoc->khoaHoc->ten }}</p>
             </div>
             <div class="mt-4 md:mt-0 flex">
-                <a href="{{ route('giao-vien.lop-hoc.show', $lopHoc->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 active:bg-gray-700 disabled:opacity-25 transition">
+                <a href="{{ route('giao-vien.lop-hoc.index') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 active:bg-gray-700 disabled:opacity-25 transition">
                     <i class="fas fa-arrow-left mr-2"></i> Quay lại
                 </a>
             </div>
@@ -205,10 +205,6 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex items-center space-x-3">
-                                            <a href="{{ route('giao-vien.hoc-vien.show', $dangKy->hocVien->id) }}" class="bg-blue-100 text-blue-600 p-2 rounded-md hover:bg-blue-200" title="Chi tiết">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            
                                             @if($trangThai == 'cho_xac_nhan')
                                                 <!-- Nút xác nhận -->
                                                 <form action="{{ route('giao-vien.xac-nhan-hoc-vien', ['id' => $lopHoc->id, 'dangKyId' => $dangKy->id]) }}" method="POST" class="inline-block">

@@ -264,38 +264,76 @@
                                 x-transition:leave-start="transform opacity-100 scale-100" 
                                 x-transition:leave-end="transform opacity-0 scale-95" 
                                 class="absolute right-0 w-80 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" 
-                                style="max-height: 400px; overflow-y: auto; z-index: 100;">
+                                style="max-height: 500px; overflow-y: auto; z-index: 100;">
                                 
-                                <div class="py-2 px-3 border-b border-gray-100 flex justify-between items-center">
-                                    <h3 class="text-sm font-semibold text-gray-800">Thông báo</h3>
-                                    <button x-show="unreadCount > 0" @click="markAllAsRead" class="text-xs text-blue-600 hover:text-blue-800">
-                                        Đánh dấu tất cả đã đọc
-                                    </button>
+                                <!-- Header với tiêu đề và nút đánh dấu đã đọc -->
+                                <div class="py-3 px-4 border-b border-gray-100 flex justify-between items-center">
+                                    <h3 class="text-base font-semibold text-gray-800">Thông báo</h3>
+                                    <div>
+                                        <button x-show="unreadCount > 0" @click="markAllAsRead" class="text-xs text-blue-600 hover:text-blue-800 mr-2">
+                                            <i class="fas fa-check-double"></i>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 
+                                <!-- Tabs để lọc thông báo -->
+                           
+                                
+                                <!-- Tiêu đề nhóm và Nút xem tất cả -->
+                                <div class="pt-3 px-4 flex justify-between items-center">
+                                    @php
+                                        $thongBaoRoute = '';
+                                        if (session('vai_tro') == 'admin') {
+                                            $thongBaoRoute = route('admin.lien-he.index');
+                                        } 
+                                    @endphp
+                                    <a href="{{ $thongBaoRoute }}" class="text-xs text-blue-600 hover:text-blue-800">
+                                        Xem tất cả
+                                    </a>
+                                </div>
+                                
+                                <!-- Trạng thái loading -->
                                 <div x-show="loading" class="py-4 text-center text-gray-500">
                                     <i class="fas fa-spinner fa-spin mr-2"></i> Đang tải...
                                 </div>
                                 
+                                <!-- Trạng thái không có thông báo -->
                                 <div x-show="!loading && notifications.length === 0" class="py-4 text-center text-gray-500">
                                     Không có thông báo nào
                                 </div>
                                 
-                                <template x-for="notification in notifications" :key="notification.id">
-                                    <div @click="readNotification(notification)" 
-                                        :class="{ 'bg-blue-50': !notification.read_at }"
-                                        class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
-                                        <div class="flex justify-between items-start">
-                                            <p class="text-sm font-medium text-gray-900" x-text="notification.data.tieu_de || 'Thông báo mới'"></p>
-                                            <span x-show="!notification.read_at" class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+                                <!-- Danh sách thông báo -->
+                                <div class="mt-1">
+                                    <template x-for="notification in notifications" :key="notification.id">
+                                        <div @click="readNotification(notification)" 
+                                            :class="{ 'bg-blue-50': !notification.read_at }"
+                                            class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 flex items-start">
+                                            <!-- Avatar hoặc icon -->
+                                            <div class="flex-shrink-0 mr-3 mt-0.5">
+                                                <div class="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                                                    <i class="fas fa-bell"></i>
+                                                </div>
+                                            </div>
+                                            <!-- Nội dung thông báo -->
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900" x-text="notification.data.tieu_de || 'Thông báo mới'"></p>
+                                                <p class="text-xs text-gray-600 mt-0.5 line-clamp-2" x-text="notification.data.noi_dung || ''"></p>
+                                                <p class="text-xs text-gray-500 mt-0.5" x-text="formatDateTime(notification.created_at)"></p>
+                                            </div>
+                                            <!-- Indicator chưa đọc -->
+                                            <div x-show="!notification.read_at" class="flex-shrink-0 ml-2">
+                                                <span class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+                                            </div>
                                         </div>
-                                        <p class="text-xs text-gray-600 mt-1 line-clamp-2" x-text="notification.data.noi_dung || ''"></p>
-                                        <p class="text-xs text-gray-500 mt-1" x-text="formatDateTime(notification.created_at)"></p>
-                                    </div>
-                                </template>
+                                    </template>
+                                </div>
                                 
+                                <!-- Button xem thêm -->
                                 <div x-show="hasMore" class="py-2 text-center border-t border-gray-100">
-                                    <button @click="loadMore" class="text-xs text-blue-600 hover:text-blue-800">
+                                    <button @click="loadMore" class="text-xs text-blue-600 hover:text-blue-800 py-2">
                                         Xem thêm thông báo
                                     </button>
                                 </div>
@@ -305,8 +343,8 @@
                         <!-- Dropdown -->
                         <div class="dropdown">
                             <a href="#" class="avatar avatar-sm avatar-online dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                                @if (session('avatar'))
-                                    <img src="{{ session('avatar') }}" alt="avatar" class="avatar-img rounded-circle">
+                                @if (session('anh_dai_dien'))
+                                    <img src="{{ session('anh_dai_dien') }}" alt="avatar" class="avatar-img rounded-circle">
                                 @else
                                     <img src="{{ asset('assets/img/avatars/placeholder.jpg') }}" alt="avatar" class="avatar-img rounded-circle">
                                 @endif
@@ -315,9 +353,9 @@
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                                 <div class="dropdown-item">
                                     <div class="d-flex align-items-center">
-                                        @if (session('avatar'))
+                                        @if (session('anh_dai_dien'))
                                             <div class="avatar avatar-sm avatar-circle">
-                                                <img src="{{ session('avatar') }}" alt="avatar" class="avatar-img">
+                                                <img src="{{ session('anh_dai_dien') }}" alt="avatar" class="avatar-img">
                                             </div>
                                         @else
                                             <div class="avatar avatar-sm avatar-circle">
@@ -357,7 +395,7 @@
                               
                                 @php
                                     $profileRoute = '';
-                                    if (session('vai_tro') == 'quan_tri_vien') {
+                                    if (session('vai_tro') == 'admin') {
                                         $profileRoute = route('admin.profile.index');
                                     } elseif (session('vai_tro') == 'giao_vien') {
                                         $profileRoute = route('giao-vien.profile.index');
@@ -373,9 +411,7 @@
                                 </a>
                                 
                                 <hr class="dropdown-divider">
-                                <a class="dropdown-item" href="{{ route('notifications.index') }}">
-                                    <i class="fe fe-bell dropdown-item-icon"></i> Thông báo
-                                </a>
+                             
                                 
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf

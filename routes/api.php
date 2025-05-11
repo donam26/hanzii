@@ -26,3 +26,30 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
     Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
 });
+
+// Route API cho thanh toán học phí
+Route::get('/hoc-vien/{id}/lop-hoc-va-hoc-phi', function($id) {
+    $hocVien = \App\Models\HocVien::findOrFail($id);
+    
+    // Lấy lớp học mà học viên đang học (lấy lớp học mới nhất)
+    $lopHoc = $hocVien->lopHocs()->latest('tao_luc')->first();
+    
+    if (!$lopHoc) {
+        return response()->json(['message' => 'Học viên không có lớp học'], 404);
+    }
+    
+    return response()->json([
+        'lop_hoc_id' => $lopHoc->id,
+        'ten_lop' => $lopHoc->ten,
+        'ma_lop' => $lopHoc->ma_lop,
+        'hoc_phi' => $lopHoc->hoc_phi ?? 0
+    ]);
+});
+
+Route::get('/lop-hoc/{id}/hoc-phi', function($id) {
+    $lopHoc = \App\Models\LopHoc::findOrFail($id);
+    
+    return response()->json([
+        'hoc_phi' => $lopHoc->khoaHoc->hoc_phi ?? 0
+    ]);
+});

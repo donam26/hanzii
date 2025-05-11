@@ -189,11 +189,11 @@
                                 <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                     Sắp khai giảng
                                 </span>
-                            @elseif($lopHoc->trang_thai == 'dang_dien_ra' || $lopHoc->trang_thai == 'dang_hoc')
+                            @elseif($lopHoc->trang_thai == 'dang_dien_ra' )
                                 <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                     Đang diễn ra
                                 </span>
-                            @elseif($lopHoc->trang_thai == 'da_ket_thuc')
+                            @elseif($lopHoc->trang_thai == 'da_ket_thuc' || $lopHoc->trang_thai == 'da_hoan_thanh')
                                 <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                                     Đã kết thúc
                                 </span>

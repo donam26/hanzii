@@ -43,7 +43,7 @@
             <h3 class="text-lg font-medium text-gray-900">Tổng quan kết quả học tập</h3>
         </div>
         <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-gray-50 rounded-lg p-4 text-center">
                     <div class="text-4xl font-bold {{ $diemTrungBinh >= 8 ? 'text-green-600' : ($diemTrungBinh >= 6.5 ? 'text-blue-600' : ($diemTrungBinh >= 5 ? 'text-yellow-600' : 'text-red-600')) }} mb-2">{{ number_format($diemTrungBinh, 1) }}</div>
                     <div class="text-sm text-gray-600">Điểm trung bình</div>
@@ -52,12 +52,7 @@
                     <div class="text-4xl font-bold text-gray-700 mb-2">{{ $nopBaiTaps->total() }}</div>
                     <div class="text-sm text-gray-600">Tổng số bài đã làm</div>
                 </div>
-                <div class="bg-gray-50 rounded-lg p-4 text-center">
-                    <div class="text-4xl font-bold text-gray-700 mb-2">
-                        <span id="chuaLam">-</span>
-                    </div>
-                    <div class="text-sm text-gray-600">Tổng số bài chưa làm</div>
-                </div>
+             
             </div>
         </div>
     </div>
@@ -66,14 +61,7 @@
     <div class="bg-white rounded-lg shadow">
         <div class="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
             <h3 class="text-lg font-medium text-gray-900">Chi tiết kết quả học tập</h3>
-            <div>
-                <select id="sortOption" onchange="sortTable()" class="border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 text-sm">
-                    <option value="newest">Mới nhất</option>
-                    <option value="oldest">Cũ nhất</option>
-                    <option value="highest">Điểm cao nhất</option>
-                    <option value="lowest">Điểm thấp nhất</option>
-                </select>
-            </div>
+            
         </div>
         
         <!-- Bảng kết quả - phiên bản desktop -->

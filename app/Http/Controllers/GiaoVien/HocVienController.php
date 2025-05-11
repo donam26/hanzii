@@ -153,7 +153,7 @@ class HocVienController extends Controller
                 ->findOrFail($id);
                 
             // Xác nhận đăng ký học và cập nhật các trường cần thiết
-            $dangKyHoc->trang_thai = 'dang_hoc';
+            $dangKyHoc->trang_thai = 'da_xac_nhan';
             $dangKyHoc->ngay_tham_gia = now();
             
             // Thêm ngày đăng ký nếu chưa có

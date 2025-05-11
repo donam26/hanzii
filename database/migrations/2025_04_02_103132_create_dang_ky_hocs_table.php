@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('hoc_vien_id')->constrained('hoc_viens')->onDelete('cascade');
             $table->foreignId('lop_hoc_id')->constrained('lop_hocs')->onDelete('cascade');
             $table->date('ngay_dang_ky');
-            $table->string('trang_thai')->default('cho_xac_nhan')->comment('cho_xac_nhan, da_thanh_toan, da_xac_nhan');
+            $table->string('trang_thai')->default('cho_xac_nhan')->comment('cho_xac_nhan, da_xac_nhan');
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
         });

@@ -32,9 +32,9 @@
                 <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-medium text-gray-900">Thông tin khóa học</h3>
                     <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                        {{ $khoaHoc->trang_thai == 'dang_hoat_dong' ? 'bg-green-100 text-green-800' : 
+                        {{ $khoaHoc->trang_thai == 'hoat_dong' ? 'bg-green-100 text-green-800' : 
                         ($khoaHoc->trang_thai == 'tam_ngung' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                        {{ $khoaHoc->trang_thai == 'dang_hoat_dong' ? 'Đang hoạt động' : 
+                        {{ $khoaHoc->trang_thai == 'hoat_dong' ? 'Đang hoạt động' : 
                         ($khoaHoc->trang_thai == 'tam_ngung' ? 'Tạm ngưng' : 'Đã kết thúc') }}
                     </span>
                 </div>

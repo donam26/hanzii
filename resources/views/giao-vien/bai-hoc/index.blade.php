@@ -70,7 +70,6 @@
                     @endphp
                     {{ $statusText }}
                 </p>
-                <p class="mt-1 text-sm text-gray-900">Địa điểm: {{ $lopHoc->dia_diem }}</p>
             </div>
         </div>
     </div>

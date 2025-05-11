@@ -14,6 +14,7 @@ use App\Http\Controllers\GiaoVien\DashboardController as GiaoVienDashboardContro
 use App\Http\Controllers\TroGiang\DashboardController as TroGiangDashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LienHeController;
+use App\Http\Controllers\Admin\ThanhToanHocPhiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,11 +97,13 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
     
     // Tài liệu
     Route::get('/lop-hoc/{lopHocId}/bai-hoc/{baiHocId}/tai-lieu/{taiLieuId}', [HocVienBaiHocController::class, 'taiTaiLieu'])->name('bai-hoc.tai-tai-lieu');
+    Route::get('/lop-hoc/{lopHocId}/bai-hoc/{baiHocId}/xem-tai-lieu/{taiLieuId}', [HocVienBaiHocController::class, 'xemTaiLieu'])->name('bai-hoc.xem-tai-lieu');
     
     // Kết quả học tập
     Route::get('/ket-qua-hoc-tap', [HocVienKetQuaController::class, 'index'])->name('ket-qua.index');
     Route::get('/ket-qua', [HocVienKetQuaController::class, 'index'])->name('ket-qua');
     Route::get('/ket-qua/{id}', [HocVienKetQuaController::class, 'show'])->name('ket-qua.show');
+    Route::get('/ket-qua/download/{id}', [HocVienKetQuaController::class, 'download'])->name('ket-qua.download');
     
     // Thông tin cá nhân
     Route::get('/profile', [App\Http\Controllers\HocVien\ProfileController::class, 'index'])->name('profile.index');
@@ -114,26 +117,13 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
     Route::delete('/binh-luan/{id}', [App\Http\Controllers\HocVien\BinhLuanController::class, 'destroy'])->name('binh-luan.destroy');
     
    
-    // VNPay
-    Route::prefix('vnpay')->name('vnpay.')->group(function() {
-        Route::get('/create', [App\Http\Controllers\HocVien\VNPayController::class, 'create'])->name('create');
-        Route::get('/return', [App\Http\Controllers\HocVien\VNPayController::class, 'return'])->name('return');
-    });
     
     // Thông báo lớp học
     Route::get('/thong-bao', [App\Http\Controllers\HocVien\ThongBaoController::class, 'index'])->name('thong-bao.index');
     Route::get('/thong-bao/{id}', [App\Http\Controllers\HocVien\ThongBaoController::class, 'show'])->name('thong-bao.show');
     Route::post('/thong-bao/mark-all-as-read', [App\Http\Controllers\HocVien\ThongBaoController::class, 'markAllAsRead'])->name('thong-bao.mark-all-as-read');
     Route::get('/thong-bao/count-unread', [App\Http\Controllers\HocVien\ThongBaoController::class, 'countUnread'])->name('thong-bao.count-unread');
-    
-    // Quản lý tài chính
-    Route::prefix('tai-chinh')->name('tai-chinh.')->group(function() {
-        Route::get('/', [App\Http\Controllers\HocVien\TaiChinhController::class, 'index'])->name('index');
-        Route::get('/thong-ke', [App\Http\Controllers\HocVien\TaiChinhController::class, 'thongKe'])->name('thong-ke');
-        Route::get('/lich-su', [App\Http\Controllers\HocVien\TaiChinhController::class, 'lichSuThanhToan'])->name('lich-su');
-        Route::get('/chi-tiet/{id}', [App\Http\Controllers\HocVien\TaiChinhController::class, 'chiTiet'])->name('chi-tiet');
-        Route::get('/lop-chua-dong-tien', [App\Http\Controllers\HocVien\TaiChinhController::class, 'lopChuaDongTien'])->name('lop-chua-dong-tien');
-    });
+   
 });
 
 // Giáo viên routes
@@ -220,6 +210,15 @@ Route::prefix('tro-giang')->name('tro-giang.')->middleware(['auth', 'role:tro_gi
     Route::get('/dashboard', [TroGiangDashboardController::class, 'index'])->name('dashboard');
     Route::get('/lop-hoc', 'App\Http\Controllers\TroGiang\LopHocController@index')->name('lop-hoc.index');
     Route::get('/lop-hoc/{id}', 'App\Http\Controllers\TroGiang\LopHocController@show')->name('lop-hoc.show');
+    Route::get('/lop-hoc/{id}/danh-sach-hoc-vien', 'App\Http\Controllers\TroGiang\LopHocController@danhSachHocVien')->name('lop-hoc.danh-sach-hoc-vien');
+    Route::get('/lop-hoc/{id}/danh-sach-bai-tap', 'App\Http\Controllers\TroGiang\LopHocController@danhSachBaiTap')->name('lop-hoc.danh-sach-bai-tap');
+    
+    // Thông tin cá nhân
+    Route::get('/profile', 'App\Http\Controllers\TroGiang\ProfileController@index')->name('profile.index');
+    Route::get('/profile/edit', 'App\Http\Controllers\TroGiang\ProfileController@edit')->name('profile.edit');
+    Route::put('/profile', 'App\Http\Controllers\TroGiang\ProfileController@update')->name('profile.update');
+    Route::get('/change-password', 'App\Http\Controllers\TroGiang\ProfileController@showChangePasswordForm')->name('profile.change-password');
+    Route::post('/change-password', 'App\Http\Controllers\TroGiang\ProfileController@changePassword')->name('profile.update-password');
     
     // Bài học
     Route::get('/bai-hoc/{lopHocId}/{baiHocId}', 'App\Http\Controllers\TroGiang\BaiHocController@show')->name('bai-hoc.show');
@@ -229,6 +228,7 @@ Route::prefix('tro-giang')->name('tro-giang.')->middleware(['auth', 'role:tro_gi
         Route::get('/', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'index'])->name('index');
         Route::post('/', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'store'])->name('store');
         Route::delete('/{id}', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'destroy'])->name('destroy');
+        Route::post('/phan-hoi', [App\Http\Controllers\TroGiang\BinhLuanController::class, 'phanHoi'])->name('phan-hoi');
     });
 });
 
@@ -243,6 +243,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/change-password', [App\Http\Controllers\Admin\ProfileController::class, 'showChangePasswordForm'])->name('profile.change-password');
     Route::post('/change-password', [App\Http\Controllers\Admin\ProfileController::class, 'changePassword'])->name('profile.update-password');
     
+    // Quản lý thanh toán học phí
+    Route::resource('thanh-toan-hoc-phi', ThanhToanHocPhiController::class);
+    Route::post('/thanh-toan-hoc-phi/{thanhToanHocPhi}/update-status', [ThanhToanHocPhiController::class, 'updateStatus'])->name('thanh-toan-hoc-phi.update-status');
+    Route::post('/thanh-toan-hoc-phi/{thanhToanHocPhi}/cancel-status', [ThanhToanHocPhiController::class, 'cancelStatus'])->name('thanh-toan-hoc-phi.cancel-status');
+    
+    // Quản lý lương giáo viên và trợ giảng
+    Route::get('luong', 'App\Http\Controllers\Admin\LuongController@index')->name('luong.index');
+    Route::post('luong/tinh-toan', 'App\Http\Controllers\Admin\LuongController@calculate')->name('luong.calculate');
+    Route::get('luong/thong-ke', 'App\Http\Controllers\Admin\LuongController@thongKe')->name('luong.thong-ke');
+    Route::get('luong/giao-vien/{luongGiaoVien}', 'App\Http\Controllers\Admin\LuongController@showGiaoVien')->name('luong.show-giao-vien');
+    Route::get('luong/tro-giang/{luongTroGiang}', 'App\Http\Controllers\Admin\LuongController@showTroGiang')->name('luong.show-tro-giang');
+    Route::post('luong/giao-vien/{luongGiaoVien}/thanh-toan', 'App\Http\Controllers\Admin\LuongController@thanhToanGiaoVien')->name('luong.thanh-toan-giao-vien');
+    Route::post('luong/tro-giang/{luongTroGiang}/thanh-toan', 'App\Http\Controllers\Admin\LuongController@thanhToanTroGiang')->name('luong.thanh-toan-tro-giang');
+    Route::post('luong/giao-vien/{luongGiaoVien}/huy', 'App\Http\Controllers\Admin\LuongController@huyThanhToanGiaoVien')->name('luong.huy-giao-vien');
+    Route::post('luong/tro-giang/{luongTroGiang}/huy', 'App\Http\Controllers\Admin\LuongController@huyThanhToanTroGiang')->name('luong.huy-tro-giang');
+    
     Route::resource('nguoi-dung', 'App\Http\Controllers\Admin\NguoiDungController');
     Route::resource('khoa-hoc', 'App\Http\Controllers\Admin\KhoaHocController');
     Route::resource('lop-hoc', 'App\Http\Controllers\Admin\LopHocController');
@@ -253,17 +269,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::post('lop-hoc/{id}/yeu-cau-tham-gia/{yeuCauId}/tu-choi', 'App\Http\Controllers\Admin\LopHocController@tuChoiYeuCauThamGia')->name('lop-hoc.tu-choi-yeu-cau');
     Route::post('lop-hoc/{id}/add-student', 'App\Http\Controllers\Admin\LopHocController@addStudent')->name('lop-hoc.add-student');
     Route::delete('lop-hoc/{id}/remove-student/{dangKyId}', 'App\Http\Controllers\Admin\LopHocController@removeStudent')->name('lop-hoc.remove-student');
-    // Route::put('dang-ky-hoc/{id}/xac-nhan', 'App\Http\Controllers\Admin\DangKyHocController@xacNhan')->name('dang-ky-hoc.xac-nhan');
+    // Đăng ký học
+    Route::put('dang-ky-hoc/{id}/xac-nhan', 'App\Http\Controllers\Admin\DangKyHocController@xacNhan')->name('dang-ky-hoc.xac-nhan');
+    Route::put('dang-ky-hoc/{id}/tu-choi', 'App\Http\Controllers\Admin\DangKyHocController@tuChoi')->name('dang-ky-hoc.tu-choi');
+    
     Route::resource('hoc-vien', 'App\Http\Controllers\Admin\HocVienController');
     Route::resource('giao-vien', 'App\Http\Controllers\Admin\GiaoVienController');
     Route::resource('tro-giang', 'App\Http\Controllers\Admin\TroGiangController');
     // Route::resource('vai-tro', 'App\Http\Controllers\Admin\VaiTroController');
     // Route::resource('quyen', 'App\Http\Controllers\Admin\QuyenController');
     Route::get('hoc-phi', 'App\Http\Controllers\Admin\HocPhiController@index')->name('hoc-phi.index');
-    Route::get('thanh-toan', 'App\Http\Controllers\Admin\ThanhToanController@index')->name('thanh-toan.index');
-    Route::get('luong', 'App\Http\Controllers\Admin\LuongController@index')->name('luong.index');
-    Route::post('luong/tinh-toan', 'App\Http\Controllers\Admin\LuongController@calculate')->name('luong.calculate');
-    Route::put('luong/{id}', 'App\Http\Controllers\Admin\LuongController@update')->name('luong.update');
     Route::get('thong-ke/tai-chinh', 'App\Http\Controllers\Admin\ThongKeController@taiChinh')->name('thong-ke.tai-chinh');
     Route::get('thong-ke/hoc-vien', 'App\Http\Controllers\Admin\ThongKeController@hocVien')->name('thong-ke.hoc-vien');
     Route::resource('thong-bao', 'App\Http\Controllers\Admin\ThongBaoController');
@@ -273,18 +288,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     
     // Tài liệu bổ trợ
     Route::get('tai-lieu/download/{id}', [App\Http\Controllers\Admin\TaiLieuController::class, 'download'])->name('tai-lieu.download');
-    
-    // Quản lý thanh toán và học phí
-    Route::prefix('thanh-toan')->name('thanh-toan.')->group(function() {
-        Route::get('/', [App\Http\Controllers\Admin\ThanhToanController::class, 'index'])->name('index');
-        Route::get('/{id}', [App\Http\Controllers\Admin\ThanhToanController::class, 'show'])->name('show');
-        Route::post('/{id}/confirm', [App\Http\Controllers\Admin\ThanhToanController::class, 'confirm'])->name('confirm');
-        Route::post('/{id}/cancel', [App\Http\Controllers\Admin\ThanhToanController::class, 'cancel'])->name('cancel');
-        Route::get('/thong-ke/ngay', [App\Http\Controllers\Admin\ThanhToanController::class, 'thongKeTheoNgay'])->name('thong-ke-ngay');
-        Route::get('/thong-ke/thang', [App\Http\Controllers\Admin\ThanhToanController::class, 'thongKeTheoThang'])->name('thong-ke-thang');
-        Route::get('/export', [App\Http\Controllers\Admin\ThanhToanController::class, 'export'])->name('export');
-    });
-    
+   
     // Thống kê
     Route::prefix('thong-ke')->name('thong-ke.')->group(function () {
         Route::get('/tong-quan', [App\Http\Controllers\Admin\ThongKeController::class, 'tongQuan'])->name('tong-quan');
@@ -299,11 +303,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/thong-bao/{id}/delete-file', [App\Http\Controllers\Admin\ThongBaoController::class, 'deleteFile'])->name('thong-bao.delete-file');
     Route::get('/thong-bao/{id}/change-status', [App\Http\Controllers\Admin\ThongBaoController::class, 'changeStatus'])->name('thong-bao.change-status');
     
-    // Lương
-    Route::get('/luong/{id}/thanh-toan', [App\Http\Controllers\Admin\LuongController::class, 'thanhToan'])->name('luong.thanh-toan');
-    Route::get('/luong/{id}/huy', [App\Http\Controllers\Admin\LuongController::class, 'huy'])->name('luong.huy');
-    Route::get('/luong-thong-ke', [App\Http\Controllers\Admin\LuongController::class, 'thongKe'])->name('luong.thong-ke');
-    
     // Quản lý liên hệ
     Route::prefix('lien-he')->name('lien-he.')->group(function () {
         Route::get('/', [LienHeController::class, 'danhSach'])->name('index');
@@ -313,26 +312,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     });
 });
 
-// Routes cho quản lý lương
-// Admin
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/luong', [App\Http\Controllers\Admin\LuongController::class, 'index'])->name('luong.index');
-    // Route::get('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'show'])->name('luong.show');
-    Route::get('/luong/{luong}/edit', [App\Http\Controllers\Admin\LuongController::class, 'edit'])->name('luong.edit');
-    // Route::put('/luong/{luong}', [App\Http\Controllers\Admin\LuongController::class, 'update'])->name('luong.update');
-    // Route::put('/luong/{luong}/thanh-toan', [App\Http\Controllers\Admin\LuongController::class, 'thanhToan'])->name('luong.thanh-toan');
-    Route::get('/lop-hoc/{lopHoc}/tao-luong', [App\Http\Controllers\Admin\LuongController::class, 'taoLuongKhiKetThucLop'])->name('luong.tao-luong');
-});
-
-// Giáo viên
-Route::middleware(['auth', 'giao_vien'])->prefix('giao-vien')->name('giao-vien.')->group(function () {
-    Route::get('/luong', [App\Http\Controllers\GiaoVien\LuongController::class, 'index'])->name('luong.index');
-});
-
-// Trợ giảng
-Route::middleware(['auth', 'tro_giang'])->prefix('tro-giang')->name('tro-giang.')->group(function () {
-    // Route::get('/luong', [\App\Http\Controllers\TroGiang\LuongController::class, 'index'])->name('luong.index');
-});
 
 // Routes cho thông báo
 Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {

@@ -63,7 +63,7 @@ class AuthController extends Controller
             
             // Thêm avatar nếu có
             if ($nguoiDung->anh_dai_dien) {
-                $request->session()->put('avatar', asset('storage/' . $nguoiDung->anh_dai_dien));
+                $request->session()->put('anh_dai_dien', asset('storage/' . $nguoiDung->anh_dai_dien));
             }
             
             Log::debug('Thông tin người dùng: ID=' . $nguoiDung->id . ', Loại=' . $nguoiDung->loai_tai_khoan);
@@ -156,7 +156,14 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->session()->forget(['nguoi_dung_id', 'loai_tai_khoan', 'vai_tros']);
+        $request->session()->forget([
+            'nguoi_dung_id', 
+            'loai_tai_khoan', 
+            'vai_tros', 
+            'user_full_name', 
+            'vai_tro', 
+            'anh_dai_dien'
+        ]);
         
         return redirect()->route('welcome')->with('success', 'Đăng xuất thành công!');
     }

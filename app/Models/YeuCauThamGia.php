@@ -15,7 +15,7 @@ class YeuCauThamGia extends Model
      *
      * @var string
      */
-    protected $table = 'yeu_cau_tham_gia';
+    protected $table = 'dang_ky_hocs';
 
     /**
      * Các cột có thể gán giá trị
@@ -27,9 +27,8 @@ class YeuCauThamGia extends Model
         'hoc_vien_id',
         'trang_thai',
         'ghi_chu',
-        'nguoi_duyet_id',
-        'ly_do_tu_choi',
-        'ngay_duyet',
+        'ngay_dang_ky',
+        'ngay_tham_gia'
     ];
 
     /**
@@ -58,15 +57,5 @@ class YeuCauThamGia extends Model
     public function hocVien(): BelongsTo
     {
         return $this->belongsTo(HocVien::class, 'hoc_vien_id');
-    }
-
-    /**
-     * Quan hệ với người duyệt (giáo viên)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function nguoiDuyet(): BelongsTo
-    {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_duyet_id');
     }
 } 

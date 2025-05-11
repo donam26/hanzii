@@ -116,37 +116,10 @@ class LienHeController extends Controller
             try {
                 Log::info('Đang gửi thông báo cho admin: ' . $admin->email);
                 
-                // Tạo thông báo trực tiếp vào database
-                $notification = [
-                    'id' => \Illuminate\Support\Str::uuid()->toString(),
-                    'type' => LienHeNotification::class,
-                    'notifiable_type' => get_class($admin),
-                    'notifiable_id' => $admin->id,
-                    'data' => json_encode([
-                        'id' => $lienHe->id,
-                        'ho_ten' => $lienHe->ho_ten,
-                        'chu_de' => $lienHe->chu_de,
-                        'tieu_de' => 'Tin nhắn mới từ: ' . $lienHe->ho_ten,
-                        'noi_dung' => 'Chủ đề: ' . $lienHe->chu_de,
-                        'url' => route('admin.lien-he.show', $lienHe->id),
-                        'loai' => 'lien_he'
-                    ]),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-                
-                // Lưu trực tiếp vào database
-                Log::info('Đang thử lưu thông báo vào database');
-                DB::table('notifications')->insert($notification);
-                Log::info('Đã lưu thông báo vào database thành công');
-                
-                // Gửi email thông báo nếu cần
-                try {
-                    $admin->notify(new LienHeNotification($lienHe));
-                    Log::info('Đã gửi email thông báo cho admin: ' . $admin->email);
-                } catch (\Exception $e) {
-                    Log::error('Lỗi khi gửi email thông báo: ' . $e->getMessage());
-                }
+                // Sử dụng hệ thống thông báo của Laravel 
+                // Điều này tự động tạo bản ghi trong bảng notifications và gửi email
+                $admin->notify(new LienHeNotification($lienHe));
+                Log::info('Đã gửi thông báo cho admin: ' . $admin->email);
                 
                 // Kiểm tra xem thông báo đã được lưu vào bảng notifications chưa
                 $notificationCount = DB::table('notifications')

@@ -19,9 +19,7 @@
                 <a href="{{ route('admin.lop-hoc.show', $lopHoc->id) }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 active:bg-gray-700 disabled:opacity-25 transition">
                     <i class="fas fa-arrow-left mr-2"></i> Quay lại
                 </a>
-                <button type="button" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 active:bg-red-700 disabled:opacity-25 transition" data-modal-target="modalThemHocVien" data-modal-toggle="modalThemHocVien">
-                    <i class="fas fa-user-plus mr-2"></i> Thêm học viên
-                </button>
+              
             </div>
         </div>
     </div>
@@ -175,9 +173,7 @@
                                         <i class="fas fa-phone text-gray-400 mr-1"></i> {{ $dangKy->hocVien->nguoiDung->so_dien_thoai ?? 'N/A' }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ number_format($dangKy->hoc_phi, 0, ',', '.') }} đ
-                                </td>
+                              
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ \Carbon\Carbon::parse($dangKy->ngay_dang_ky)->format('d/m/Y') }}
                                 </td>
@@ -242,63 +238,192 @@
                 </table>
             </div>
         </div>
-    </div>
-    
-    <!-- Modal thêm học viên -->
-    <div id="modalThemHocVien" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-md max-h-full">
-            <div class="relative bg-white rounded-lg shadow">
-                <div class="flex items-center justify-between p-5 border-b rounded-t">
-                    <h3 class="text-xl font-medium text-gray-900">
-                        Thêm học viên vào lớp
-                    </h3>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center" data-modal-hide="modalThemHocVien">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                        <span class="sr-only">Đóng</span>
-                    </button>
-                </div>
-                <div class="p-6 space-y-6">
-                    <form action="{{ route('admin.lop-hoc.add-student', $lopHoc->id) }}" method="POST">
-                        @csrf
-                        <div class="mb-4">
-                            <label for="hoc_vien_id" class="block mb-2 text-sm font-medium text-gray-900">Chọn học viên <span class="text-red-500">*</span></label>
-                            <select id="hoc_vien_id" name="hoc_vien_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
-                                <option value="">Chọn học viên</option>
-                                @foreach($availableStudents as $hocVien)
-                                    <option value="{{ $hocVien->id }}">
-                                        {{ $hocVien->nguoiDung->ho . ' ' . $hocVien->nguoiDung->ten }} - {{ $hocVien->nguoiDung->email }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="hoc_phi" class="block mb-2 text-sm font-medium text-gray-900">Học phí <span class="text-red-500">*</span></label>
-                            <input type="number" disabled id="hoc_phi" name="hoc_phi" value="{{ $lopHoc->khoaHoc->hoc_phi }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
-                            <p class="mt-1 text-xs text-gray-500">Học phí mặc định: {{ number_format($lopHoc->khoaHoc->hoc_phi, 0, ',', '.') }} đ</p>
-                        </div>
-                        <div class="mb-4">
-                            <label for="phuong_thuc_thanh_toan" class="block mb-2 text-sm font-medium text-gray-900">Phương thức thanh toán <span class="text-red-500">*</span></label>
-                            <select id="phuong_thuc_thanh_toan" name="phuong_thuc_thanh_toan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
-                                <option value="chuyen_khoan">Chuyển khoản</option>
-                                <option value="tien_mat">Tiền mặt</option>
-                                <option value="vi_dien_tu">Ví điện tử</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="ghi_chu" class="block mb-2 text-sm font-medium text-gray-900">Ghi chú</label>
-                            <textarea id="ghi_chu" name="ghi_chu" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" rows="3"></textarea>
-                        </div>
-                        <div class="mt-6 flex justify-end">
-                            <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 mr-2" data-modal-hide="modalThemHocVien">Hủy</button>
-                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Thêm học viên</button>
-                        </div>
-                    </form>
-                </div>
+
+        <!-- Đã xác nhận -->
+        <div class="bg-white shadow rounded-lg overflow-hidden mb-6 hidden" id="tab-confirmed" role="tabpanel" aria-labelledby="confirmed-tab">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                STT
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thông tin học viên
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thông tin liên hệ
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ngày đăng ký
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Trạng thái
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Hành động
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($confirmedStudents as $index => $dangKy)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $index + 1 }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-red-700">
+                                            {{ strtoupper(substr($dangKy->hocVien->nguoiDung->ho_ten ?? 'U', 0, 1)) }}
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $dangKy->hocVien->nguoiDung->ho_ten ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        <i class="fas fa-envelope text-gray-400 mr-1"></i> {{ $dangKy->hocVien->nguoiDung->email ?? 'N/A' }}
+                                    </div>
+                                    <div class="text-sm text-gray-900">
+                                        <i class="fas fa-phone text-gray-400 mr-1"></i> {{ $dangKy->hocVien->nguoiDung->so_dien_thoai ?? 'N/A' }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($dangKy->ngay_dang_ky)->format('d/m/Y') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Đã xác nhận
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex space-x-2 justify-end">
+                                        <a href="{{ route('admin.hoc-vien.show', $dangKy->hocVien->id) }}" class="text-blue-600 hover:text-blue-900" title="Chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
+                                        <form action="{{ route('admin.lop-hoc.remove-student', ['id' => $lopHoc->id, 'dangKyId' => $dangKy->id]) }}" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa học viên này khỏi lớp học?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900" title="Xóa">
+                                                <i class="fas fa-user-minus"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    Chưa có học viên nào được xác nhận trong lớp học này.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chờ xác nhận -->
+        <div class="bg-white shadow rounded-lg overflow-hidden mb-6 hidden" id="tab-pending" role="tabpanel" aria-labelledby="pending-tab">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                STT
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thông tin học viên
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Thông tin liên hệ
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Ngày đăng ký
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Trạng thái
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Hành động
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($pendingStudents as $index => $dangKy)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $index + 1 }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-red-700">
+                                            {{ strtoupper(substr($dangKy->hocVien->nguoiDung->ho_ten ?? 'U', 0, 1)) }}
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $dangKy->hocVien->nguoiDung->ho_ten ?? 'N/A' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        <i class="fas fa-envelope text-gray-400 mr-1"></i> {{ $dangKy->hocVien->nguoiDung->email ?? 'N/A' }}
+                                    </div>
+                                    <div class="text-sm text-gray-900">
+                                        <i class="fas fa-phone text-gray-400 mr-1"></i> {{ $dangKy->hocVien->nguoiDung->so_dien_thoai ?? 'N/A' }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($dangKy->ngay_dang_ky)->format('d/m/Y') }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        Chờ xác nhận
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex space-x-2 justify-end">
+                                        <a href="{{ route('admin.hoc-vien.show', $dangKy->hocVien->id) }}" class="text-blue-600 hover:text-blue-900" title="Chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        
+                                        <form action="{{ route('admin.dang-ky-hoc.xac-nhan', $dangKy->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="text-green-600 hover:text-green-900" title="Xác nhận">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        
+                                        <form action="{{ route('admin.lop-hoc.remove-student', ['id' => $lopHoc->id, 'dangKyId' => $dangKy->id]) }}" method="POST" class="inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa học viên này khỏi lớp học?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900" title="Xóa">
+                                                <i class="fas fa-user-minus"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    Không có học viên nào đang chờ xác nhận.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+  
 @endsection
 
 @section('styles')

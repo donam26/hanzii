@@ -82,7 +82,9 @@ class LopHocController extends Controller
                     $query->orderBy('so_thu_tu', 'asc');
                 },
                 'baiHocLops.baiHoc',
-            ])->first();
+            ])
+            ->withCount(['dangKyHocs', 'baiHocLops', 'baiTaps'])
+            ->first();
             
         if (!$lopHoc) {
             return redirect()->route('tro-giang.lop-hoc.index')
@@ -94,10 +96,71 @@ class LopHocController extends Controller
             ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
             ->with('hocVien.nguoiDung')
             ->get();
+        
+        // Tính tỷ lệ hoàn thành khóa học
+        $tongBaiHoc = $lopHoc->bai_hoc_lops_count;
+        $soLuongHoanThanh = 0;
+        
+        if ($tongBaiHoc > 0) {
+            // Đếm tổng số bài học đã hoàn thành của tất cả học viên
+            $tongSoBaiHocHoanThanh = TienDoBaiHoc::whereHas('baiHoc.baiHocLops', function ($query) use ($id) {
+                    $query->where('lop_hoc_id', $id);
+                })
+                ->where('trang_thai', 'da_hoan_thanh')
+                ->count();
+            
+            // Số học viên
+            $soHocVien = $hocViens->count() > 0 ? $hocViens->count() : 1;
+            
+            // Tính trung bình
+            $soLuongHoanThanh = $tongSoBaiHocHoanThanh / $soHocVien;
+        }
+        
+        $hoanThanhTyLe = $tongBaiHoc > 0 ? round(($soLuongHoanThanh / $tongBaiHoc) * 100) : 0;
+        
+        // Tính điểm trung bình bài tập
+        $diemTrungBinh = BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops', function ($query) use ($id) {
+                $query->where('lop_hoc_id', $id);
+            })
+            ->where('trang_thai', 'da_cham')
+            ->avg('diem');
+        
+        $diemTrungBinh = $diemTrungBinh ? number_format($diemTrungBinh, 1) : 'N/A';
+        
+        // Đếm số bài tập đã nộp và chưa nộp
+        $baiTapDaNop_count = BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops', function ($query) use ($id) {
+                $query->where('lop_hoc_id', $id);
+            })
+            ->whereIn('trang_thai', ['da_nop', 'da_cham'])
+            ->count();
+        
+        // Số bài tập chưa nộp = Tổng số bài tập * số học viên - Số bài tập đã nộp
+        $tongSoBaiTap = BaiTap::whereHas('baiHoc.baiHocLops', function ($query) use ($id) {
+                $query->where('lop_hoc_id', $id);
+            })
+            ->count();
+        
+        $baiTapChuaNop_count = ($tongSoBaiTap * $hocViens->count()) - $baiTapDaNop_count;
+        $baiTapChuaNop_count = $baiTapChuaNop_count > 0 ? $baiTapChuaNop_count : 0;
+        
+        // Lấy danh sách bài tập gần đây cần chấm điểm
+        $baiTapGanDay = BaiTapDaNop::whereHas('baiTap.baiHoc.baiHocLops', function ($query) use ($id) {
+                $query->where('lop_hoc_id', $id);
+            })
+            ->where('trang_thai', 'da_nop')
+            ->with(['hocVien.nguoiDung', 'baiTap'])
+            ->orderBy('ngay_nop', 'desc')
+            ->limit(5)
+            ->get();
             
         return view('tro-giang.lop-hoc.show', compact(
             'lopHoc',
-            'hocViens'
+            'hocViens',
+            'hoanThanhTyLe',
+            'diemTrungBinh',
+            'baiTapDaNop_count',
+            'baiTapChuaNop_count',
+            'baiTapGanDay'
         ));
     }
 

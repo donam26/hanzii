@@ -39,6 +39,15 @@ class GiaoVien extends Model
     const UPDATED_AT = 'cap_nhat_luc';
 
     /**
+     * Các thuộc tính sẽ ép kiểu
+     *
+     * @var array
+     */
+    protected $casts = [
+        'bang_cap' => 'array',
+    ];
+
+    /**
      * Quan hệ với người dùng
      */
     public function nguoiDung(): BelongsTo

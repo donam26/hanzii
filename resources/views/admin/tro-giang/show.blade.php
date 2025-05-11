@@ -122,7 +122,7 @@
                 <div class="space-y-4">
                     <div class="bg-green-50 rounded-lg p-4">
                         <h4 class="text-sm font-medium text-green-700">Số lớp đang phụ trách</h4>
-                        <p class="mt-1 text-2xl font-semibold text-green-800">{{ $troGiang->lopHocs->whereIn('trang_thai', ['dang_dien_ra', 'sap_khai_giang', 'dang_hoc', 'sap_khai_giang'])->count() }}</p>
+                        <p class="mt-1 text-2xl font-semibold text-green-800">{{ $troGiang->lopHocs->whereIn('trang_thai', ['dang_dien_ra', 'sap_khai_giang', 'sap_khai_giang'])->count() }}</p>
                     </div>
 
                     <div class="bg-blue-50 rounded-lg p-4">
@@ -189,9 +189,9 @@
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                         Sắp khai giảng
                                     </span>
-                                @elseif($lopHoc->trang_thai == 'dang_dien_ra' || $lopHoc->trang_thai == 'dang_hoc')
+                                @elseif($lopHoc->trang_thai == 'dang_dien_ra' || $lopHoc->trang_thai == 'dang_hoat_dong')
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Đang học
+                                        Đang diễn ra
                                     </span>
                                 @elseif($lopHoc->trang_thai == 'da_ket_thuc')
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">

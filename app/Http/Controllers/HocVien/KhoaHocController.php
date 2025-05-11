@@ -137,7 +137,7 @@ class KhoaHocController extends Controller
                                 DB::raw('COUNT(DISTINCT lop_hocs.id) as so_luong_lop')
                             )
                             ->where('dang_ky_hocs.hoc_vien_id', $hocVien->id)
-                            ->where('dang_ky_hocs.trang_thai', 'da_thanh_toan')
+                            ->where('dang_ky_hocs.trang_thai', 'da_xac_nhan')
                             ->groupBy('khoa_hocs.id', 'khoa_hocs.ten', 'khoa_hocs.mo_ta_ngan', 'khoa_hocs.hinh_anh')
                             ->paginate(9);
         

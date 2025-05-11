@@ -36,18 +36,18 @@ class ProfileController extends Controller
         
         // Lấy thống kê của học viên
         $tongSoKhoaHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-                            ->where('trang_thai', 'da_thanh_toan')
+                            ->where('trang_thai', 'da_xac_nhan')
                             ->count();
         
         $dangHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-                    ->where('trang_thai', 'da_thanh_toan')
+                    ->where('trang_thai', 'da_xac_nhan')
                     ->whereHas('lopHoc', function ($q) {
                         $q->where('trang_thai', 'dang_dien_ra');
                     })
                     ->count();
         
         $daHoanThanh = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-                        ->where('trang_thai', 'da_thanh_toan')
+                        ->where('trang_thai', 'da_xac_nhan')
                         ->whereHas('lopHoc', function ($q) {
                             $q->where('trang_thai', 'da_hoan_thanh');
                         })
@@ -192,12 +192,12 @@ class ProfileController extends Controller
         }
         
         // Kiểm tra mật khẩu hiện tại
-        if (!Hash::check($request->current_password, $nguoiDung->password)) {
+        if (!Hash::check($request->current_password, $nguoiDung->mat_khau)) {
             return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác']);
         }
         
         // Cập nhật mật khẩu mới
-        $nguoiDung->password = Hash::make($request->password);
+        $nguoiDung->mat_khau = Hash::make($request->password);
         $nguoiDung->save();
         
         return redirect()->route('hoc-vien.profile.index')->with('success', 'Đổi mật khẩu thành công');

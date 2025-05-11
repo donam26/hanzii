@@ -16,28 +16,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$troGiang) {
-            return redirect()->route('login')
-                ->with('error', 'Không tìm thấy thông tin trợ giảng. Vui lòng đăng nhập lại!');
-        }
-        
-        // Danh sách các lớp học đang được phân công
-        $lopHocs = LopHoc::where('tro_giang_id', $troGiang->id)
-            ->with('khoaHoc')
-            ->withCount(['dangKyHocs' => function ($query) {
-                $query->whereIn('trang_thai', ['dang_hoc', 'da_duyet']);
-            }])
-            ->orderBy('ngay_bat_dau', 'desc')
-            ->take(5)
-            ->get();
-        
-        return view('tro-giang.dashboard', compact(
-            'troGiang',
-            'lopHocs'
-        ));
+       return redirect()->route('tro-giang.lop-hoc.index');
     }
 } 

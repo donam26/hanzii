@@ -15,8 +15,8 @@
 @section('content')
     <div class="mb-6">
         <div class="flex items-center mb-4">
-            <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="text-red-600 hover:text-red-800 mr-2">
-                <i class="fas fa-arrow-left"></i> Quay lại chi tiết bài học
+            <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $lopHoc->id]) }}" class="text-red-600 hover:text-red-800 mr-2">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách bài học
             </a>
         </div>
             
@@ -145,13 +145,9 @@
                                                     <a href="{{ route('giao-vien.tai-lieu.download', $taiLieu->id) }}" class="text-sm text-blue-600 hover:text-blue-800 mr-2">
                                                         <i class="fas fa-download"></i> Tải xuống
                                                     </a>
-                                                    <form action="{{ route('giao-vien.tai-lieu.destroy', $taiLieu->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="bg-red-100 text-sm text-red-600 hover:text-red-800  px-2 py-1 rounded-md" onclick="return confirm('Bạn có chắc chắn muốn xóa tài liệu này?')">
-                                                            <i class="fas fa-trash-alt"></i> Xóa
-                                                        </button>
-                                                    </form>
+                                                    <button type="button" class="bg-red-100 text-sm text-red-600 hover:text-red-800 px-2 py-1 rounded-md delete-tai-lieu" data-id="{{ $taiLieu->id }}">
+                                                        <i class="fas fa-trash-alt"></i> Xóa
+                                                    </button>
                                                 </div>
                                             </li>
                                             @endforeach
@@ -190,7 +186,7 @@
                         </div>
                     </div>
                     <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                        <a href="{{ route('giao-vien.bai-hoc.show', $baiHoc->id) }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+                        <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
                             Hủy
                         </a>
                         <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
@@ -210,13 +206,23 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script>
     // Khởi tạo CKEditor cho trường nội dung
+    var editor;
     ClassicEditor
         .create(document.querySelector('#noi_dung'), {
             toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo']
         })
+        .then(newEditor => {
+            editor = newEditor;
+        })
         .catch(error => {
             console.error(error);
         });
+    
+    // Cập nhật nội dung khi submit form
+    document.querySelector('form').addEventListener('submit', function() {
+        var contentField = document.querySelector('#noi_dung');
+        contentField.value = editor.getData();
+    });
 
     function toggleLoaiBaiHoc(loai) {
         const videoUrlContainer = document.getElementById('video_url_container');
@@ -227,6 +233,36 @@
             videoUrlContainer.classList.add('hidden');
         }
     }
+    
+    // Xử lý xóa tài liệu
+    document.querySelectorAll('.delete-tai-lieu').forEach(button => {
+        button.addEventListener('click', function() {
+            const taiLieuId = this.getAttribute('data-id');
+            if (confirm('Bạn có chắc chắn muốn xóa tài liệu này?')) {
+                // Tạo form ẩn để gửi request xóa
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/giao-vien/tai-lieu/' + taiLieuId;
+                form.style.display = 'none';
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const method = document.createElement('input');
+                method.type = 'hidden';
+                method.name = '_method';
+                method.value = 'DELETE';
+                
+                form.appendChild(csrfToken);
+                form.appendChild(method);
+                document.body.appendChild(form);
+                
+                form.submit();
+            }
+        });
+    });
     
     // Xử lý thêm file
     document.getElementById('add_file').addEventListener('click', function() {

@@ -45,7 +45,6 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên lớp</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thuộc khóa học</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời gian</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Học viên</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                     </tr>
@@ -68,9 +67,7 @@
                                     <div class="text-sm text-gray-500">Kết thúc: {{ \Carbon\Carbon::parse($lopHoc->ngay_ket_thuc)->format('d/m/Y') }}</div>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $lopHoc->dang_ky_hocs_count ?? 0 }} học viên</div>
-                            </td>
+                         
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                     @if($lopHoc->trang_thai == 'dang_dien_ra') bg-green-100 text-green-800
@@ -92,8 +89,6 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-3">
                                     <a href="{{ route('tro-giang.lop-hoc.show', $lopHoc->id) }}" class="text-red-600 hover:text-red-900">Chi tiết</a>
-                                    <a href="{{ route('tro-giang.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="text-blue-600 hover:text-blue-900">Học viên</a>
-                                    <a href="{{ route('tro-giang.lop-hoc.danh-sach-bai-tap', $lopHoc->id) }}" class="text-green-600 hover:text-green-900">Bài tập</a>
                                 </div>
                             </td>
                         </tr>

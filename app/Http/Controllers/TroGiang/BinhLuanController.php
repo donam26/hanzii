@@ -66,18 +66,19 @@ class BinhLuanController extends Controller
         
         // Lấy ID người dùng hiện tại
         $nguoiDungId = session('nguoi_dung_id');
+        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
         
-        // Kiểm tra xem trợ giảng có quyền bình luận trong bài học này không
+        if (!$troGiang) {
+            return redirect()->back()->with('error', 'Không tìm thấy thông tin trợ giảng.');
+        }
+        
+        // Kiểm tra trợ giảng có phụ trách lớp học này không
         $lopHoc = LopHoc::where('id', $request->lop_hoc_id)
-            ->whereHas('troGiang', function($query) use ($nguoiDungId) {
-                $query->whereHas('nguoiDung', function($q) use ($nguoiDungId) {
-                    $q->where('id', $nguoiDungId);
-                });
-            })
-            ->first();
-            
+                         ->where('tro_giang_id', $troGiang->id)
+                         ->first();
+                         
         if (!$lopHoc) {
-            return redirect()->back()->with('error', 'Bạn không có quyền bình luận trong bài học này.');
+            return redirect()->back()->with('error', 'Bạn không có quyền bình luận trong lớp học này.');
         }
         
         // Tạo bình luận mới
@@ -115,5 +116,48 @@ class BinhLuanController extends Controller
         $binhLuan->delete();
         
         return redirect()->back()->with('success', 'Bình luận đã được xóa.');
+    }
+    
+    /**
+     * Phản hồi bình luận của học viên
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function phanHoi(Request $request)
+    {
+        // Xác thực dữ liệu
+        $request->validate([
+            'noi_dung' => 'required|string',
+            'bai_hoc_id' => 'required|exists:bai_hocs,id',
+            'lop_hoc_id' => 'required|exists:lop_hocs,id',
+        ]);
+        
+        // Lấy ID người dùng hiện tại
+        $nguoiDungId = session('nguoi_dung_id');
+        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$troGiang) {
+            return redirect()->back()->with('error', 'Không tìm thấy thông tin trợ giảng.');
+        }
+        
+        // Kiểm tra trợ giảng có phụ trách lớp học này không
+        $lopHoc = LopHoc::where('id', $request->lop_hoc_id)
+                         ->where('tro_giang_id', $troGiang->id)
+                         ->first();
+                         
+        if (!$lopHoc) {
+            return redirect()->back()->with('error', 'Bạn không có quyền phản hồi trong lớp học này.');
+        }
+        
+        // Tạo bình luận mới
+        $binhLuan = new BinhLuan();
+        $binhLuan->nguoi_dung_id = $nguoiDungId;
+        $binhLuan->bai_hoc_id = $request->bai_hoc_id;
+        $binhLuan->lop_hoc_id = $request->lop_hoc_id;
+        $binhLuan->noi_dung = $request->noi_dung;
+        $binhLuan->save();
+        
+        return redirect()->back()->with('success', 'Đã phản hồi bình luận thành công.');
     }
 } 

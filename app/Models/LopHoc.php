@@ -121,12 +121,27 @@ class LopHoc extends Model
     }
 
     /**
+     * Quan hệ với bài tập thông qua bài học
+     */
+    public function baiTaps()
+    {
+        return $this->hasManyThrough(
+            BaiTap::class,
+            BaiHocLop::class,
+            'lop_hoc_id', // Khóa ngoại trên bảng trung gian (bai_hoc_lops)
+            'bai_hoc_id', // Khóa ngoại trên bảng bài tập
+            'id', // Khóa chính trên bảng lớp học
+            'bai_hoc_id' // Khóa nối từ bảng trung gian tới bài học
+        );
+    }
+
+    /**
      * Lấy danh sách học viên của lớp
      */
     public function hocViens()
     {
         return $this->belongsToMany(HocVien::class, 'dang_ky_hocs', 'lop_hoc_id', 'hoc_vien_id')
-            ->whereIn('dang_ky_hocs.trang_thai', ['dang_hoc', 'da_duyet'])
+            ->whereIn('dang_ky_hocs.trang_thai', ['da_xac_nhan'])
             ->withPivot(['ngay_tham_gia', 'ngay_dang_ky', 'trang_thai'])
             ->withTimestamps('tao_luc', 'cap_nhat_luc');
     }
@@ -169,7 +184,7 @@ class LopHoc extends Model
     {
         $trangThaiMap = [
             'chua_bat_dau' => 'Chưa bắt đầu',
-            'dang_hoat_dong' => 'Đang hoạt động',
+            'hoat_dong' => 'Đang hoạt động',
             'tam_dung' => 'Tạm dừng',
             'da_ket_thuc' => 'Đã kết thúc',
             'da_huy' => 'Đã hủy'

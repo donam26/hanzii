@@ -27,17 +27,7 @@
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
                 <input type="text" name="search" id="search" value="{{ request('search') }}" placeholder="Tên, email, SĐT..." class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
             </div>
-            
-            <div>
-                <label for="loai_tai_khoan" class="block text-sm font-medium text-gray-700 mb-1">Loại tài khoản</label>
-                <select name="loai_tai_khoan" id="loai_tai_khoan" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
-                    <option value="">Tất cả loại tài khoản</option>
-                    <option value="hoc_vien" {{ request('loai_tai_khoan') == 'hoc_vien' ? 'selected' : '' }}>Học viên</option>
-                    <option value="giao_vien" {{ request('loai_tai_khoan') == 'giao_vien' ? 'selected' : '' }}>Giáo viên</option>
-                    <option value="tro_giang" {{ request('loai_tai_khoan') == 'tro_giang' ? 'selected' : '' }}>Trợ giảng</option>
-                </select>
-            </div>
-            
+        
             <div>
                 <label for="vai_tro_id" class="block text-sm font-medium text-gray-700 mb-1">Vai trò</label>
                 <select name="vai_tro_id" id="vai_tro_id" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
@@ -81,9 +71,7 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Số điện thoại
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Loại tài khoản
-                        </th>
+                       
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Vai trò
                         </th>
@@ -116,15 +104,7 @@
                                     <i class="fas fa-phone text-gray-400 mr-1"></i> {{ $user->so_dien_thoai }}
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $user->loai_tai_khoan == 'hoc_vien' ? 'bg-green-100 text-green-800' : 
-                                       ($user->loai_tai_khoan == 'giao_vien' ? 'bg-blue-100 text-blue-800' : 
-                                        'bg-purple-100 text-purple-800') }}">
-                                    {{ $user->loai_tai_khoan == 'hoc_vien' ? 'Học viên' : 
-                                       ($user->loai_tai_khoan == 'giao_vien' ? 'Giáo viên' : 'Trợ giảng') }}
-                                </span>
-                            </td>
+                          
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex flex-wrap gap-1">
                                     @forelse ($user->vaiTros as $vaiTro)

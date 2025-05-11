@@ -129,7 +129,7 @@ class YeuCauThamGiaController extends Controller
         
         // Kiểm tra sĩ số lớp học
         $lopHoc = $yeuCau->lopHoc;
-        $currentStudents = $lopHoc->dangKyHocs()->whereIn('trang_thai', ['da_xac_nhan', 'dang_hoc'])->count();
+        $currentStudents = $lopHoc->dangKyHocs()->whereIn('trang_thai', ['da_xac_nhan'])->count();
         
      
         

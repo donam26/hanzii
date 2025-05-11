@@ -75,6 +75,47 @@
                             <div class="mt-2 text-xs text-gray-500">
                                 <time datetime="{{ $binhLuan->tao_luc }}">{{ \Carbon\Carbon::parse($binhLuan->tao_luc)->format('d/m/Y H:i') }}</time>
                             </div>
+                            
+                            <!-- Nút phản hồi cho trợ giảng -->
+                            @if($role == 'tro-giang' && optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
+                                <div class="mt-2">
+                                    <button type="button" 
+                                            class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                                            onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                        </svg>
+                                        Phản hồi
+                                    </button>
+                                </div>
+                                
+                                <!-- Form phản hồi (ẩn mặc định) -->
+                                <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 pl-4 border-l-2 border-gray-200 hidden">
+                                    <form action="{{ route('tro-giang.binh-luan.phan-hoi') }}" method="POST" class="flex flex-col space-y-3">
+                                        @csrf
+                                        <input type="hidden" name="bai_hoc_id" value="{{ $baiHocId }}">
+                                        <input type="hidden" name="lop_hoc_id" value="{{ $lopHocId }}">
+                                        
+                                        <div>
+                                            <textarea name="noi_dung" rows="2" required 
+                                                    class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                    placeholder="Viết phản hồi của bạn..."></textarea>
+                                        </div>
+                                        
+                                        <div class="flex justify-end space-x-2">
+                                            <button type="button" 
+                                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                                    onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
+                                                Hủy
+                                            </button>
+                                            <button type="submit" 
+                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                Gửi phản hồi
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     
@@ -103,4 +144,16 @@
             </div>
         @endforelse
     </div>
-</div> 
+</div>
+
+<!-- Script để hiển thị/ẩn form phản hồi -->
+<script>
+function togglePhanHoiForm(formId) {
+    const form = document.getElementById(formId);
+    if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+    } else {
+        form.classList.add('hidden');
+    }
+}
+</script> 

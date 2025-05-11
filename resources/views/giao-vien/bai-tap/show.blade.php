@@ -11,8 +11,8 @@
 @section('content')
     <div class="mb-6">
         <div class="flex items-center mb-4">
-            <a href="{{ route('giao-vien.bai-tap.index', ['bai_hoc_id' => $baiTap->bai_hoc_id]) }}" class="text-red-600 hover:text-red-800 mr-2">
-                <i class="fas fa-arrow-left"></i> Quay lại danh sách bài tập
+            <a href="javascript:history.back();" class="text-red-600 hover:text-red-800 mr-2">
+                <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>
 

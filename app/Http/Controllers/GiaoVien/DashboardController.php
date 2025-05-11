@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BaiTapDaNop;
 use App\Models\LopHoc;
 use App\Models\GiaoVien;
-use App\Models\YeuCauThamGia;
 use App\Models\HocVien;
 use App\Models\BaiTap;
 use App\Models\ThongBaoLopHoc;
@@ -37,7 +36,7 @@ class DashboardController extends Controller
             
             // Lấy danh sách lớp học được phân công
             $lopHocs = LopHoc::where('giao_vien_id', $giaoVien->id)
-                        ->whereIn('trang_thai', ['dang_dien_ra', 'dang_hoc', 'dang_hoat_dong'])
+                        ->whereIn('trang_thai', ['dang_dien_ra', 'dang_hoat_dong'])
                         ->get();
                         
             // Thống kê số học viên

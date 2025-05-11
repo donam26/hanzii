@@ -46,15 +46,23 @@
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                         <span class="hidden md:inline-block">{{ auth()->user()->ho }} {{ auth()->user()->ten }}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        @if(session('anh_dai_dien'))
+                            <img src="{{ session('anh_dai_dien') }}" alt="Avatar" class="h-8 w-8 rounded-full object-cover">
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        @endif
                     </button>
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                         @if(auth()->user()->loai_tai_khoan == 'hoc_vien')
                             <a href="{{ route('hoc-vien.profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
                         @elseif(auth()->user()->loai_tai_khoan == 'nhan_vien')
                             <a href="{{ route('nhan-vien.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
+                        @elseif(auth()->user()->loai_tai_khoan == 'giao_vien')
+                            <a href="{{ route('giao-vien.profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
+                        @elseif(auth()->user()->vaiTros && auth()->user()->vaiTros->contains('ten', 'tro_giang'))
+                            <a href="{{ route('tro-giang.profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
                         @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

@@ -47,9 +47,9 @@ $role = 'tro_giang';
                                 <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($lopHoc->ngay_bat_dau)->format('d/m/Y') }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($lopHoc->trang_thai == 'dang_hoc')
+                                @if($lopHoc->trang_thai == 'dang_dien_ra')
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Đang học
+                                        Đang diễn ra
                                     </span>
                                 @elseif($lopHoc->trang_thai == 'da_hoan_thanh')
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">

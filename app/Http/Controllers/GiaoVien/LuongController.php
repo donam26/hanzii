@@ -3,107 +3,64 @@
 namespace App\Http\Controllers\GiaoVien;
 
 use App\Http\Controllers\Controller;
-use App\Models\GiaoVien;
-use App\Models\Luong;
-use App\Models\LichSuLuong;
-use App\Models\LopHoc;
+use App\Models\LuongGiaoVien;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class LuongController extends Controller
 {
     /**
-     * Hiển thị danh sách lương của giáo viên đang đăng nhập
+     * Hiển thị danh sách lương
      */
     public function index()
     {
-        $user = Auth::user();
+        $nguoiDungId = session('nguoi_dung_id');
+        if (!$nguoiDungId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục');
+        }
         
-        $luongs = Luong::with(['lopHoc.khoaHoc', 'lopHoc.hocViens'])
-            ->where('nguoi_dung_id', $user->id)
-            ->where('vai_tro', 'giao_vien')
+        $giaoVien = \App\Models\GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        if (!$giaoVien) {
+            return redirect()->back()->with('error', 'Không tìm thấy thông tin giáo viên');
+        }
+        
+        $luongs = LuongGiaoVien::with('lopHoc')
+            ->where('giao_vien_id', $giaoVien->id)
             ->latest()
             ->paginate(10);
         
-        $tongLuongDaNhan = Luong::where('nguoi_dung_id', $user->id)
-            ->where('vai_tro', 'giao_vien')
-            ->where('trang_thai', 'da_thanh_toan')
-            ->sum('so_tien');
-            
-        $tongLuongChuaNhan = Luong::where('nguoi_dung_id', $user->id)
-            ->where('vai_tro', 'giao_vien')
-            ->where('trang_thai', 'chua_thanh_toan')
-            ->sum('so_tien');
+        // Thống kê lương
+        $tongLuong = [
+            'da_thanh_toan' => LuongGiaoVien::where('giao_vien_id', $giaoVien->id)
+                                    ->where('trang_thai', 'da_thanh_toan')
+                                    ->sum('so_tien'),
+            'chua_thanh_toan' => LuongGiaoVien::where('giao_vien_id', $giaoVien->id)
+                                    ->where('trang_thai', 'chua_thanh_toan')
+                                    ->sum('so_tien')
+        ];
         
-        return view('giao-vien.luong.index', compact('luongs', 'tongLuongDaNhan', 'tongLuongChuaNhan'));
+        return view('giao-vien.luong.index', compact('luongs', 'tongLuong'));
     }
-    
+
     /**
      * Hiển thị chi tiết lương
      */
     public function show($id)
     {
-        // Lấy ID người dùng từ session
         $nguoiDungId = session('nguoi_dung_id');
-        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$giaoVien) {
-            return redirect()->route('giao-vien.dashboard')
-                ->with('error', 'Không tìm thấy thông tin giáo viên');
+        if (!$nguoiDungId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập lại để tiếp tục');
         }
         
-        // Lấy thông tin lương
-        $luong = Luong::where('id', $id)
+        $giaoVien = \App\Models\GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        if (!$giaoVien) {
+            return redirect()->back()->with('error', 'Không tìm thấy thông tin giáo viên');
+        }
+        
+        $luong = LuongGiaoVien::with('lopHoc')
             ->where('giao_vien_id', $giaoVien->id)
-            ->with(['lopHoc', 'lopHoc.khoaHoc', 'vaiTro'])
+            ->where('id', $id)
             ->firstOrFail();
         
-        // Lấy lịch sử cập nhật lương
-        $lichSu = LichSuLuong::where('luong_id', $id)
-            ->with('nguoiCapNhat')
-            ->orderBy('tao_luc', 'desc')
-            ->get();
-        
-        return view('giao-vien.luong.show', compact('luong', 'lichSu'));
+        return view('giao-vien.luong.show', compact('luong'));
     }
-    
-    /**
-     * Lấy dữ liệu lương theo tháng cho biểu đồ
-     */
-    private function getLuongTheoThang($giaoVienId)
-    {
-        $now = Carbon::now();
-        $startDate = $now->copy()->subMonths(11)->startOfMonth();
-        $endDate = $now->copy()->endOfMonth();
-        
-        $luongData = [];
-        
-        // Lấy dữ liệu lương theo tháng
-        $results = DB::table('luongs')
-            ->select(
-                DB::raw('MONTH(ngay_thanh_toan) as thang'),
-                DB::raw('YEAR(ngay_thanh_toan) as nam'),
-                DB::raw('SUM(tong_luong) as tong_luong')
-            )
-            ->where('giao_vien_id', $giaoVienId)
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
-            ->whereBetween('ngay_thanh_toan', [$startDate, $endDate])
-            ->groupBy(DB::raw('YEAR(ngay_thanh_toan)'), DB::raw('MONTH(ngay_thanh_toan)'))
-            ->orderBy(DB::raw('YEAR(ngay_thanh_toan)'), 'asc')
-            ->orderBy(DB::raw('MONTH(ngay_thanh_toan)'), 'asc')
-            ->get();
-        
-        // Chuyển đổi kết quả thành mảng
-        foreach ($results as $result) {
-            $luongData[] = [
-                'thang' => $result->thang,
-                'nam' => $result->nam,
-                'tong_luong' => $result->tong_luong
-            ];
-        }
-        
-        return $luongData;
-    }
-} 
+}

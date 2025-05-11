@@ -143,7 +143,18 @@
                                             </span>
                                         </div>
                                     </div>
-                                   
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-gray-600">Trợ giảng:</span>
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
+                                                {{ $lopHoc->troGiang && $lopHoc->troGiang->nguoiDung ? strtoupper(substr($lopHoc->troGiang->nguoiDung->ho_ten, 0, 1)) : 'N/A' }}
+                                            </div>
+                                            <span class="ml-2 text-sm font-medium text-gray-900">
+                                                {{ $lopHoc->troGiang && $lopHoc->troGiang->nguoiDung ? $lopHoc->troGiang->nguoiDung->ho_ten : 'Chưa phân công' }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -216,10 +227,7 @@
                             <span class="text-xs text-gray-600">Chờ xác nhận:</span>
                             <span class="text-xs font-medium text-gray-900">{{ $lopHoc->dangKyHocs->where('trang_thai', 'cho_xac_nhan')->count() }}</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-600">Yêu cầu tham gia:</span>
-                            <span class="text-xs font-medium text-gray-900">{{ \App\Models\YeuCauThamGia::where('lop_hoc_id', $lopHoc->id)->count() }}</span>
-                        </div>
+                      
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-600">Còn trống:</span>
                             <span class="text-xs font-medium text-gray-900">{{ max(0, $lopHoc->so_luong_toi_da - $lopHoc->dangKyHocs->where('trang_thai', 'da_xac_nhan')->count()) }}</span>

@@ -195,7 +195,7 @@ class BaiTapController extends Controller
         // Lấy số học viên trong lớp
         $tongSoHocVien = DB::table('dang_ky_hocs')
             ->where('lop_hoc_id', $lopHoc->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_duyet', 'da_xac_nhan'])
             ->count();
             
         // Số học viên đã nộp bài

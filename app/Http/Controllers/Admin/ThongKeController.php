@@ -301,7 +301,7 @@ class ThongKeController extends Controller
         $tongHocVien = HocVien::count();
         
         // Thống kê học viên đang học
-        $hocVienDangHoc = DangKyHoc::where('trang_thai', 'dang_hoc')->count();
+        $hocVienDangHoc = DangKyHoc::where('trang_thai', 'da_xac_nhan')->count();
         
         // Thống kê học viên mới trong tháng hiện tại
         $hocVienMoiThangNay = HocVien::whereMonth('tao_luc', Carbon::now()->month)

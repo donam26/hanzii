@@ -18,18 +18,18 @@
             <div class="flex flex-col md:flex-row">
                 <div class="md:w-1/3 mb-6 md:mb-0 flex flex-col items-center">
                     <div class="w-48 h-48 bg-gray-200 rounded-full overflow-hidden mb-4 relative group">
-                        @if ($nguoiDung->avatar)
-                            <img src="{{ asset('storage/' . $nguoiDung->avatar) }}" alt="Profile" class="w-full h-full object-cover">
+                        @if ($nguoiDung->anh_dai_dien)
+                            <img src="{{ asset('storage/' . $nguoiDung->anh_dai_dien) }}" alt="Profile" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-blue-600 text-white text-4xl font-bold">
                                 {{ substr($nguoiDung->ho, 0, 1) }}{{ substr($nguoiDung->ten, 0, 1) }}
                             </div>
                         @endif
                         <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                            <label for="avatar" class="cursor-pointer text-white">
+                            <label for="anh_dai_dien" class="cursor-pointer text-white">
                                 <i class="fas fa-camera text-2xl"></i>
                             </label>
-                            <input type="file" id="avatar" name="avatar" class="hidden" accept="image/*">
+                            <input type="file" id="anh_dai_dien" name="anh_dai_dien" class="hidden" accept="image/*">
                         </div>
                     </div>
                     <p class="text-sm text-gray-600 mb-2">Nhấp vào ảnh để thay đổi</p>
@@ -90,7 +90,7 @@
 
 @push('scripts')
 <script>
-    document.getElementById('avatar').addEventListener('change', function(e) {
+    document.getElementById('anh_dai_dien').addEventListener('change', function(e) {
         if (e.target.files && e.target.files[0]) {
             let reader = new FileReader();
             reader.onload = function(event) {

@@ -45,7 +45,7 @@ class LopHocController extends Controller
         
         // Xây dựng query dựa trên đăng ký học
         $dangKyHocs = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_duyet', 'da_xac_nhan'])
             ->pluck('lop_hoc_id')
             ->toArray();
         
@@ -101,7 +101,7 @@ class LopHocController extends Controller
         // Kiểm tra học viên có thuộc lớp này không
         $kiemTraDangKy = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_duyet', 'da_xac_nhan'])
             ->exists();
         
         $lopHoc = LopHoc::where('id', $id)
@@ -156,7 +156,7 @@ class LopHocController extends Controller
         // Lấy danh sách học viên trong lớp
         $danhSachHocVien = HocVien::whereHas('dangKyHocs', function($query) use ($id) {
             $query->where('lop_hoc_id', $id)
-                ->whereIn('trang_thai', ['da_duyet', 'dang_hoc', 'da_xac_nhan', 'da_thanh_toan' ]);
+                ->whereIn('trang_thai', ['da_xac_nhan' ]);
         })
         ->with('nguoiDung')
         ->get();
@@ -538,7 +538,7 @@ class LopHocController extends Controller
         // Kiểm tra xem học viên đã tham gia lớp này chưa
         $daLaThanhVien = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $lopHoc->id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_xac_nhan'])
             ->exists();
             
         if (!$daLaThanhVien) {
@@ -585,7 +585,7 @@ class LopHocController extends Controller
         // Kiểm tra học viên đã tham gia lớp học chưa
         $daLaThanhVien = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $lopHocId)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_xac_nhan'])
             ->exists();
             
         if ($daLaThanhVien) {
@@ -596,7 +596,7 @@ class LopHocController extends Controller
         // Kiểm tra học viên đã gửi yêu cầu tham gia lớp này chưa
         $dangKyHienTai = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $lopHocId)
-            ->whereIn('trang_thai', ['cho_xac_nhan', 'cho_thanh_toan'])
+            ->whereIn('trang_thai', ['cho_xac_nhan'])
             ->first();
             
         if ($dangKyHienTai) {
@@ -697,7 +697,7 @@ class LopHocController extends Controller
             
         // Lọc các học viên đang học thực tế
         $danhSachHocVien = $dangKyHocs->filter(function($dangKy) {
-            return in_array($dangKy->trang_thai, ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan']);
+            return in_array($dangKy->trang_thai, ['da_xac_nhan']);
         });
             
         // Đếm số lượng học viên

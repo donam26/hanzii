@@ -22,21 +22,7 @@
                 </a>
             </div>
         </div>
-        
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ number_format($doanhThuThang) }} <sup style="font-size: 20px">VNĐ</sup></h3>
-                    <p>Doanh thu tháng này</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-money-bill-wave"></i>
-                </div>
-                <a href="{{ route('admin.thanh-toan.index') }}" class="small-box-footer">
-                    Chi tiết <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
+       
         
         <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">

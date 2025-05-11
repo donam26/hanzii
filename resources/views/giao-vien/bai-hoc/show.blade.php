@@ -11,8 +11,8 @@
 @section('content')
     <div class="mb-6">
         <div class="flex items-center mb-4">
-            <a href="{{ route('giao-vien.bai-hoc.index', ['lop_hoc_id' => $baiHoc->lop_hoc_id]) }}" class="text-red-600 hover:text-red-800 mr-2">
-                <i class="fas fa-arrow-left"></i> Danh sách bài học
+            <a href="javascript:history.back();" class="text-red-600 hover:text-red-800 mr-2">
+                <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>
 
@@ -167,6 +167,109 @@
                     @endif
                 </div>
 
+                <!-- Danh sách bài tập của bài học -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Danh sách bài tập</h3>
+                        <a href="{{ route('giao-vien.bai-tap.create', ['bai_hoc_id' => $baiHoc->id, 'lop_hoc_id' => $lopHoc->id]) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-plus mr-1.5"></i>
+                            Thêm bài tập
+                        </a>
+                    </div>
+                    
+                    @if(isset($baiTaps) && $baiTaps->count() > 0)
+                        <div class="bg-white shadow overflow-hidden rounded-lg">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Tiêu đề
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Loại
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Điểm tối đa
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Hạn nộp
+                                            </th>
+                                            <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Thao tác
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach($baiTaps as $baiTap)
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ $baiTap->tieu_de }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500 truncate max-w-xs">
+                                                        {{ \Illuminate\Support\Str::limit(strip_tags($baiTap->noi_dung), 50) }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                        {{ $baiTap->loai == 'trac_nghiem' ? 'bg-blue-100 text-blue-800' : 
+                                                        ($baiTap->loai == 'tu_luan' ? 'bg-green-100 text-green-800' : 
+                                                        'bg-yellow-100 text-yellow-800') }}">
+                                                        @if($baiTap->loai == 'trac_nghiem')
+                                                            <i class="fas fa-list-ul mr-1"></i> Trắc nghiệm
+                                                        @elseif($baiTap->loai == 'tu_luan')
+                                                            <i class="fas fa-pen-fancy mr-1"></i> Tự luận
+                                                        @elseif($baiTap->loai == 'upload')
+                                                            <i class="fas fa-upload mr-1"></i> Upload
+                                                        @else
+                                                            {{ $baiTap->loai }}
+                                                        @endif
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ $baiTap->diem_toi_da }} điểm
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                                    @if($baiTap->han_nop)
+                                                        {{ \Carbon\Carbon::parse($baiTap->han_nop)->format('d/m/Y H:i') }}
+                                                    @else
+                                                        <span class="text-gray-400">Không giới hạn</span>
+                                                    @endif
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                                    <a href="{{ route('giao-vien.bai-tap.show', $baiTap->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                                        <i class="fas fa-eye"></i> Xem
+                                                    </a>
+                                                    <a href="{{ route('giao-vien.bai-tap.edit', $baiTap->id) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">
+                                                        <i class="fas fa-edit"></i> Sửa
+                                                    </a>
+                                                    <form action="{{ route('giao-vien.bai-tap.destroy', $baiTap->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Bạn có chắc chắn muốn xóa bài tập này?')">
+                                                            <i class="fas fa-trash-alt"></i> Xóa
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @else
+                        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                            <div class="px-4 py-8 text-center">
+                                <i class="fas fa-tasks text-gray-300 text-4xl mb-3"></i>
+                                <p class="text-gray-500">Chưa có bài tập nào cho bài học này</p>
+                                <a href="{{ route('giao-vien.bai-tap.create', ['bai_hoc_id' => $baiHoc->id, 'lop_hoc_id' => $lopHoc->id]) }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <i class="fas fa-plus mr-2"></i> Thêm bài tập
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
         
             </div>
             

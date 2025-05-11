@@ -9,7 +9,6 @@ use App\Models\LopHoc;
 use App\Models\GiaoVien;
 use App\Models\HocVien;
 use App\Models\TroGiang;
-use App\Models\YeuCauThamGia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +26,6 @@ class LopHocController extends Controller
     {
         // Debug: Kiểm tra tổng số lớp học trong database
         $totalLopHoc = LopHoc::count();
-        Log::info('Tổng số lớp học: ' . $totalLopHoc);
 
         $query = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung', 'troGiang.nguoiDung'])
                 ->withCount(['dangKyHocs' => function($query) {
@@ -61,15 +59,12 @@ class LopHocController extends Controller
 
         $lopHocs = $query->paginate(10);
         
-        // Debug: Số lượng kết quả trả về
-        Log::info('Số lượng lớp học trả về: ' . $lopHocs->total() . ' / Tổng số trang: ' . $lopHocs->lastPage());
-        
         // Lấy danh sách khóa học cho bộ lọc
         $khoaHocs = KhoaHoc::where('trang_thai', 'hoat_dong')->get();
         
         // Thống kê số lượng
         $tong_lop = LopHoc::count();
-        $dang_dien_ra = LopHoc::where('trang_thai', 'dang_hoc')->orWhere('trang_thai', 'dang_dien_ra')->count();
+        $dang_dien_ra = LopHoc::where('trang_thai', 'dang_dien_ra')->orWhere('trang_thai', 'dang_dien_ra')->count();
         $sap_khai_giang = LopHoc::where('trang_thai', 'sap_khai_giang')->count();
         $da_ket_thuc = LopHoc::where('trang_thai', 'da_ket_thuc')->count();
         
@@ -185,7 +180,7 @@ class LopHocController extends Controller
             ->findOrFail($id);
         
         // Đếm số yêu cầu tham gia đang chờ duyệt
-        $countPendingRequests = YeuCauThamGia::where('lop_hoc_id', $id)
+        $countPendingRequests = DangKyHoc::where('lop_hoc_id', $id)
             ->where('trang_thai', 'cho_xac_nhan')
             ->count();
         
@@ -284,9 +279,6 @@ class LopHocController extends Controller
         if ($dangKyHocCount > 0) {
             return back()->with('error', 'Không thể xóa lớp học đã có học viên đăng ký!');
         }
-
-        // Xóa yêu cầu tham gia
-        YeuCauThamGia::where('lop_hoc_id', $id)->delete();
         
         // Xóa lớp học
         $lopHoc->delete();
@@ -421,7 +413,8 @@ class LopHocController extends Controller
     {
         $lopHoc = LopHoc::with(['khoaHoc'])->findOrFail($id);
         
-        $yeuCauThamGia = YeuCauThamGia::where('lop_hoc_id', $id)
+        $yeuCauThamGia = DangKyHoc::where('lop_hoc_id', $id)
+            ->where('trang_thai', 'cho_xac_nhan')
             ->with('hocVien.nguoiDung')
             ->paginate(10);
         
@@ -436,39 +429,24 @@ class LopHocController extends Controller
      */
     public function duyetYeuCauThamGia($lopHocId, $yeuCauId)
     {
-        $yeuCau = YeuCauThamGia::findOrFail($yeuCauId);
+        $dangKyHoc = DangKyHoc::findOrFail($yeuCauId);
         
         // Kiểm tra sĩ số tối đa
         $lopHoc = LopHoc::findOrFail($lopHocId);
         $currentStudents = $lopHoc->dangKyHocs()->where('trang_thai', 'da_xac_nhan')->count();
-
         
-        DB::beginTransaction();
-        try {
-            // Cập nhật yêu cầu
-            $yeuCau->update([
-                'trang_thai' => 'da_duyet',
-                'ngay_duyet' => now(),
-            ]);
-            
-            // Tạo đăng ký học
-            DangKyHoc::create([
-                'lop_hoc_id' => $lopHocId,
-                'hoc_vien_id' => $yeuCau->hoc_vien_id,
-                'hoc_phi' => $lopHoc->khoaHoc->hoc_phi, // Lấy học phí từ khóa học
-                'ngay_dang_ky' => now(),
-                'trang_thai' => 'da_xac_nhan',
-                'phuong_thuc_thanh_toan' => 'chuyen_khoan',
-                'ghi_chu' => 'Được duyệt từ yêu cầu tham gia',
-            ]);
-            
-            DB::commit();
-            return redirect()->route('admin.lop-hoc.yeu-cau-tham-gia', $lopHocId)
-                ->with('success', 'Đã duyệt yêu cầu tham gia lớp học!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Đã có lỗi xảy ra: ' . $e->getMessage());
+        if ($currentStudents >= $lopHoc->so_luong_toi_da) {
+            return back()->with('error', 'Lớp học đã đạt số lượng học viên tối đa (' . $lopHoc->so_luong_toi_da . ' học viên)');
         }
+        
+        // Cập nhật trạng thái đăng ký học
+        $dangKyHoc->update([
+            'trang_thai' => 'da_xac_nhan',
+            'ngay_tham_gia' => now(),
+        ]);
+        
+        return redirect()->route('admin.lop-hoc.yeu-cau-tham-gia', $lopHocId)
+            ->with('success', 'Đã duyệt yêu cầu tham gia lớp học thành công!');
     }
     
     /**
@@ -476,14 +454,15 @@ class LopHocController extends Controller
      */
     public function tuChoiYeuCauThamGia($lopHocId, $yeuCauId)
     {
-        $yeuCau = YeuCauThamGia::findOrFail($yeuCauId);
+        $dangKyHoc = DangKyHoc::findOrFail($yeuCauId);
         
-        $yeuCau->update([
-            'trang_thai' => 'tu_choi',
-            'ngay_duyet' => now(),
+        $dangKyHoc->update([
+            'trang_thai' => 'bi_tu_choi',
+            'ghi_chu' => 'Lý do từ chối: ' . request('ly_do_tu_choi'),
         ]);
         
-        return redirect()->route('admin.lop-hoc.yeu-cau-tham-gia', $lopHocId)
+        // Chuyển hướng về trang danh sách học viên của lớp thay vì trang yêu cầu tham gia
+        return redirect()->route('admin.lop-hoc.danh-sach-hoc-vien', $lopHocId)
             ->with('success', 'Đã từ chối yêu cầu tham gia lớp học!');
     }
 } 

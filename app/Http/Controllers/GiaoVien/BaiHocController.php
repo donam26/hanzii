@@ -334,7 +334,10 @@ class BaiHocController extends Controller
             
             DB::commit();
             
-            return redirect()->route('giao-vien.bai-hoc.show', $id)
+            // Lấy lớp học đầu tiên của bài học này
+            $lopHocId = $baiHoc->baiHocLops->first()->lop_hoc_id;
+            
+            return redirect()->route('giao-vien.bai-hoc.edit', $id)
                 ->with('success', 'Đã cập nhật bài học thành công');
         } catch (\Exception $e) {
             DB::rollBack();

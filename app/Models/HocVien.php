@@ -91,7 +91,7 @@ class HocVien extends Model
     public function lopHocs(): BelongsToMany
     {
         return $this->belongsToMany(LopHoc::class, 'dang_ky_hocs', 'hoc_vien_id', 'lop_hoc_id')
-                    ->whereIn('dang_ky_hocs.trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+                    ->whereIn('dang_ky_hocs.trang_thai', ['da_xac_nhan'])
                     ->withPivot(['ngay_dang_ky', 'trang_thai'])
                     ->withTimestamps('tao_luc', 'cap_nhat_luc');
     }

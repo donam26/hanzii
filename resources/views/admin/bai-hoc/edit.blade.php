@@ -101,7 +101,19 @@
                                     <label for="xoa_tai_lieu_{{ $taiLieu->id }}" class="ml-2 text-sm text-gray-700">{{ $taiLieu->tieu_de }}</label>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-xs text-gray-500">{{ human_filesize(Storage::disk('public')->size($taiLieu->duong_dan_file)) }}</span>
+                                    <span class="text-xs text-gray-500">
+                                        @php
+                                            try {
+                                                if (Storage::disk('public')->exists($taiLieu->duong_dan_file)) {
+                                                    echo \App\Helpers\FileHelper::formatFileSize(Storage::disk('public')->size($taiLieu->duong_dan_file));
+                                                } else {
+                                                    echo 'File không tồn tại';
+                                                }
+                                            } catch (\Exception $e) {
+                                                echo 'Không thể đọc kích thước';
+                                            }
+                                        @endphp
+                                    </span>
                                     <a href="{{ route('admin.tai-lieu.download', $taiLieu->id) }}" class="text-xs text-indigo-600 hover:text-indigo-800" target="_blank">
                                         <i class="fas fa-download"></i> Tải xuống
                                     </a>
@@ -145,20 +157,5 @@
         .catch(error => {
             console.error(error);
         });
-</script>
-
-<script>
-    // Helper function to format file sizes
-    function human_filesize(bytes, decimals = 2) {
-        if (bytes === 0) return '0 Bytes';
-        
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
 </script>
 @endsection 

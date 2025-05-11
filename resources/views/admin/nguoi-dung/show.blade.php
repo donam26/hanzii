@@ -52,25 +52,7 @@
                             <h5 class="text-sm font-medium text-gray-500">Địa chỉ:</h5>
                             <p class="text-base">{{ $nguoiDung->dia_chi ?? 'Chưa có thông tin' }}</p>
                         </div>
-                        
-                        <div class="mb-4">
-                            <h5 class="text-sm font-medium text-gray-500">Loại tài khoản:</h5>
-                            <p class="text-base">
-                                @switch($nguoiDung->loai_tai_khoan)
-                                    @case('hoc_vien')
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Học viên</span>
-                                        @break
-                                    @case('giao_vien')
-                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Giáo viên</span>
-                                        @break
-                                    @case('tro_giang')
-                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">Trợ giảng</span>
-                                        @break
-                                    @default
-                                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">{{ $nguoiDung->loai_tai_khoan }}</span>
-                                @endswitch
-                            </p>
-                        </div>
+                   
                         
                         <div class="mb-4">
                             <h5 class="text-sm font-medium text-gray-500">Vai trò:</h5>

@@ -27,7 +27,7 @@ class ThongBaoController extends Controller
         
         // Lấy danh sách lớp học mà học viên đang tham gia
         $lopHocIds = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('trang_thai', 'da_thanh_toan')
+            ->where('trang_thai', 'da_xac_nhan')
             ->pluck('lop_hoc_id')
             ->toArray();
             
@@ -86,7 +86,7 @@ class ThongBaoController extends Controller
         
         // Lấy danh sách lớp học để hiển thị filter
         $lopHocs = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('trang_thai', 'da_thanh_toan')
+            ->where('trang_thai', 'da_xac_nhan')
             ->with('lopHoc')
             ->get()
             ->pluck('lopHoc');
@@ -110,7 +110,7 @@ class ThongBaoController extends Controller
         
         // Lấy danh sách lớp học mà học viên đang tham gia
         $lopHocIds = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('trang_thai', 'da_thanh_toan')
+            ->where('trang_thai', 'da_xac_nhan')
             ->pluck('lop_hoc_id')
             ->toArray();
         
@@ -164,7 +164,7 @@ class ThongBaoController extends Controller
         
         // Lấy danh sách lớp học mà học viên đang tham gia
         $lopHocIds = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('trang_thai', 'da_thanh_toan')
+            ->where('trang_thai', 'da_xac_nhan')
             ->pluck('lop_hoc_id')
             ->toArray();
         
@@ -224,7 +224,7 @@ class ThongBaoController extends Controller
         
         // Lấy danh sách lớp học mà học viên đang tham gia
         $lopHocIds = DangKyHoc::where('hoc_vien_id', $hocVien->id)
-            ->where('trang_thai', 'da_thanh_toan')
+            ->where('trang_thai', 'da_xac_nhan')
             ->pluck('lop_hoc_id')
             ->toArray();
         

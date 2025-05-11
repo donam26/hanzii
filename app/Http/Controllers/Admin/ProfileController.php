@@ -80,7 +80,7 @@ class ProfileController extends Controller
                 'regex:/^[0-9]{10}$/',
                 Rule::unique('nguoi_dungs')->ignore($nguoiDung->id),
             ],
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'anh_dai_dien' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
         // Cập nhật thông tin người dùng
@@ -90,15 +90,18 @@ class ProfileController extends Controller
         $nguoiDung->so_dien_thoai = $request->so_dien_thoai;
         
         // Xử lý avatar nếu có
-        if ($request->hasFile('avatar')) {
+        if ($request->hasFile('anh_dai_dien')) {
             // Xóa ảnh cũ nếu có
-            if ($nguoiDung->avatar && $nguoiDung->avatar !== 'avatars/default.png') {
-                Storage::disk('public')->delete($nguoiDung->avatar);
+            if ($nguoiDung->anh_dai_dien && $nguoiDung->anh_dai_dien !== 'avatars/default.png') {
+                Storage::disk('public')->delete($nguoiDung->anh_dai_dien);
             }
             
             // Lưu ảnh mới
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $nguoiDung->avatar = $avatarPath;
+            $avatarPath = $request->file('anh_dai_dien')->store('avatars', 'public');
+            $nguoiDung->anh_dai_dien = $avatarPath;
+            
+            // Cập nhật session cho avatar
+            $request->session()->put('anh_dai_dien', asset('storage/' . $avatarPath));
         }
         
         $nguoiDung->save();

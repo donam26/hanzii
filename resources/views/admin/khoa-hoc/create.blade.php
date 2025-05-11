@@ -59,7 +59,7 @@
                     <div>
                         <label for="trang_thai" class="block text-sm font-medium text-gray-700 mb-1">Trạng thái <span class="text-red-600">*</span></label>
                         <select class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm @error('trang_thai') border-red-500 @enderror" id="trang_thai" name="trang_thai" required>
-                            <option value="dang_hoat_dong" {{ old('trang_thai') == 'dang_hoat_dong' ? 'selected' : '' }}>Đang hoạt động</option>
+                            <option value="hoat_dong" {{ old('trang_thai') == 'hoat_dong' ? 'selected' : '' }}>Đang hoạt động</option>
                             <option value="tam_ngung" {{ old('trang_thai') == 'tam_ngung' ? 'selected' : '' }}>Tạm ngưng</option>
                             <option value="da_ket_thuc" {{ old('trang_thai') == 'da_ket_thuc' ? 'selected' : '' }}>Đã kết thúc</option>
                         </select>

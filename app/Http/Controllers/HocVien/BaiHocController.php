@@ -92,6 +92,20 @@ class BaiHocController extends Controller
             })
             ->orderBy('tao_luc', 'desc')
             ->get();
+            
+        // Log thông tin để debug
+        Log::info('Đang lấy tài liệu cho bài học #' . $baiHocId . ' lớp #' . $lopHocId);
+        Log::info('Số lượng tài liệu tìm thấy: ' . $taiLieuBoTros->count());
+        
+        // Thử lấy tất cả tài liệu liên quan đến bài học này
+        $allTaiLieu = TaiLieuBoTro::where('bai_hoc_id', $baiHocId)->get();
+        Log::info('Tổng số tài liệu cho bài học này (bất kể lớp nào): ' . $allTaiLieu->count());
+        
+        if ($allTaiLieu->count() > 0 && $taiLieuBoTros->count() == 0) {
+            // Nếu có tài liệu nhưng không lấy được, gán lại
+            $taiLieuBoTros = $allTaiLieu;
+            Log::info('Đã gán lại tài liệu từ truy vấn đơn giản hơn');
+        }
         
         // Tạo mảng bài tập đã nộp để dễ truy cập trong view
         $baiTapDaNop = [];
@@ -155,6 +169,29 @@ class BaiHocController extends Controller
         
         if (!$hocVien) {
             return redirect()->route('login')->with('error', 'Không tìm thấy thông tin học viên. Vui lòng đăng nhập lại');
+        }
+        
+        // Kiểm tra tất cả bài tập đã được hoàn thành chưa
+        $baiHoc = BaiHoc::with(['baiTaps.baiTapDaNops' => function ($query) use ($hocVien) {
+            $query->where('hoc_vien_id', $hocVien->id);
+        }])->findOrFail($baiHocId);
+        
+        $tongSoBaiTap = count($baiHoc->baiTaps);
+        $baiTapDaHoanThanh = 0;
+        
+        foreach($baiHoc->baiTaps as $baiTap) {
+            $daNop = false;
+            if(isset($baiTap->baiTapDaNops) && $baiTap->baiTapDaNops->isNotEmpty()) {
+                $daNop = true;
+            }
+            if($daNop) {
+                $baiTapDaHoanThanh++;
+            }
+        }
+        
+        // Nếu có bài tập mà chưa hoàn thành hết, không cho phép đánh dấu hoàn thành
+        if ($tongSoBaiTap > 0 && $baiTapDaHoanThanh < $tongSoBaiTap) {
+            return redirect()->back()->with('error', "Vui lòng hoàn thành tất cả bài tập trước khi đánh dấu hoàn thành bài học ($baiTapDaHoanThanh/$tongSoBaiTap bài tập)");
         }
      
         // Cập nhật tiến độ

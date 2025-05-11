@@ -48,7 +48,7 @@ class DangKyHocSeeder extends Seeder
                 ));
                 
                 // Trạng thái đăng ký
-                $trangThaiOptions = ['cho_xac_nhan', 'da_thanh_toan', 'da_xac_nhan'];
+                $trangThaiOptions = ['cho_xac_nhan', 'da_xac_nhan'];
                 $trangThai = $trangThaiOptions[array_rand($trangThaiOptions)];
                 
                 // Nếu lớp đã bắt đầu, ưu tiên trạng thái đã xác nhận

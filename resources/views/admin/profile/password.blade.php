@@ -13,7 +13,6 @@
     <div class="bg-white rounded-lg shadow-md p-6">
         <form action="{{ route('admin.profile.update-password') }}" method="POST">
             @csrf
-            @method('PUT')
             
             <div class="mb-8">
                 <div class="flex justify-between items-center mb-4">

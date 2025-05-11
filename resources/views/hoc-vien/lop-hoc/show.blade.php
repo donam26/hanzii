@@ -189,12 +189,12 @@
                                             </svg>
                                             Đã hoàn thành
                                         </span>
-                                    @elseif(isset($baiHoc->tien_do_hoc_tap) && $baiHoc->tien_do_hoc_tap->trang_thai == 'dang_hoc')
+                                    @elseif(isset($baiHoc->tien_do_hoc_tap) && $baiHoc->tien_do_hoc_tap->trang_thai == 'dang_hoat_dong')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                             <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
                                                 <circle cx="4" cy="4" r="3" />
                                             </svg>
-                                            Đang học
+                                            Đang diễn ra
                                         </span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -288,7 +288,7 @@
                                     @elseif($baiTap->trang_thai == 'qua_han')
                                         <span class="text-red-600">Đã hết hạn</span>
                                     @else
-                                        <a href="{{ route('hoc-vien.bai-tap.show', $baiTap->id) }}" class="text-green-600 hover:text-green-900">Làm bài</a>
+                                        <a href="{{ route('hoc-vien.bai-hoc.form-nop-bai-tap', [$lopHoc->id, $baiTap->bai_hoc_id, $baiTap->id]) }}" class="text-green-600 hover:text-green-900">Làm bài</a>
                                     @endif
                                 </td>
                             </tr>

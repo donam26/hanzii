@@ -33,7 +33,7 @@
             <div class="flex-1">
                 <select name="trang_thai" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm">
                     <option value="">-- Trạng thái --</option>
-                    <option value="dang_hoc" {{ request('trang_thai') == 'dang_hoc' ? 'selected' : '' }}>Đang học</option>
+                    <option value="dang_dien_ra" {{ request('trang_thai') == 'dang_dien_ra' ? 'selected' : '' }}>Đang diễn ra</option>
                     <option value="sap_khai_giang" {{ request('trang_thai') == 'sap_khai_giang' ? 'selected' : '' }}>Sắp khai giảng</option>
                     <option value="da_hoan_thanh" {{ request('trang_thai') == 'da_hoan_thanh' ? 'selected' : '' }}>Đã hoàn thành</option>
                 </select>
@@ -56,7 +56,7 @@
                 @forelse($lopHocs as $lopHoc)
                     <div class="border rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                         <div class="border-l-4 
-                            @if($lopHoc->trang_thai == 'dang_hoc') border-blue-500 
+                            @if($lopHoc->trang_thai == 'dang_dien_ra') border-blue-500 
                             @elseif($lopHoc->trang_thai == 'sap_khai_giang') border-yellow-500 
                             @elseif($lopHoc->trang_thai == 'da_hoan_thanh') border-gray-500 
                             @else border-green-500 @endif 
@@ -64,7 +64,7 @@
                             <div class="p-5 flex-grow">
                                 <h4 class="text-lg font-semibold text-gray-900 mb-1">{{ $lopHoc->ten }}</h4>
                                 <p class="text-xs 
-                                    @if($lopHoc->trang_thai == 'dang_hoc') text-blue-600 
+                                    @if($lopHoc->trang_thai == 'dang_dien_ra') text-blue-600 
                                     @elseif($lopHoc->trang_thai == 'sap_khai_giang') text-yellow-600 
                                     @elseif($lopHoc->trang_thai == 'da_hoan_thanh') text-gray-600 
                                     @else text-green-600 @endif mb-2">
@@ -87,11 +87,11 @@
                                 </p>
                                 <div class="mb-4 flex flex-wrap gap-2">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        @if($lopHoc->trang_thai == 'dang_hoc') bg-blue-100 text-blue-800
+                                        @if($lopHoc->trang_thai == 'dang_dien_ra') bg-blue-100 text-blue-800
                                         @elseif($lopHoc->trang_thai == 'sap_khai_giang') bg-yellow-100 text-yellow-800
                                         @elseif($lopHoc->trang_thai == 'da_hoan_thanh') bg-gray-100 text-gray-800
                                         @else bg-green-100 text-green-800 @endif">
-                                        @if($lopHoc->trang_thai == 'dang_hoc') Đang học
+                                        @if($lopHoc->trang_thai == 'dang_dien_ra') Đang diễn ra
                                         @elseif($lopHoc->trang_thai == 'sap_khai_giang') Sắp khai giảng
                                         @elseif($lopHoc->trang_thai == 'da_hoan_thanh') Đã hoàn thành
                                         @else Đang hoạt động @endif

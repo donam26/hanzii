@@ -83,7 +83,7 @@ class KhoaHocController extends Controller
             'hoc_phi' => 'required|numeric|min:0',
             'thoi_gian_hoan_thanh' => 'nullable|string|max:100',
             'tong_so_bai' => 'nullable|integer|min:0',
-            'trang_thai' => 'required|in:dang_hoat_dong,tam_ngung,da_ket_thuc',
+            'trang_thai' => 'required|in:hoat_dong,tam_ngung,da_ket_thuc',
             'hinh_anh' => 'nullable|image|max:2048',
         ]);
         
@@ -159,7 +159,7 @@ class KhoaHocController extends Controller
             'hoc_phi' => 'required|numeric|min:0',
             'thoi_gian_hoan_thanh' => 'nullable|string|max:100',
             'tong_so_bai' => 'nullable|integer|min:0',
-            'trang_thai' => 'required|in:dang_hoat_dong,tam_ngung,da_ket_thuc',
+            'trang_thai' => 'required|in:hoat_dong,tam_ngung,da_ket_thuc',
             'hinh_anh' => 'nullable|image|max:2048',
             'xoa_hinh_anh' => 'nullable|boolean',
         ]);

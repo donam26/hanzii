@@ -133,7 +133,7 @@ class BaiHocController extends Controller
     public function edit($id)
     {
         $baiHoc = BaiHoc::with(['khoaHoc', 'taiLieuBoTros'])->findOrFail($id);
-        $khoaHocs = KhoaHoc::where('trang_thai', 'dang_hoat_dong')->orderBy('ten')->get();
+        $khoaHocs = KhoaHoc::where('trang_thai', 'hoat_dong')->orderBy('ten')->get();
         
         return view('admin.bai-hoc.edit', compact('baiHoc', 'khoaHocs'));
     }

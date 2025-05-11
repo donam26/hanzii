@@ -64,7 +64,7 @@ class LopHocController extends Controller
         foreach ($lopHocs as $lopHoc) {
             // Đếm số học viên có trạng thái hợp lệ
             $lopHoc->soHocVien = $lopHoc->dangKyHocs()
-                ->whereIn('trang_thai', ['da_duyet', 'dang_hoc', 'da_xac_nhan', 'da_thanh_toan'])
+                ->whereIn('trang_thai', ['da_xac_nhan'])
                 ->count();
             
             // Đếm số buổi học từ lịch học hoặc bài học lớp
@@ -434,7 +434,6 @@ class LopHocController extends Controller
         $yeuCauThamGias = \App\Models\YeuCauThamGia::with(['hocVien.nguoiDung'])
             ->where('lop_hoc_id', $id)
             ->where('trang_thai', 'cho_xac_nhan')
-            ->orderBy('ngay_gui', 'desc')
             ->get();
         
         // Lấy danh sách bài học của lớp học

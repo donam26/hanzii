@@ -39,7 +39,7 @@ class BinhLuanController extends Controller
         // Kiểm tra học viên đã đăng ký lớp học này chưa
         $dangKyHoc = DangKyHoc::where('hoc_vien_id', $hocVien->id)
             ->where('lop_hoc_id', $request->lop_hoc_id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet', 'da_xac_nhan', 'da_thanh_toan'])
+            ->whereIn('trang_thai', ['da_xac_nhan'])
             ->first();
             
         if (!$dangKyHoc) {

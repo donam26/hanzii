@@ -77,15 +77,44 @@
                     </div>
                     <div>
                         @if(!isset($tienDo) || $tienDo->trang_thai !== 'da_hoan_thanh')
-                            <form action="{{ route('hoc-vien.bai-hoc.cap-nhat-tien-do', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-md flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                    Đánh dấu đã hoàn thành
-                                </button>
-                            </form>
+                            @php
+                                // Kiểm tra xem tất cả bài tập đã hoàn thành chưa
+                                $tongSoBaiTap = count($baiHoc->baiTaps);
+                                $baiTapDaHoanThanh = 0;
+                                
+                                foreach($baiHoc->baiTaps as $baiTap) {
+                                    $daNop = false;
+                                    if(isset($baiTap->baiTapDaNops) && $baiTap->baiTapDaNops->isNotEmpty()) {
+                                        $daNop = true;
+                                    }
+                                    if($daNop) {
+                                        $baiTapDaHoanThanh++;
+                                    }
+                                }
+                                
+                                $tatCaBaiTapHoanThanh = ($tongSoBaiTap > 0) ? ($baiTapDaHoanThanh == $tongSoBaiTap) : true;
+                            @endphp
+
+                            @if($tongSoBaiTap == 0 || $tatCaBaiTapHoanThanh)
+                                <form action="{{ route('hoc-vien.bai-hoc.cap-nhat-tien-do', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-md flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        Đánh dấu đã hoàn thành
+                                    </button>
+                                </form>
+                            @else
+                                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 rounded shadow-sm">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        <p>Vui lòng hoàn thành tất cả bài tập trước khi đánh dấu hoàn thành bài học ({{ $baiTapDaHoanThanh }}/{{ $tongSoBaiTap }} bài tập)</p>
+                                    </div>
+                                </div>
+                            @endif
                         @else
                             <span class="inline-flex items-center bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,6 +127,41 @@
                 </div>
             </div>
             <div class="p-6">
+                @if(isset($baiHoc->url_video) && !empty($baiHoc->url_video))
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Video bài học</h3>
+                    <div class="aspect-w-16 aspect-h-9 border rounded-lg overflow-hidden shadow-sm">
+                        @php
+                            $videoUrl = $baiHoc->url_video;
+                            $embedUrl = $videoUrl;
+                            
+                            // Xử lý URL YouTube
+                            if (strpos($videoUrl, 'youtube.com') !== false || strpos($videoUrl, 'youtu.be') !== false) {
+                                // Trích xuất ID video từ URL YouTube
+                                $videoId = '';
+                                
+                                // Xử lý URL dạng youtube.com/watch?v=VIDEO_ID
+                                if (preg_match('/youtube\.com\/watch\?v=([^&\s]+)/', $videoUrl, $matches)) {
+                                    $videoId = $matches[1];
+                                } 
+                                // Xử lý URL dạng youtu.be/VIDEO_ID
+                                elseif (preg_match('/youtu\.be\/([^&\s?]+)/', $videoUrl, $matches)) {
+                                    $videoId = $matches[1];
+                                }
+                                // Xử lý URL dạng youtube.com/embed/VIDEO_ID
+                                elseif (preg_match('/youtube\.com\/embed\/([^&\s?]+)/', $videoUrl, $matches)) {
+                                    $videoId = $matches[1];
+                                }
+                                
+                                if (!empty($videoId)) {
+                                    $embedUrl = "https://www.youtube.com/embed/" . $videoId;
+                                }
+                            }
+                        @endphp
+                        <iframe src="{{ $embedUrl }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>
+                    </div>
+                </div>
+                @endif
                 <div class="prose max-w-none">
                     {!! $baiHoc->noi_dung ?? '<p class="text-gray-500">Không có nội dung chi tiết cho bài học này.</p>' !!}
                 </div>
@@ -128,14 +192,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <a href="{{ route('hoc-vien.bai-hoc.xem-tai-lieu', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id, 'taiLieuId' => $taiLieu->id]) }}" 
-                                       class="inline-flex items-center text-sm text-green-600 hover:text-green-800 mr-3" target="_blank">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                        Xem trực tiếp
-                                    </a>
+                                
                                     <a href="{{ route('hoc-vien.bai-hoc.tai-tai-lieu', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id, 'taiLieuId' => $taiLieu->id]) }}" 
                                        class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
