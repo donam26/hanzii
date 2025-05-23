@@ -26,9 +26,9 @@ $role = 'tro_giang';
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lớp học</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khóa học</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày bắt đầu</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên lớp</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thuộc khóa học</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Học viên</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                         </tr>
@@ -37,14 +37,21 @@ $role = 'tro_giang';
                         @foreach($lopHocs as $lopHoc)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $lopHoc->ten }}</div>
-                                <div class="text-sm text-gray-500">Mã: {{ $lopHoc->ma_lop }}</div>
+                                <div class="flex items-center">
+                                    <div class="text-sm font-medium text-gray-900">{{ $lopHoc->ten }}</div>
+                                    @if(in_array($lopHoc->id, $lopHocIdsCanPhanHoi ?? []))
+                                        <span class="ml-2 flex-shrink-0 h-2 w-2 rounded-full bg-red-600" title="Có bình luận cần phản hồi"></span>
+                                    @endif
+                                </div>
+                                @if($lopHoc->ma_lop)
+                                    <div class="text-xs text-gray-500">Mã lớp: {{ $lopHoc->ma_lop }}</div>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $lopHoc->khoaHoc->ten }}</div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($lopHoc->ngay_bat_dau)->format('d/m/Y') }}</div>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $lopHoc->dang_ky_hocs_count ?? '0' }} học viên
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($lopHoc->trang_thai == 'dang_dien_ra')

@@ -53,7 +53,12 @@
                     @forelse($lopHocs as $lopHoc)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $lopHoc->ten }}</div>
+                                <div class="flex items-center">
+                                    <div class="text-sm font-medium text-gray-900">{{ $lopHoc->ten }}</div>
+                                    @if(in_array($lopHoc->id, $lopHocIdsCanPhanHoi ?? []))
+                                        <span class="ml-2 flex-shrink-0 h-2 w-2 rounded-full bg-red-600" title="Có bình luận cần phản hồi"></span>
+                                    @endif
+                                </div>
                                 @if($lopHoc->ma_lop)
                                     <div class="text-xs text-gray-500">Mã lớp: {{ $lopHoc->ma_lop }}</div>
                                 @endif

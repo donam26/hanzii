@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('phan_cong_giang_days', function (Blueprint $table) {
+        Schema::create('thanh_toan_hoc_phis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('hoc_vien_id')->constrained('hoc_viens')->onDelete('cascade');
             $table->foreignId('lop_hoc_id')->constrained('lop_hocs')->onDelete('cascade');
-            $table->foreignId('tro_giang_id')->constrained('tro_giangs')->onDelete('cascade');
-            $table->timestamp('ngay_bat_dau')->nullable();
-            $table->timestamp('ngay_ket_thuc')->nullable();
-            $table->string('trang_thai')->default('dang_hoat_dong')->comment('dang_hoat_dong, tam_ngung, ket_thuc');
+            $table->decimal('so_tien', 12, 2);
+            $table->string('phuong_thuc_thanh_toan')->comment('tien_mat, chuyen_khoan');
+            $table->string('trang_thai')->default('chua_thanh_toan')->comment('chua_thanh_toan, da_thanh_toan, da_huy');
+            $table->date('ngay_thanh_toan')->nullable();
+            $table->string('ma_giao_dich')->nullable();
             $table->text('ghi_chu')->nullable();
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('phan_cong_giang_days');
+        Schema::dropIfExists('thanh_toan_hoc_phis');
     }
-}; 
+};

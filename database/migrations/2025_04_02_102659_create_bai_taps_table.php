@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('loai')->comment('trac_nghiem, tu_luan, file');
             $table->text('noi_dung')->nullable();
             $table->float('diem_toi_da')->default(10);
+            $table->timestamp('han_nop')->nullable();
+            $table->enum('trang_thai', ['chua_xuat_ban', 'da_xuat_ban'])->default('chua_xuat_ban');
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
         });

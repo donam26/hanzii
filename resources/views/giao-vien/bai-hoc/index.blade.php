@@ -162,15 +162,6 @@
         </div>
     </div>
 
-    <div class="flex space-x-4 mt-6">
-        <a href="{{ route('giao-vien.lop-hoc.show', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <i class="fas fa-info-circle mr-2"></i> Chi tiết lớp học
-        </a>
-        <a href="{{ route('giao-vien.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-            <i class="fas fa-users mr-2"></i> Danh sách học viên
-        </a>
-    </div>
-
     <!-- Modal xóa bài học -->
     <div id="deleteModal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">

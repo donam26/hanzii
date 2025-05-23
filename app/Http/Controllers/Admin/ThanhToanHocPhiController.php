@@ -3,249 +3,248 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ThanhToanHocPhi;
-use App\Models\HocVien;
-use App\Models\LopHoc;
-use App\Models\NguoiDung;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
+use App\Models\ThanhToanHocPhi;
+use App\Models\LopHoc;
+use App\Models\HocVien;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ThanhToanHocPhiController extends Controller
 {
     /**
-     * Hiển thị danh sách thanh toán học phí
+     * Hiển thị danh sách lớp học để quản lý thanh toán học phí.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = ThanhToanHocPhi::with(['hocVien.nguoiDung', 'lopHoc']);
+        $lopHocs = LopHoc::orderBy('tao_luc', 'desc')->get();
         
-        // Lọc theo trạng thái nếu có
-        if ($request->filled('trang_thai')) {
-            $query->where('trang_thai', $request->trang_thai);
+        // Thống kê tổng quan
+        $tongLopHoc = $lopHocs->count();
+        $tongHocVien = HocVien::count();
+        $tongThanhToan = ThanhToanHocPhi::count();
+        $tongDaThanhToan = ThanhToanHocPhi::where('trang_thai', 'da_thanh_toan')->count();
+        $tongChuaThanhToan = ThanhToanHocPhi::where('trang_thai', 'chua_thanh_toan')->count();
+        $tongDoanhThu = ThanhToanHocPhi::where('trang_thai', 'da_thanh_toan')->sum('so_tien');
+        
+        // Kiểm tra trạng thái thanh toán của mỗi lớp
+        foreach ($lopHocs as $lopHoc) {
+            // Lấy danh sách học viên của lớp
+            $hocViens = $lopHoc->hocViens;
+            $tongHocVienLop = $hocViens->count();
+            $daThanhToanDayDu = 0;
+            
+            // Đếm số học viên đã thanh toán đầy đủ
+            foreach ($hocViens as $hocVien) {
+                $thanhToan = ThanhToanHocPhi::where('lop_hoc_id', $lopHoc->id)
+                    ->where('hoc_vien_id', $hocVien->id)
+                    ->where('trang_thai', 'da_thanh_toan')
+                    ->count();
+                
+                if ($thanhToan > 0) {
+                    $daThanhToanDayDu++;
+                }
+            }
+            
+            // Đánh dấu lớp học đã thanh toán đầy đủ nếu tất cả học viên đã thanh toán
+            $lopHoc->da_thanh_toan_day_du = ($tongHocVienLop > 0 && $daThanhToanDayDu == $tongHocVienLop);
         }
         
-        // Tìm kiếm theo tên học viên hoặc mã thanh toán
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('ma_thanh_toan', 'like', "%{$search}%")
-                  ->orWhereHas('hocVien.nguoiDung', function($q) use ($search) {
-                      $q->where('ho', 'like', "%{$search}%")
-                        ->orWhere('ten', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                  });
-        }
-        
-        $thanhToans = $query->latest()->paginate(10);
-        
-        // Lấy thống kê
-        $tongDaThanhToan = ThanhToanHocPhi::where('trang_thai', 'da_thanh_toan')->sum('so_tien');
-        $tongChuaThanhToan = ThanhToanHocPhi::where('trang_thai', 'chua_thanh_toan')->sum('so_tien');
-        
-        return view('admin.thanh-toan-hoc-phi.index', compact('thanhToans', 'tongDaThanhToan', 'tongChuaThanhToan'));
+        return view('admin.thanh-toan-hoc-phi.index', compact(
+            'lopHocs', 
+            'tongLopHoc', 
+            'tongHocVien', 
+            'tongThanhToan', 
+            'tongDaThanhToan', 
+            'tongChuaThanhToan',
+            'tongDoanhThu'
+        ));
     }
 
     /**
-     * Hiển thị form tạo thanh toán học phí mới
+     * Hiển thị chi tiết thanh toán học phí của một lớp học.
+     */
+    public function show(string $id)
+    {
+        $lopHoc = LopHoc::with('khoaHoc')->findOrFail($id);
+        
+        // Lấy danh sách học viên của lớp
+        $hocViens = $lopHoc->hocViens;
+        
+        // Lấy thông tin thanh toán học phí của từng học viên trong lớp
+        $thanhToanHocPhis = ThanhToanHocPhi::where('lop_hoc_id', $id)
+            ->get()
+            ->keyBy('hoc_vien_id');
+        
+        return view('admin.thanh-toan-hoc-phi.show', compact('lopHoc', 'hocViens', 'thanhToanHocPhis'));
+    }
+
+    /**
+     * Hiển thị form tạo mới thanh toán học phí.
      */
     public function create()
     {
+        $lopHocs = LopHoc::orderBy('ten')->get();
         $hocViens = HocVien::with('nguoiDung')->get();
-        $lopHocs = LopHoc::all();
         
-        return view('admin.thanh-toan-hoc-phi.create', compact('hocViens', 'lopHocs'));
+        return view('admin.thanh-toan-hoc-phi.create', compact('lopHocs', 'hocViens'));
     }
 
     /**
-     * Lưu thanh toán học phí mới
+     * Lưu thanh toán học phí mới vào database.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'hoc_vien_id' => 'nullable|exists:hoc_viens,id',
-            'lop_hoc_id' => 'required|exists:lop_hocs,id',
-            'so_tien' => 'required|numeric|min:0',
-            'ten' => 'required_if:hoc_vien_id,null|string|max:255',
-            'email' => 'required_if:hoc_vien_id,null|email|max:255',
-            'so_dien_thoai' => 'required_if:hoc_vien_id,null|string|max:20',
-        ]);
-        
-        // Nếu không chọn học viên sẵn có, tạo học viên mới
-        if (!$request->hoc_vien_id) {
-            // Tạo người dùng mới
-            $nguoiDung = new NguoiDung();
-            $nguoiDung->ho = $request->ho ?? '';
-            $nguoiDung->ten = $request->ten;
-            $nguoiDung->email = $request->email;
-            $nguoiDung->so_dien_thoai = $request->so_dien_thoai;
-            $nguoiDung->mat_khau = Hash::make('password'); // Mật khẩu mặc định
-            $nguoiDung->loai_tai_khoan = 'hoc_vien';
-            $nguoiDung->save();
-            
-            // Tạo học viên mới
-            $hocVien = new HocVien();
-            $hocVien->nguoi_dung_id = $nguoiDung->id;
-            $hocVien->save();
-            
-            $hocVienId = $hocVien->id;
-        } else {
-            $hocVienId = $request->hoc_vien_id;
-        }
-        
-        // Tạo thanh toán mới
-        $thanhToan = new ThanhToanHocPhi();
-        $thanhToan->hoc_vien_id = $hocVienId;
-        $thanhToan->lop_hoc_id = $request->lop_hoc_id;
-        $thanhToan->so_tien = $request->so_tien;
-        $thanhToan->trang_thai = 'chua_thanh_toan';
-        $thanhToan->ma_thanh_toan = $this->generatePaymentCode();
-        $thanhToan->ghi_chu = $request->ghi_chu;
-        $thanhToan->save();
-        
-        return redirect()->route('admin.thanh-toan-hoc-phi.index')
-            ->with('success', 'Tạo yêu cầu thanh toán học phí thành công');
-    }
-
-    /**
-     * Hiển thị chi tiết thanh toán học phí
-     */
-    public function show(ThanhToanHocPhi $thanhToanHocPhi)
-    {
-        $thanhToanHocPhi->load(['hocVien.nguoiDung', 'lopHoc']);
-        return view('admin.thanh-toan-hoc-phi.show', compact('thanhToanHocPhi'));
-    }
-
-    /**
-     * Hiển thị form chỉnh sửa thanh toán học phí
-     */
-    public function edit(ThanhToanHocPhi $thanhToanHocPhi)
-    {
-        $thanhToanHocPhi->load(['hocVien.nguoiDung', 'lopHoc']);
-        $hocViens = HocVien::with('nguoiDung')->get();
-        $lopHocs = LopHoc::all();
-        
-        return view('admin.thanh-toan-hoc-phi.edit', compact('thanhToanHocPhi', 'hocViens', 'lopHocs'));
-    }
-
-    /**
-     * Cập nhật thông tin thanh toán học phí
-     */
-    public function update(Request $request, ThanhToanHocPhi $thanhToanHocPhi)
     {
         $request->validate([
             'hoc_vien_id' => 'required|exists:hoc_viens,id',
             'lop_hoc_id' => 'required|exists:lop_hocs,id',
             'so_tien' => 'required|numeric|min:0',
-            'ghi_chu' => 'nullable|string|max:500',
+            'phuong_thuc_thanh_toan' => 'required|in:tien_mat,chuyen_khoan',
+            'trang_thai' => 'required|in:chua_thanh_toan,da_thanh_toan,da_huy',
+            'ngay_thanh_toan' => 'nullable|date',
+            'ma_giao_dich' => 'nullable|string|max:255',
+            'ghi_chu' => 'nullable|string',
         ]);
         
-        $thanhToanHocPhi->update([
-            'hoc_vien_id' => $request->hoc_vien_id,
-            'lop_hoc_id' => $request->lop_hoc_id,
-            'so_tien' => $request->so_tien,
-            'ghi_chu' => $request->ghi_chu,
-        ]);
-        
-        return redirect()->route('admin.thanh-toan-hoc-phi.index')
-            ->with('success', 'Cập nhật thông tin thanh toán học phí thành công');
-    }
-    
-    /**
-     * Cập nhật trạng thái thanh toán
-     */
-    public function updateStatus(ThanhToanHocPhi $thanhToanHocPhi)
-    {
-        // Cập nhật trạng thái thanh toán
-        $thanhToanHocPhi->update([
-            'trang_thai' => 'da_thanh_toan',
-            'ngay_thanh_toan' => now(),
-        ]);
-        
-        // Lấy học viên và lớp học
-        $lopHoc = $thanhToanHocPhi->lopHoc;
-        $hocVien = $thanhToanHocPhi->hocVien;
-        
-        // Đảm bảo học viên đã có tài khoản người dùng
-        if ($hocVien && $hocVien->nguoiDung) {
-            $nguoiDung = $hocVien->nguoiDung;
+        try {
+            DB::beginTransaction();
             
-            // Nếu người dùng chưa có mật khẩu hoặc là tài khoản mới, tạo mật khẩu mặc định
-            if (!$nguoiDung->mat_khau || $nguoiDung->mat_khau == Hash::make('password')) {
-                $matKhauMacDinh = Str::random(8); // Tạo mật khẩu ngẫu nhiên 8 ký tự
-                $nguoiDung->mat_khau = Hash::make($matKhauMacDinh);
-                $nguoiDung->save();
-                
-                // Lưu thông tin mật khẩu để gửi email hoặc hiển thị thông báo
-                session()->flash('mat_khau_moi', $matKhauMacDinh);
-                session()->flash('email_hoc_vien', $nguoiDung->email);
-            }
+            ThanhToanHocPhi::create($request->all());
             
-            // Tự động thêm học viên vào lớp học nếu chưa có
-            if ($lopHoc) {
-                // Kiểm tra xem học viên đã được thêm vào lớp học chưa
-                $exists = $lopHoc->hocViens()->where('hoc_vien_id', $hocVien->id)->exists();
-                
-                if (!$exists) {
-                    $lopHoc->hocViens()->attach($hocVien->id, [
-                        'trang_thai' => 'da_xac_nhan',
-                        'ngay_dang_ky' => now(),
-                    ]);
-                }
-            }
-        }
-        
-        $thongBao = 'Cập nhật trạng thái thanh toán thành công.';
-        
-        if (session()->has('mat_khau_moi')) {
-            $thongBao .= ' Tài khoản học viên đã được tạo với mật khẩu: ' . session('mat_khau_moi');
-        }
-        
-        return redirect()->back()->with('success', $thongBao);
-    }
-    
-    /**
-     * Cập nhật trạng thái hủy thanh toán
-     */
-    public function cancelStatus(ThanhToanHocPhi $thanhToanHocPhi)
-    {
-        // Cập nhật trạng thái thanh toán
-        $thanhToanHocPhi->update([
-            'trang_thai' => 'chua_thanh_toan',
-            'ngay_thanh_toan' => null,
-        ]);
-        
-        // Lấy học viên và lớp học
-        $lopHoc = $thanhToanHocPhi->lopHoc;
-        $hocVien = $thanhToanHocPhi->hocVien;
-        
-        // Tùy chọn: Xóa học viên khỏi lớp học (nếu muốn)
-        if ($lopHoc && $hocVien) {
-            // Kiểm tra xem học viên đã được thêm vào lớp học chưa
-            $exists = $lopHoc->hocViens()->where('hoc_vien_id', $hocVien->id)->exists();
+            DB::commit();
             
-            if ($exists) {
-                $lopHoc->hocViens()->detach($hocVien->id);
-            }
+            return redirect()->route('admin.thanh-toan-hoc-phi.show', $request->lop_hoc_id)
+                ->with('success', 'Thêm thanh toán học phí thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi thêm thanh toán học phí: ' . $e->getMessage());
+            
+            return back()->withInput()->with('error', 'Có lỗi xảy ra khi thêm thanh toán học phí');
         }
-        
-        return redirect()->back()->with('success', 'Đã hủy trạng thái thanh toán thành công.');
     }
 
     /**
-     * Xóa thanh toán học phí
+     * Hiển thị form chỉnh sửa thanh toán học phí.
      */
-    public function destroy(ThanhToanHocPhi $thanhToanHocPhi)
+    public function edit(string $id)
     {
-        $thanhToanHocPhi->delete();
-        return redirect()->route('admin.thanh-toan-hoc-phi.index')
-            ->with('success', 'Xóa thanh toán học phí thành công');
+        $thanhToanHocPhi = ThanhToanHocPhi::findOrFail($id);
+        $lopHocs = LopHoc::orderBy('ten')->get();
+        $hocViens = HocVien::with('nguoiDung')->get();
+        
+        return view('admin.thanh-toan-hoc-phi.edit', compact('thanhToanHocPhi', 'lopHocs', 'hocViens'));
     }
-    
+
     /**
-     * Tạo mã thanh toán mới
+     * Cập nhật thông tin thanh toán học phí.
      */
-    private function generatePaymentCode()
+    public function update(Request $request, string $id)
     {
-        return 'TTH' . date('ymd') . strtoupper(Str::random(5));
+        $request->validate([
+            'hoc_vien_id' => 'required|exists:hoc_viens,id',
+            'lop_hoc_id' => 'required|exists:lop_hocs,id',
+            'so_tien' => 'required|numeric|min:0',
+            'phuong_thuc_thanh_toan' => 'required|in:tien_mat,chuyen_khoan',
+            'trang_thai' => 'required|in:chua_thanh_toan,da_thanh_toan,da_huy',
+            'ngay_thanh_toan' => 'nullable|date',
+            'ma_giao_dich' => 'nullable|string|max:255',
+            'ghi_chu' => 'nullable|string',
+        ]);
+        
+        try {
+            DB::beginTransaction();
+            
+            $thanhToanHocPhi = ThanhToanHocPhi::findOrFail($id);
+            $thanhToanHocPhi->update($request->all());
+            
+            DB::commit();
+            
+            return redirect()->route('admin.thanh-toan-hoc-phi.show', $request->lop_hoc_id)
+                ->with('success', 'Cập nhật thanh toán học phí thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi cập nhật thanh toán học phí: ' . $e->getMessage());
+            
+            return back()->withInput()->with('error', 'Có lỗi xảy ra khi cập nhật thanh toán học phí');
+        }
+    }
+
+    /**
+     * Xóa thanh toán học phí.
+     */
+    public function destroy(string $id)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $thanhToanHocPhi = ThanhToanHocPhi::findOrFail($id);
+            $lopHocId = $thanhToanHocPhi->lop_hoc_id;
+            $thanhToanHocPhi->delete();
+            
+            DB::commit();
+            
+            return redirect()->route('admin.thanh-toan-hoc-phi.show', $lopHocId)
+                ->with('success', 'Xóa thanh toán học phí thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi xóa thanh toán học phí: ' . $e->getMessage());
+            
+            return back()->with('error', 'Có lỗi xảy ra khi xóa thanh toán học phí');
+        }
+    }
+
+    /**
+     * Cập nhật trạng thái thanh toán học phí.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'trang_thai' => 'required|in:chua_thanh_toan,da_thanh_toan,da_huy',
+        ]);
+        
+        try {
+            DB::beginTransaction();
+            
+            $thanhToanHocPhi = ThanhToanHocPhi::findOrFail($id);
+            $thanhToanHocPhi->trang_thai = $request->trang_thai;
+            
+            if ($request->trang_thai == 'da_thanh_toan' && !$thanhToanHocPhi->ngay_thanh_toan) {
+                $thanhToanHocPhi->ngay_thanh_toan = now();
+            }
+            
+            $thanhToanHocPhi->save();
+            
+            DB::commit();
+            
+            return redirect()->back()->with('success', 'Cập nhật trạng thái thanh toán học phí thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi cập nhật trạng thái thanh toán học phí: ' . $e->getMessage());
+            
+            return back()->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái thanh toán học phí');
+        }
+    }
+
+    /**
+     * Hủy thanh toán học phí.
+     */
+    public function cancelStatus($id)
+    {
+        try {
+            DB::beginTransaction();
+            
+            $thanhToanHocPhi = ThanhToanHocPhi::findOrFail($id);
+            $thanhToanHocPhi->trang_thai = 'da_huy';
+            $thanhToanHocPhi->save();
+            
+            DB::commit();
+            
+            return redirect()->back()->with('success', 'Hủy thanh toán học phí thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Lỗi khi hủy thanh toán học phí: ' . $e->getMessage());
+            
+            return back()->with('error', 'Có lỗi xảy ra khi hủy thanh toán học phí');
+        }
     }
 }

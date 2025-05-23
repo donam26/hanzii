@@ -105,19 +105,11 @@ class LopHoc extends Model
     }
 
     /**
-     * Quan hệ với lương giáo viên
+     * Quan hệ với thanh toán học phí
      */
-    public function luongGiaoViens(): HasMany
+    public function thanhToanHocPhis(): HasMany
     {
-        return $this->hasMany(LuongGiaoVien::class, 'lop_hoc_id');
-    }
-
-    /**
-     * Quan hệ với lương trợ giảng
-     */
-    public function luongTroGiangs(): HasMany
-    {
-        return $this->hasMany(LuongTroGiang::class, 'lop_hoc_id');
+        return $this->hasMany(ThanhToanHocPhi::class, 'lop_hoc_id');
     }
 
     /**

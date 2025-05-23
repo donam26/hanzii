@@ -26,6 +26,73 @@
             margin-top: 0;
         }
     }
+
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Cố định kích thước cột để tránh bảng quá rộng */
+    .col-fixed-sm {
+        width: 120px;
+        min-width: 120px;
+    }
+    .col-fixed-md {
+        width: 160px;
+        min-width: 160px;
+    }
+    .col-fixed-lg {
+        width: 200px;
+        min-width: 200px;
+    }
+    .col-actions {
+        width: 100px;
+        min-width: 100px;
+    }
+
+    /* Xử lý văn bản dài */
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+
+    /* Card view cho màn hình nhỏ */
+    @media (max-width: 768px) {
+        .mobile-card {
+            display: block;
+            margin-bottom: 0.75rem;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-card-header {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-card-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .mobile-card-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.75rem;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 0.75rem;
+        }
+    }
 </style>
 @endsection
 
@@ -143,48 +210,54 @@
         </form>
     </div>
 
-    <!-- Danh sách lớp học -->
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-        <div class="overflow-x-auto">
+    <!-- Danh sách lớp học - Desktop view -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden hidden md:block">
+        <div class="table-responsive">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lớp học</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khóa học</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giáo viên</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày bắt đầu</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-fixed-lg">Lớp học</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-fixed-md">Khóa học</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-fixed-lg">Giáo viên/Trợ giảng</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-fixed-sm">Ngày bắt đầu</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider col-fixed-sm">Trạng thái</th>
+                        <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider col-actions">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($lopHocs as $lopHoc)
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-3">
                             <div class="flex items-center">
                                 <div>
-                                    <div class="text-sm font-medium text-gray-900">
+                                    <div class="text-sm font-medium text-gray-900 text-truncate" title="{{ $lopHoc->ten }}">
                                         {{ $lopHoc->ten }}
                                     </div>
-                                    <div class="text-sm text-gray-500">
+                                    <div class="text-xs text-gray-500">
                                         Mã: {{ $lopHoc->ma_lop }}
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $lopHoc->khoaHoc->ten }}</div>
+                        <td class="px-4 py-3">
+                            <div class="text-sm text-gray-900 text-truncate" title="{{ $lopHoc->khoaHoc->ten }}">
+                                {{ $lopHoc->khoaHoc->ten }}
+                            </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $lopHoc->giaoVien->nguoiDung->ho_ten ?? 'Chưa phân công' }}</div>
-                            <div class="text-xs text-gray-500">TG: {{ $lopHoc->troGiang->nguoiDung->ho_ten ?? 'Chưa phân công' }}</div>
+                        <td class="px-4 py-3">
+                            <div class="text-sm text-gray-900 text-truncate" title="{{ $lopHoc->giaoVien->nguoiDung->ho_ten ?? 'Chưa phân công' }}">
+                                {{ $lopHoc->giaoVien->nguoiDung->ho_ten ?? 'Chưa phân công' }}
+                            </div>
+                            <div class="text-xs text-gray-500 text-truncate" title="TG: {{ $lopHoc->troGiang->nguoiDung->ho_ten ?? 'Chưa phân công' }}">
+                                TG: {{ $lopHoc->troGiang->nguoiDung->ho_ten ?? 'Chưa phân công' }}
+                            </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-3">
                             <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($lopHoc->ngay_bat_dau)->format('d/m/Y') }}</div>
-                            <div class="text-xs text-gray-500">{{ $lopHoc->hinh_thuc_hoc == 'online' ? 'Trực tuyến' : 'Tại trung tâm' }}</div>
+                            <div class="text-xs text-gray-500">{{ $lopHoc->hinh_thuc_hoc == 'online' ? 'Trực tuyến' : 'Tại TT' }}</div>
                         </td>
                        
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-3">
                             @if($lopHoc->trang_thai == 'sap_khai_giang')
                                 <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
                                     Sắp khai giảng
@@ -203,28 +276,30 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ route('admin.lop-hoc.show', $lopHoc->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ route('admin.lop-hoc.edit', $lopHoc->id) }}" class="text-amber-600 hover:text-amber-900 mr-3">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="{{ route('admin.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
-                                <i class="fas fa-users"></i>
-                            </a>
-                            <form action="{{ route('admin.lop-hoc.destroy', $lopHoc->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Bạn có chắc chắn muốn xóa lớp học này?')">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
+                        <td class="px-4 py-3 text-right text-sm font-medium">
+                            <div class="flex justify-end space-x-2">
+                                <a href="{{ route('admin.lop-hoc.show', $lopHoc->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.lop-hoc.edit', $lopHoc->id) }}" class="text-amber-600 hover:text-amber-900" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ route('admin.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="text-blue-600 hover:text-blue-900" title="Danh sách học viên">
+                                    <i class="fas fa-users"></i>
+                                </a>
+                                <form action="{{ route('admin.lop-hoc.destroy', $lopHoc->id) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa lớp học này?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                        <td colspan="6" class="px-4 py-4 text-sm text-gray-500 text-center">
                             <div class="my-6">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
@@ -238,10 +313,94 @@
                 </tbody>
             </table>
         </div>
-        <!-- Phân trang -->
-        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-            {{ $lopHocs->withQueryString()->links() }}
+    </div>
+
+    <!-- Danh sách lớp học - Mobile view -->
+    <div class="md:hidden space-y-4">
+        @forelse($lopHocs as $lopHoc)
+        <div class="bg-white shadow-sm rounded-lg p-4 mobile-card">
+            <div class="mobile-card-header text-gray-900">{{ $lopHoc->ten }}</div>
+            
+            <div class="mobile-card-grid">
+                <div>
+                    <div class="mobile-card-label">Mã lớp</div>
+                    <div>{{ $lopHoc->ma_lop }}</div>
+                </div>
+                <div>
+                    <div class="mobile-card-label">Trạng thái</div>
+                    <div>
+                        @if($lopHoc->trang_thai == 'sap_khai_giang')
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Sắp khai giảng
+                            </span>
+                        @elseif($lopHoc->trang_thai == 'dang_dien_ra' )
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đang diễn ra
+                            </span>
+                        @else
+                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                Đã kết thúc
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-card-grid">
+                <div>
+                    <div class="mobile-card-label">Khóa học</div>
+                    <div>{{ $lopHoc->khoaHoc->ten }}</div>
+                </div>
+                <div>
+                    <div class="mobile-card-label">Ngày bắt đầu</div>
+                    <div>{{ \Carbon\Carbon::parse($lopHoc->ngay_bat_dau)->format('d/m/Y') }}</div>
+                </div>
+            </div>
+
+            <div class="mobile-card-grid">
+                <div>
+                    <div class="mobile-card-label">Giáo viên</div>
+                    <div>{{ $lopHoc->giaoVien->nguoiDung->ho_ten ?? 'Chưa phân công' }}</div>
+                </div>
+                <div>
+                    <div class="mobile-card-label">Trợ giảng</div>
+                    <div>{{ $lopHoc->troGiang->nguoiDung->ho_ten ?? 'Chưa phân công' }}</div>
+                </div>
+            </div>
+
+            <div class="mobile-card-actions space-x-3">
+                <a href="{{ route('admin.lop-hoc.show', $lopHoc->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Xem chi tiết">
+                    <i class="fas fa-eye"></i>
+                </a>
+                <a href="{{ route('admin.lop-hoc.edit', $lopHoc->id) }}" class="text-amber-600 hover:text-amber-900" title="Sửa">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="{{ route('admin.lop-hoc.danh-sach-hoc-vien', $lopHoc->id) }}" class="text-blue-600 hover:text-blue-900" title="Danh sách học viên">
+                    <i class="fas fa-users"></i>
+                </a>
+                <form action="{{ route('admin.lop-hoc.destroy', $lopHoc->id) }}" method="POST" class="inline-block">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-600 hover:text-red-900" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa lớp học này?')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
+            </div>
         </div>
+        @empty
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+            </svg>
+            <p class="mt-2 text-base text-gray-900">Không tìm thấy lớp học nào</p>
+            <p class="mt-1 text-sm text-gray-500">Hãy thử thay đổi bộ lọc hoặc thêm lớp học mới.</p>
+        </div>
+        @endforelse
+    </div>
+    
+    <!-- Phân trang -->
+    <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+        {{ $lopHocs->withQueryString()->links() }}
     </div>
 </div>
 @endsection

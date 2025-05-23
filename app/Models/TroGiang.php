@@ -48,11 +48,4 @@ class TroGiang extends Model
         return $this->hasMany(LopHoc::class, 'tro_giang_id');
     }
 
-    /**
-     * Quan hệ với lương trợ giảng
-     */
-    public function luongs(): HasMany
-    {
-        return $this->hasMany(LuongTroGiang::class, 'tro_giang_id');
-    }
 } 

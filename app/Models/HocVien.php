@@ -80,6 +80,14 @@ class HocVien extends Model
         return $this->hasMany(FileBaiTap::class, 'hoc_vien_id');
     }
 
+    /**
+     * Quan hệ với thanh toán học phí
+     */
+    public function thanhToanHocPhis(): HasMany
+    {
+        return $this->hasMany(ThanhToanHocPhi::class, 'hoc_vien_id');
+    }
+
     public function lopHoc(): BelongsTo
     {
         return $this->belongsTo(LopHoc::class, 'lop_hoc_id');

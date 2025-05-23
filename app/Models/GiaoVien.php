@@ -80,14 +80,6 @@ class GiaoVien extends Model
     }
 
     /**
-     * Quan hệ với lương
-     */
-    public function luongs(): HasMany
-    {
-        return $this->hasMany(LuongGiaoVien::class, 'giao_vien_id');
-    }
-
-    /**
      * Lấy toàn bộ số lớp đang dạy
      */
     public function soLopDangDay()

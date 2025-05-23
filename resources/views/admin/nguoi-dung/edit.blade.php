@@ -233,8 +233,8 @@
                     
                     <!-- Thông tin trợ giảng (hiển thị nếu là trợ giảng) -->
                     @if(isset($troGiang))
-                        <div id="tro_giang_info" class="col-span-2 bg-gray-50 p-4 rounded-lg">
-                            <h4 class="font-medium text-lg mb-4 text-gray-700">Thông tin trợ giảng</h4>
+                        <div id="tro_giang_info" class="hidden col-span-2 bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-medium text-lg mb-4 text-gray-700">Thông tin trợ g2iảng</h4>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>

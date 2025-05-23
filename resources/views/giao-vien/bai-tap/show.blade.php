@@ -88,7 +88,7 @@
                     </div>
                     <div class="sm:col-span-2">
                         <dt class="text-sm font-medium text-gray-500">Mô tả</dt>
-                        <dd class="mt-1 text-sm text-gray-900 whitespace-pre-line">{{ $baiTap->mo_ta }}</dd>
+                        <dd class="mt-1 text-sm text-gray-900 whitespace-pre-line">{{ $baiTap->noi_dung }}</dd>
                     </div>
                     @if($baiTap->file_dinh_kem)
                         <div class="sm:col-span-2">

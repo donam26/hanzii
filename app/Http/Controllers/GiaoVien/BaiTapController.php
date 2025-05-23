@@ -262,7 +262,9 @@ class BaiTapController extends Controller
         // Validate dữ liệu đầu vào
         $validated = $request->validate([
             'tieu_de' => 'required|string|max:255',
+            'loai' => 'required|in:tu_luan,file',
             'diem_toi_da' => 'required|numeric|min:1|max:100',
+            'noi_dung' => 'nullable|string',
             'han_nop' => 'required|date',
             'file' => 'nullable|file|max:10240', // Tối đa 10MB
         ]);
@@ -285,7 +287,9 @@ class BaiTapController extends Controller
             
             // Cập nhật thông tin bài tập
             $baiTap->tieu_de = $validated['tieu_de'];
+            $baiTap->loai = $validated['loai'];
             $baiTap->diem_toi_da = $validated['diem_toi_da'];
+            $baiTap->noi_dung = $validated['noi_dung'];
             $baiTap->han_nop = $validated['han_nop'];
                 
             // Xử lý file đính kèm mới nếu có

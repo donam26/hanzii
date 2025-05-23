@@ -4,47 +4,87 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ThanhToanHocPhi extends Model
 {
-    use HasFactory, SoftDeletes;
-    
+    use HasFactory;
+
+    /**
+     * Tên bảng tương ứng trong cơ sở dữ liệu
+     *
+     * @var string
+     */
+    protected $table = 'thanh_toan_hoc_phis';
+
+    /**
+     * Các cột có thể gán giá trị
+     *
+     * @var array
+     */
     protected $fillable = [
         'hoc_vien_id',
         'lop_hoc_id',
         'so_tien',
+        'phuong_thuc_thanh_toan',
         'trang_thai',
-        'ma_thanh_toan',
+        'ngay_thanh_toan',
+        'ma_giao_dich',
         'ghi_chu',
-        'ngay_thanh_toan'
     ];
 
-    protected $casts = [
-        'ngay_thanh_toan' => 'datetime'
-    ];
-    
     /**
-     * Lấy học viên liên quan đến thanh toán
+     * Các cột thời gian tùy chỉnh
+     *
+     * @var array
      */
-    public function hocVien()
+    const CREATED_AT = 'tao_luc';
+    const UPDATED_AT = 'cap_nhat_luc';
+
+    /**
+     * Quan hệ với học viên
+     */
+    public function hocVien(): BelongsTo
     {
         return $this->belongsTo(HocVien::class, 'hoc_vien_id');
     }
-    
+
     /**
-     * Lấy lớp học liên quan đến thanh toán
+     * Quan hệ với lớp học
      */
-    public function lopHoc()
+    public function lopHoc(): BelongsTo
     {
         return $this->belongsTo(LopHoc::class, 'lop_hoc_id');
     }
-    
+
     /**
-     * Kiểm tra xem thanh toán đã hoàn thành chưa
+     * Trả về text hiển thị tương ứng với trạng thái
+     * 
+     * @return string
      */
-    public function daThanhToan()
+    public function getTrangThaiTextAttribute()
     {
-        return $this->trang_thai === 'da_thanh_toan';
+        $trangThaiMap = [
+            'chua_thanh_toan' => 'Chưa thanh toán',
+            'da_thanh_toan' => 'Đã thanh toán',
+            'da_huy' => 'Đã hủy'
+        ];
+        
+        return $trangThaiMap[$this->trang_thai] ?? 'Không xác định';
+    }
+
+    /**
+     * Trả về text hiển thị tương ứng với phương thức thanh toán
+     * 
+     * @return string
+     */
+    public function getPhuongThucThanhToanTextAttribute()
+    {
+        $phuongThucMap = [
+            'tien_mat' => 'Tiền mặt',
+            'chuyen_khoan' => 'Chuyển khoản'
+        ];
+        
+        return $phuongThucMap[$this->phuong_thuc_thanh_toan] ?? 'Không xác định';
     }
 }

@@ -174,17 +174,7 @@
                             </div>
                             <canvas id="doanhThuMonthlyChart" height="100"></canvas>
                         </div>
-                        <div class="tab-pane fade" id="tab-chi-phi" role="tabpanel" aria-labelledby="tab-chi-phi-tab">
-                            <div class="d-flex justify-content-between mb-3">
-                                <h5>Chi phí theo tháng năm {{ date('Y') }}</h5>
-                                <div>
-                                    <a href="{{ route('admin.thong-ke.chi-phi-luong') }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-money-check-alt"></i> Xem chi tiết chi phí lương
-                                    </a>
-                                </div>
-                            </div>
-                            <canvas id="chiPhiMonthlyChart" height="100"></canvas>
-                        </div>
+                       
                         <div class="tab-pane fade" id="tab-loi-nhuan" role="tabpanel" aria-labelledby="tab-loi-nhuan-tab">
                             <div class="d-flex justify-content-between mb-3">
                                 <h5>Lợi nhuận theo tháng năm {{ date('Y') }}</h5>

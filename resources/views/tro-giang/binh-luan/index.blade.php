@@ -33,9 +33,9 @@ $role = 'tro_giang';
                 <label for="vai_tro" class="block text-sm font-medium text-gray-700 mb-1">Lọc theo vai trò</label>
                 <select id="vai_tro" name="vai_tro" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md">
                     <option value="">Tất cả vai trò</option>
-                    <option value="hoc_vien" {{ request('vai_tro') == 'hoc_vien' ? 'selected' : '' }}>Học viên</option>
-                    <option value="giao_vien" {{ request('vai_tro') == 'giao_vien' ? 'selected' : '' }}>Giáo viên</option>
-                    <option value="tro_giang" {{ request('vai_tro') == 'tro_giang' ? 'selected' : '' }}>Trợ giảng</option>
+                    <option value="hoc_vien" {{ $vaiTro == 'hoc_vien' ? 'selected' : '' }}>Học viên</option>
+                    <option value="giao_vien" {{ $vaiTro == 'giao_vien' ? 'selected' : '' }}>Giáo viên</option>
+                    <option value="tro_giang" {{ $vaiTro == 'tro_giang' ? 'selected' : '' }}>Trợ giảng</option>
                 </select>
             </div>
             
@@ -51,7 +51,7 @@ $role = 'tro_giang';
             <div class="ml-auto">
                 <a href="{{ route('tro-giang.binh-luan.index', ['vai_tro' => 'hoc_vien']) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
                     Bình luận cần phản hồi
                 </a>
@@ -182,7 +182,7 @@ $role = 'tro_giang';
                                         @endif
                                     </span>
                                     
-                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
+                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien' && !$binhLuan->da_phan_hoi)
                                         <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                             Cần phản hồi
                                         </span>
@@ -213,6 +213,7 @@ $role = 'tro_giang';
                                 <div class="mt-2 flex justify-between items-center">
                                     <!-- Nút phản hồi -->
                                     @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
+                                        @if(!$binhLuan->da_phan_hoi)
                                         <button type="button" 
                                                 class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
                                                 onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
@@ -221,6 +222,14 @@ $role = 'tro_giang';
                                             </svg>
                                             Phản hồi
                                         </button>
+                                        @else
+                                        <span class="text-sm text-green-600 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Đã phản hồi
+                                        </span>
+                                        @endif
                                     @else
                                         <span></span>
                                     @endif
@@ -242,7 +251,7 @@ $role = 'tro_giang';
                                 
                                 <!-- Form phản hồi -->
                                 @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
-                                    <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 {{ request('vai_tro') == 'hoc_vien' ? '' : 'hidden' }}">
+                                    <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 {{ $binhLuan->da_phan_hoi ? 'hidden' : (request('vai_tro') == 'hoc_vien' ? '' : 'hidden') }}">
                                         <div class="flex items-start space-x-3">
                                             <!-- Đường kẻ nối từ avatar tới phản hồi -->
                                             <div class="flex flex-col items-center">
@@ -255,6 +264,7 @@ $role = 'tro_giang';
                                                     @csrf
                                                     <input type="hidden" name="bai_hoc_id" value="{{ $binhLuan->bai_hoc_id }}">
                                                     <input type="hidden" name="lop_hoc_id" value="{{ $binhLuan->lop_hoc_id }}">
+                                                    <input type="hidden" name="binh_luan_goc_id" value="{{ $binhLuan->id }}">
                                                     
                                                     <div class="flex items-center">
                                                         <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
@@ -286,6 +296,30 @@ $role = 'tro_giang';
                                             </div>
                                         </div>
                                     </div>
+                                @endif
+                                
+                                <!-- Hiển thị phản hồi -->
+                                @if($binhLuan->da_phan_hoi && $binhLuan->phanHois->count() > 0)
+                                    @foreach($binhLuan->phanHois as $phanHoi)
+                                    <div class="mt-3 pl-4 border-l-2 border-gray-200">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                                    <span class="text-xs font-medium text-green-600">
+                                                        {{ strtoupper(substr($phanHoi->nguoiDung->ho, 0, 1)) . strtoupper(substr($phanHoi->nguoiDung->ten, 0, 1)) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">{{ $phanHoi->nguoiDung->ho . ' ' . $phanHoi->nguoiDung->ten }}</p>
+                                                <div class="mt-1 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
+                                                    <p>{{ $phanHoi->noi_dung }}</p>
+                                                </div>
+                                                <p class="mt-1 text-xs text-gray-500">{{ \Carbon\Carbon::parse($phanHoi->tao_luc)->format('d/m/Y H:i') }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
                                 @endif
                             </div>
                         </div>

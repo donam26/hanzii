@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('hoc_phi', 12, 2)->default(0);
             $table->integer('tong_so_bai')->default(0);
             $table->string('thoi_gian_hoan_thanh')->nullable();
+            $table->string('trang_thai')->default('hoat_dong');
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
         });

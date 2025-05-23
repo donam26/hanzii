@@ -29,14 +29,28 @@ class BinhLuanController extends Controller
         // Lấy danh sách lớp học mà trợ giảng phụ trách
         $lopHocIds = LopHoc::where('tro_giang_id', $troGiang->id)->pluck('id')->toArray();
         
-        // Filter theo lớp học nếu có
-        $lopHocId = $request->input('lop_hoc_id');
-        $query = BinhLuan::with(['nguoiDung', 'baiHoc', 'lopHoc'])
+        // Tạo query base
+        $query = BinhLuan::with(['nguoiDung', 'baiHoc', 'lopHoc', 'phanHois'])
             ->whereIn('lop_hoc_id', $lopHocIds)
             ->orderBy('tao_luc', 'desc');
             
+        // Filter theo lớp học nếu có
+        $lopHocId = $request->input('lop_hoc_id');
         if ($lopHocId && in_array($lopHocId, $lopHocIds)) {
             $query->where('lop_hoc_id', $lopHocId);
+        }
+        
+        // Filter theo vai trò người dùng nếu có
+        $vaiTro = $request->input('vai_tro');
+        if ($vaiTro == 'hoc_vien') {
+            $query->whereHas('nguoiDung.vaiTros', function($q) {
+                $q->where('ten', 'hoc_vien');
+            })->where('da_phan_hoi', false)
+              ->whereNull('binh_luan_goc_id');
+        } elseif ($vaiTro) {
+            $query->whereHas('nguoiDung.vaiTros', function($q) use ($vaiTro) {
+                $q->where('ten', $vaiTro);
+            });
         }
         
         $binhLuans = $query->paginate(20);
@@ -46,7 +60,7 @@ class BinhLuanController extends Controller
             ->with('khoaHoc')
             ->get();
             
-        return view('tro-giang.binh-luan.index', compact('binhLuans', 'lopHocs', 'lopHocId'));
+        return view('tro-giang.binh-luan.index', compact('binhLuans', 'lopHocs', 'lopHocId', 'vaiTro'));
     }
     
     /**
@@ -131,6 +145,7 @@ class BinhLuanController extends Controller
             'noi_dung' => 'required|string',
             'bai_hoc_id' => 'required|exists:bai_hocs,id',
             'lop_hoc_id' => 'required|exists:lop_hocs,id',
+            'binh_luan_goc_id' => 'required|exists:binh_luans,id',
         ]);
         
         // Lấy ID người dùng hiện tại
@@ -156,7 +171,15 @@ class BinhLuanController extends Controller
         $binhLuan->bai_hoc_id = $request->bai_hoc_id;
         $binhLuan->lop_hoc_id = $request->lop_hoc_id;
         $binhLuan->noi_dung = $request->noi_dung;
+        $binhLuan->binh_luan_goc_id = $request->binh_luan_goc_id;
         $binhLuan->save();
+        
+        // Lấy bình luận gốc và cập nhật trạng thái
+        $binhLuanGoc = BinhLuan::find($request->binh_luan_goc_id);
+        if ($binhLuanGoc) {
+            $binhLuanGoc->da_phan_hoi = true;
+            $binhLuanGoc->save();
+        }
         
         return redirect()->back()->with('success', 'Đã phản hồi bình luận thành công.');
     }

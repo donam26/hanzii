@@ -19,6 +19,11 @@ return new class extends Migration
             $table->integer('so_thu_tu')->default(0);
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();
+            $table->longText('noi_dung')->nullable();
+            $table->string('loai')->default('van_ban');
+            $table->string('url_video')->nullable();
+            $table->integer('thoi_luong')->default(45);
+            $table->string('trang_thai')->default('chua_xuat_ban');
         });
     }
 

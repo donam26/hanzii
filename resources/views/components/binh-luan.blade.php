@@ -76,25 +76,35 @@
                                 <time datetime="{{ $binhLuan->tao_luc }}">{{ \Carbon\Carbon::parse($binhLuan->tao_luc)->format('d/m/Y H:i') }}</time>
                             </div>
                             
-                            <!-- Nút phản hồi cho trợ giảng -->
+                            <!-- Nút phản hồi -->
                             @if($role == 'tro-giang' && optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
                                 <div class="mt-2">
-                                    <button type="button" 
-                                            class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
-                                            onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                                        </svg>
-                                        Phản hồi
-                                    </button>
+                                    @if(!$binhLuan->da_phan_hoi)
+                                        <button type="button" 
+                                                class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                                                onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                            </svg>
+                                            Phản hồi
+                                        </button>
+                                    @else
+                                        <span class="text-sm text-green-600 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Đã phản hồi
+                                        </span>
+                                    @endif
                                 </div>
                                 
                                 <!-- Form phản hồi (ẩn mặc định) -->
-                                <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 pl-4 border-l-2 border-gray-200 hidden">
+                                <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 pl-4 border-l-2 border-gray-200 {{ $binhLuan->da_phan_hoi ? 'hidden' : (request('vai_tro') == 'hoc_vien' ? '' : 'hidden') }}">
                                     <form action="{{ route('tro-giang.binh-luan.phan-hoi') }}" method="POST" class="flex flex-col space-y-3">
                                         @csrf
                                         <input type="hidden" name="bai_hoc_id" value="{{ $baiHocId }}">
                                         <input type="hidden" name="lop_hoc_id" value="{{ $lopHocId }}">
+                                        <input type="hidden" name="binh_luan_goc_id" value="{{ $binhLuan->id }}">
                                         
                                         <div>
                                             <textarea name="noi_dung" rows="2" required 
@@ -115,6 +125,30 @@
                                         </div>
                                     </form>
                                 </div>
+                                
+                                <!-- Hiển thị phản hồi -->
+                                @if($binhLuan->da_phan_hoi)
+                                    @foreach($binhLuan->phanHois as $phanHoi)
+                                    <div class="mt-3 pl-4 border-l-2 border-gray-200">
+                                        <div class="flex items-start space-x-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                                    <span class="text-xs font-medium text-green-600">
+                                                        {{ strtoupper(substr($phanHoi->nguoiDung->ho, 0, 1)) . strtoupper(substr($phanHoi->nguoiDung->ten, 0, 1)) }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-900">{{ $phanHoi->nguoiDung->ho . ' ' . $phanHoi->nguoiDung->ten }}</p>
+                                                <div class="mt-1 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
+                                                    <p>{{ $phanHoi->noi_dung }}</p>
+                                                </div>
+                                                <p class="mt-1 text-xs text-gray-500">{{ \Carbon\Carbon::parse($phanHoi->tao_luc)->format('d/m/Y H:i') }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                @endif
                             @endif
                         </div>
                     </div>

@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\TroGiang;
 
 use App\Http\Controllers\Controller;
-use App\Models\BaiHoc;
 use App\Models\BaiHocLop;
 use App\Models\BaiTap;
 use App\Models\BaiTapDaNop;
+use App\Models\BinhLuan;
 use App\Models\DangKyHoc;
 use App\Models\LopHoc;
 use App\Models\TroGiang;
-use App\Models\PhanCongGiangDay;
 use App\Models\TienDoBaiHoc;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class LopHocController extends Controller
 {
@@ -52,7 +50,34 @@ class LopHocController extends Controller
             ->paginate(10)
             ->withQueryString();
             
-        return view('tro-giang.lop-hoc.index', compact('lopHocs', 'trangThai'));
+        // Kiểm tra các lớp học có bình luận cần phản hồi không
+        $lopHocIdsCanPhanHoi = $this->getLopHocIdsCanPhanHoi($troGiang->id);
+            
+        return view('tro-giang.lop-hoc.index', compact('lopHocs', 'trangThai', 'lopHocIdsCanPhanHoi'));
+    }
+
+    /**
+     * Lấy danh sách ID các lớp học có bình luận cần phản hồi
+     * 
+     * @param int $troGiangId ID của trợ giảng
+     * @return array Mảng chứa các ID lớp học có bình luận cần phản hồi
+     */
+    private function getLopHocIdsCanPhanHoi($troGiangId)
+    {
+        // Lấy danh sách lớp học mà trợ giảng phụ trách
+        $lopHocIds = LopHoc::where('tro_giang_id', $troGiangId)->pluck('id')->toArray();
+        
+        // Lấy danh sách bình luận chưa được phản hồi của học viên trong các lớp đó
+        $lopHocIdsCanPhanHoi = BinhLuan::whereIn('lop_hoc_id', $lopHocIds)
+            ->where('da_phan_hoi', false)
+            ->whereHas('nguoiDung.vaiTros', function ($query) {
+                $query->where('ten', 'hoc_vien');
+            })
+            ->pluck('lop_hoc_id')
+            ->unique()
+            ->toArray();
+            
+        return $lopHocIdsCanPhanHoi;
     }
 
     /**
@@ -181,15 +206,6 @@ class LopHocController extends Controller
                 ->with('error', 'Không tìm thấy thông tin trợ giảng');
         }
         
-        // Kiểm tra lớp học có được phân công cho trợ giảng này không
-        $phanCong = PhanCongGiangDay::where('tro_giang_id', $troGiang->id)
-            ->where('lop_hoc_id', $id)
-            ->first();
-            
-        if (!$phanCong) {
-            return redirect()->route('tro-giang.lop-hoc.index')
-                ->with('error', 'Bạn không có quyền truy cập vào lớp học này');
-        }
         
         // Lấy thông tin lớp học
         $lopHoc = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung'])->findOrFail($id);
@@ -250,15 +266,6 @@ class LopHocController extends Controller
                 ->with('error', 'Không tìm thấy thông tin trợ giảng');
         }
         
-        // Kiểm tra lớp học có được phân công cho trợ giảng này không
-        $phanCong = PhanCongGiangDay::where('tro_giang_id', $troGiang->id)
-            ->where('lop_hoc_id', $id)
-            ->first();
-            
-        if (!$phanCong) {
-            return redirect()->route('tro-giang.lop-hoc.index')
-                ->with('error', 'Bạn không có quyền truy cập vào lớp học này');
-        }
         
         // Lấy thông tin lớp học
         $lopHoc = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung'])->findOrFail($id);

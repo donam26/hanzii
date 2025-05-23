@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('lich_hoc')->comment('Lịch học hàng tuần');
             $table->date('ngay_bat_dau');
             $table->date('ngay_ket_thuc');
+            $table->integer('so_luong_toi_da')->default(30);
             $table->string('trang_thai')->default('sap_khai_giang')->comment('dang_hoc, da_hoan_thanh, sap_khai_giang');
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();

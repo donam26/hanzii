@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('bang_cap')->nullable();
             $table->string('trinh_do')->nullable()->comment('Trình độ học vấn');
             $table->integer('so_nam_kinh_nghiem')->default(0);
+            $table->string('chuyen_mon')->nullable()->comment('Chuyên môn giảng dạy, ví dụ: hsk1,hsk2,hsk3');
             $table->timestamp('tao_luc')->nullable();
             $table->timestamp('cap_nhat_luc')->nullable();
         });

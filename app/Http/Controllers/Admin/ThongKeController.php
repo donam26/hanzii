@@ -40,29 +40,13 @@ class ThongKeController extends Controller
         $lopHocDangDienRa = LopHoc::where('trang_thai', 'dang_dien_ra')->count();
         $tongKhoaHoc = KhoaHoc::count();
         
-        // Doanh thu tháng hiện tại
-        $doanhThuThang = ThanhToan::whereMonth('ngay_thanh_toan', Carbon::now()->month)
-            ->whereYear('ngay_thanh_toan', Carbon::now()->year)
-            ->where('trang_thai', 'da_thanh_toan')
-            ->sum('so_tien');
-        
-        // Chi phí lương tháng hiện tại
-        $chiPhiLuongThang = Luong::whereMonth('ngay_thanh_toan', Carbon::now()->month)
-            ->whereYear('ngay_thanh_toan', Carbon::now()->year)
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
-            ->sum('tong_luong');
-        
+     
         // Lấy dữ liệu doanh thu theo tháng trong năm hiện tại
         $dataDoanhThu = $this->getDoanhThuTheoThang(Carbon::now()->year);
         
-        // Lấy dữ liệu chi phí lương theo tháng trong năm hiện tại
-        $dataChiPhi = $this->getChiPhiTheoThang(Carbon::now()->year);
         
         // Lấy dữ liệu lợi nhuận theo tháng trong năm hiện tại
         $dataLoiNhuan = [];
-        for ($i = 0; $i < 12; $i++) {
-            $dataLoiNhuan[] = $dataDoanhThu[$i] - $dataChiPhi[$i];
-        }
         
         return view('admin.thong-ke.tong-quan', compact(
             'tongHocVien', 
@@ -73,197 +57,8 @@ class ThongKeController extends Controller
             'lopHocDangDienRa', 
             'tongKhoaHoc', 
             'doanhThuThang',
-            'chiPhiLuongThang',
             'dataDoanhThu',
-            'dataChiPhi',
             'dataLoiNhuan'
-        ));
-    }
-    
-    /**
-     * Hiển thị thống kê doanh thu theo ngày
-     */
-    public function doanhThuNgay(Request $request)
-    {
-        $tuNgay = $request->input('tu_ngay', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $denNgay = $request->input('den_ngay', Carbon::now()->format('Y-m-d'));
-        
-        $tuNgayCarbon = Carbon::parse($tuNgay)->startOfDay();
-        $denNgayCarbon = Carbon::parse($denNgay)->endOfDay();
-        
-        // Kiểm tra khoảng thời gian hợp lệ
-        if ($tuNgayCarbon->diffInDays($denNgayCarbon) > 90) {
-            return redirect()->back()->with('error', 'Khoảng thời gian không được vượt quá 90 ngày');
-        }
-        
-        // Lấy dữ liệu thanh toán theo ngày
-        $thanhToans = ThanhToan::select(
-                DB::raw('DATE(ngay_thanh_toan) as ngay'),
-                DB::raw('COUNT(*) as so_luong'),
-                DB::raw('SUM(so_tien) as tong_tien')
-            )
-            ->whereBetween('ngay_thanh_toan', [$tuNgayCarbon, $denNgayCarbon])
-            ->where('trang_thai', 'da_thanh_toan')
-            ->groupBy('ngay')
-            ->orderBy('ngay')
-                                ->get();
-        
-        // Chuẩn bị dữ liệu cho biểu đồ
-        $labels = [];
-        $soLuong = [];
-        $tongTien = [];
-        
-        // Tạo mảng chứa tất cả các ngày trong khoảng
-        $currentDate = $tuNgayCarbon->copy();
-        while ($currentDate <= $denNgayCarbon) {
-            $dateString = $currentDate->format('Y-m-d');
-            $labels[] = $dateString;
-            
-            // Tìm dữ liệu cho ngày hiện tại
-            $data = $thanhToans->firstWhere('ngay', $dateString);
-            
-            $soLuong[] = $data ? $data->so_luong : 0;
-            $tongTien[] = $data ? $data->tong_tien : 0;
-            
-            $currentDate->addDay();
-        }
-        
-        // Tính tổng doanh thu và số lượng giao dịch
-        $tongDoanhThu = array_sum($tongTien);
-        $tongGiaoDich = array_sum($soLuong);
-        
-        return view('admin.thong-ke.doanh-thu-ngay', compact(
-            'labels', 
-            'soLuong', 
-            'tongTien', 
-            'tongDoanhThu', 
-            'tongGiaoDich', 
-            'tuNgay', 
-            'denNgay'
-        ));
-    }
-    
-    /**
-     * Hiển thị thống kê doanh thu theo tháng
-     */
-    public function doanhThuThang(Request $request)
-    {
-        $nam = $request->input('nam', Carbon::now()->year);
-        
-        // Lấy dữ liệu thanh toán theo tháng
-        $thanhToans = ThanhToan::select(
-                DB::raw('MONTH(ngay_thanh_toan) as thang'),
-                DB::raw('COUNT(*) as so_luong'),
-                DB::raw('SUM(so_tien) as tong_tien')
-            )
-            ->whereYear('ngay_thanh_toan', $nam)
-            ->where('trang_thai', 'da_thanh_toan')
-            ->groupBy('thang')
-            ->orderBy('thang')
-                                ->get();
-        
-        // Chuẩn bị dữ liệu cho biểu đồ
-        $labels = [];
-        $soLuong = [];
-        $tongTien = [];
-        
-        for ($i = 1; $i <= 12; $i++) {
-            $labels[] = 'Tháng ' . $i;
-            
-            // Tìm dữ liệu cho tháng hiện tại
-            $data = $thanhToans->firstWhere('thang', $i);
-            
-            $soLuong[] = $data ? $data->so_luong : 0;
-            $tongTien[] = $data ? $data->tong_tien : 0;
-        }
-        
-        // Tính tổng doanh thu và số lượng giao dịch
-        $tongDoanhThu = array_sum($tongTien);
-        $tongGiaoDich = array_sum($soLuong);
-        
-        // Lấy danh sách các năm để hiển thị select box
-        $dsNam = ThanhToan::selectRaw('YEAR(ngay_thanh_toan) as nam')
-            ->where('trang_thai', 'da_thanh_toan')
-            ->groupBy('nam')
-            ->orderBy('nam', 'desc')
-            ->pluck('nam')
-            ->toArray();
-        
-        return view('admin.thong-ke.doanh-thu-thang', compact(
-            'labels', 
-            'soLuong', 
-            'tongTien', 
-            'tongDoanhThu', 
-            'tongGiaoDich', 
-            'nam', 
-            'dsNam'
-        ));
-    }
-    
-    /**
-     * Hiển thị thống kê chi phí lương
-     */
-    public function chiPhiLuong(Request $request)
-    {
-        $nam = $request->input('nam', Carbon::now()->year);
-        $loai = $request->input('loai', 'tat_ca'); // tat_ca, giao_vien, tro_giang
-        
-        // Lấy dữ liệu lương theo tháng
-        $query = Luong::select(
-                DB::raw('MONTH(ngay_thanh_toan) as thang'),
-                DB::raw('COUNT(*) as so_luong'),
-                DB::raw('SUM(tong_luong) as tong_tien')
-            )
-                    ->whereYear('ngay_thanh_toan', $nam)
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN);
-        
-        // Lọc theo loại người dùng
-        if ($loai == 'giao_vien') {
-            $query->whereNotNull('giao_vien_id');
-        } elseif ($loai == 'tro_giang') {
-            $query->whereNotNull('tro_giang_id');
-        }
-        
-        $luongs = $query->groupBy('thang')
-            ->orderBy('thang')
-            ->get();
-        
-        // Chuẩn bị dữ liệu cho biểu đồ
-        $labels = [];
-        $soLuong = [];
-        $tongTien = [];
-        
-        for ($i = 1; $i <= 12; $i++) {
-            $labels[] = 'Tháng ' . $i;
-            
-            // Tìm dữ liệu cho tháng hiện tại
-            $data = $luongs->firstWhere('thang', $i);
-            
-            $soLuong[] = $data ? $data->so_luong : 0;
-            $tongTien[] = $data ? $data->tong_tien : 0;
-        }
-        
-        // Tính tổng chi phí và số lượng thanh toán
-        $tongChiPhi = array_sum($tongTien);
-        $tongThanhToan = array_sum($soLuong);
-        
-        // Lấy danh sách các năm để hiển thị select box
-        $dsNam = Luong::selectRaw('YEAR(ngay_thanh_toan) as nam')
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
-            ->groupBy('nam')
-            ->orderBy('nam', 'desc')
-            ->pluck('nam')
-            ->toArray();
-        
-        return view('admin.thong-ke.chi-phi-luong', compact(
-            'labels', 
-            'soLuong', 
-            'tongTien', 
-            'tongChiPhi', 
-            'tongThanhToan', 
-            'nam', 
-            'dsNam',
-            'loai'
         ));
     }
     
@@ -376,50 +171,5 @@ class ThongKeController extends Controller
             'duLieuBieuDo'
         ));
     }
-    
-    /**
-     * Lấy dữ liệu doanh thu theo tháng
-     */
-    private function getDoanhThuTheoThang($nam)
-    {
-        $thanhToans = ThanhToan::select(
-                DB::raw('MONTH(ngay_thanh_toan) as thang'),
-                DB::raw('SUM(so_tien) as tong_tien')
-            )
-            ->whereYear('ngay_thanh_toan', $nam)
-            ->where('trang_thai', 'da_thanh_toan')
-            ->groupBy('thang')
-            ->get();
-        
-        $data = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $thang = $thanhToans->firstWhere('thang', $i);
-            $data[] = $thang ? $thang->tong_tien : 0;
-        }
-        
-        return $data;
-    }
-    
-    /**
-     * Lấy dữ liệu chi phí lương theo tháng
-     */
-    private function getChiPhiTheoThang($nam)
-    {
-        $luongs = Luong::select(
-                DB::raw('MONTH(ngay_thanh_toan) as thang'),
-                DB::raw('SUM(tong_luong) as tong_tien')
-            )
-            ->whereYear('ngay_thanh_toan', $nam)
-            ->where('trang_thai', Luong::TRANG_THAI_DA_THANH_TOAN)
-            ->groupBy('thang')
-            ->get();
-        
-        $data = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $thang = $luongs->firstWhere('thang', $i);
-            $data[] = $thang ? $thang->tong_tien : 0;
-        }
-        
-        return $data;
-    }
+  
 } 

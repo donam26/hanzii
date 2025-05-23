@@ -72,6 +72,15 @@
                             @enderror
                         </div>
 
+
+                        <div>
+                            <label for="noi_dung" class="block text-sm font-medium text-gray-700">Nội dung</label>
+                            <textarea name="noi_dung" id="noi_dung" rows="5" class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ old('noi_dung', $baiTap->noi_dung) }}</textarea>
+                            @error('noi_dung')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div>
                             <label for="han_nop" class="block text-sm font-medium text-gray-700">Hạn nộp <span class="text-red-600">*</span></label>
                             <input type="datetime-local" name="han_nop" id="han_nop" value="{{ old('han_nop', \Carbon\Carbon::parse($baiTap->han_nop)->format('Y-m-d\TH:i')) }}" class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
@@ -83,32 +92,22 @@
                         <div>
                             <label for="file" class="block text-sm font-medium text-gray-700">File đính kèm (tối đa 10MB)</label>
                             <input type="file" name="file" id="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-                            @if($baiTap->file_dinh_kem)
-                                <div class="mt-2 flex items-center">
-                                    <span class="text-sm text-gray-500 mr-2">File hiện tại:</span>
-                                    <a href="{{ asset('storage/' . $baiTap->file_dinh_kem) }}" target="_blank" class="text-sm text-red-600 hover:text-red-800">
-                                        <i class="fas fa-file-download mr-1"></i> {{ $baiTap->ten_file ?: 'Tải xuống file đính kèm' }}
-                                    </a>
-                                </div>
-                                <div class="mt-1">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="xoa_file" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50">
-                                        <span class="ml-2 text-sm text-gray-600">Xóa file hiện tại</span>
-                                    </label>
-                                </div>
-                            @endif
                             @error('file')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
+                            @if($baiTap->file_dinh_kem)
+                                <div class="mt-2 flex items-center space-x-2">
+                                    <span class="text-sm text-gray-500">File hiện tại:</span>
+                                    <span class="text-sm text-gray-700">{{ $baiTap->ten_file }}</span>
+                                </div>
+                            @endif
                         </div>
-
-                    
                     </div>
                 </div>
 
                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
                     <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                        <i class="fas fa-save mr-2"></i> Cập nhật bài tập
+                        <i class="fas fa-save mr-2"></i> Lưu thay đổi
                     </button>
                 </div>
             </form>

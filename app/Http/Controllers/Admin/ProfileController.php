@@ -99,9 +99,6 @@ class ProfileController extends Controller
             // Lưu ảnh mới
             $avatarPath = $request->file('anh_dai_dien')->store('avatars', 'public');
             $nguoiDung->anh_dai_dien = $avatarPath;
-            
-            // Cập nhật session cho avatar
-            $request->session()->put('anh_dai_dien', asset('storage/' . $avatarPath));
         }
         
         $nguoiDung->save();
