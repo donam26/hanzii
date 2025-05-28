@@ -15,25 +15,20 @@
                 <a href="{{ route('lien-he') }}" class="text-gray-700 hover:text-red-600 py-2">Liên hệ</a>
                 
                 @auth
-                    @if(auth()->user()->loai_tai_khoan == 'hoc_vien')
-                        <a href="{{ route('hoc-vien.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Dashboard</a>
-                        <a href="{{ route('hoc-vien.khoa-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Khóa học</a>
-                        <a href="{{ route('hoc-vien.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Lớp học</a>
-                        <a href="{{ route('hoc-vien.ket-qua.index') }}" class="text-gray-700 hover:text-red-600 py-2">Kết quả học tập</a>
-                    @elseif(auth()->user()->loai_tai_khoan == 'giao_vien')
-                        @if(auth()->user()->vaiTros->contains('ten', 'quan_tri'))
-                            <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Dashboard</a>
-                            <a href="{{ route('admin.khoa-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Quản lý khóa học</a>
-                            <a href="{{ route('admin.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Quản lý lớp học</a>
-                            <a href="{{ route('admin.nguoi-dung.index') }}" class="text-gray-700 hover:text-red-600 py-2">Quản lý người dùng</a>
-                        @elseif(auth()->user()->vaiTros->contains('ten', 'giao_vien'))
-                            <a href="{{ route('giao-vien.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Dashboard</a>
-                            <a href="{{ route('giao-vien.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Lớp giảng dạy</a>
-                            <a href="{{ route('giao-vien.hoc-vien.index') }}" class="text-gray-700 hover:text-red-600 py-2">Học viên</a>
-                        @elseif(auth()->user()->vaiTros->contains('ten', 'tro_giang'))
-                            <a href="{{ route('tro-giang.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Dashboard</a>
-                            <a href="{{ route('tro-giang.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Lớp học</a>
-                        @endif
+                    @if(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Quản trị</a>
+                    @endif
+                    
+                    @if(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'giao_vien')
+                        <a href="{{ route('giao-vien.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Quản lý giảng dạy</a>
+                    @endif
+                    
+                    @if(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'tro_giang')
+                        <a href="{{ route('tro-giang.dashboard') }}" class="text-gray-700 hover:text-red-600 py-2">Trợ giảng</a>
+                    @endif
+                    
+                    @if(auth()->user()->loai_tai_khoan == 'hoc_vien' || (auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'hoc_vien'))
+                        <a href="{{ route('hoc-vien.lop-hoc.index') }}" class="text-gray-700 hover:text-red-600 py-2">Học tập</a>
                     @endif
                 @else
                     <a href="{{ route('login') }}" class="text-gray-700 hover:text-red-600 py-2">Đăng nhập</a>
@@ -61,7 +56,7 @@
                             <a href="{{ route('nhan-vien.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
                         @elseif(auth()->user()->loai_tai_khoan == 'giao_vien')
                             <a href="{{ route('giao-vien.profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
-                        @elseif(auth()->user()->vaiTros && auth()->user()->vaiTros->contains('ten', 'tro_giang'))
+                        @elseif(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'tro_giang')
                             <a href="{{ route('tro-giang.profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Thông tin cá nhân</a>
                         @endif
                         <form method="POST" action="{{ route('logout') }}">
@@ -91,27 +86,14 @@
                         <a href="{{ route('lien-he') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Liên hệ</a>
                         
                         @auth
-                            @if(auth()->user()->loai_tai_khoan == 'hoc_vien')
-                                <a href="{{ route('hoc-vien.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Dashboard</a>
-                                <a href="{{ route('hoc-vien.khoa-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Khóa học</a>
-                                <a href="{{ route('hoc-vien.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Lớp học</a>
-                                <a href="{{ route('hoc-vien.ket-qua.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Kết quả học tập</a>
-                                <a href="{{ route('hoc-vien.profile.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Thông tin cá nhân</a>
-                            @elseif(auth()->user()->loai_tai_khoan == 'nhan_vien')
-                                @if(auth()->user()->vaiTros->contains('ten', 'quan_tri'))
-                                    <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Dashboard</a>
-                                    <a href="{{ route('admin.khoa-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Quản lý khóa học</a>
-                                    <a href="{{ route('admin.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Quản lý lớp học</a>
-                                    <a href="{{ route('admin.nguoi-dung.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Quản lý người dùng</a>
-                                @elseif(auth()->user()->vaiTros->contains('ten', 'giao_vien'))
-                                    <a href="{{ route('giao-vien.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Dashboard</a>
-                                    <a href="{{ route('giao-vien.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Lớp giảng dạy</a>
-                                    <a href="{{ route('giao-vien.hoc-vien.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Học viên</a>
-                                @elseif(auth()->user()->vaiTros->contains('ten', 'tro_giang'))
-                                    <a href="{{ route('tro-giang.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Dashboard</a>
-                                    <a href="{{ route('tro-giang.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Lớp học</a>
-                                @endif
-                                <a href="{{ route('nhan-vien.profile.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Thông tin cá nhân</a>
+                            @if(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Quản trị</a>
+                            @elseif(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'giao_vien')
+                                <a href="{{ route('giao-vien.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Quản lý giảng dạy</a>
+                            @elseif(auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'tro_giang')
+                                <a href="{{ route('tro-giang.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Trợ giảng</a>
+                            @elseif(auth()->user()->loai_tai_khoan == 'hoc_vien' || (auth()->user()->vaiTro && auth()->user()->vaiTro->ten == 'hoc_vien'))
+                                <a href="{{ route('hoc-vien.lop-hoc.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50">Học tập</a>
                             @endif
 
                             <form method="POST" action="{{ route('logout') }}">

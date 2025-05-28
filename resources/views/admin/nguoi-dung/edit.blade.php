@@ -94,43 +94,16 @@
                     <div class="col-span-2 bg-gray-50 p-4 rounded-lg">
                         <h4 class="font-medium text-lg mb-4 text-gray-700">Thông tin vai trò</h4>
                         
-                        <div>
-                            <label for="vai_tro_ids" class="block text-sm font-medium text-gray-700 mb-2">Vai trò</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div class="mb-4">
+                            <label for="vai_tro_ids" class="block text-sm font-medium text-gray-700">Vai trò</label>
+                            <select name="vai_tro_ids[]" id="vai_tro_ids" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">-- Chọn vai trò --</option>
                                 @foreach($vaiTros as $vaiTro)
-                                    <div class="flex items-center">
-                                        <input 
-                                            type="checkbox" 
-                                            name="vai_tro_ids[]" 
-                                            id="vai_tro_{{ $vaiTro->id }}" 
-                                            value="{{ $vaiTro->id }}" 
-                                            class="focus:ring-red-500 h-4 w-4 text-red-600 border-gray-300 rounded"
-                                            {{ in_array($vaiTro->id, $nguoiDungVaiTroIds) ? 'checked' : '' }}
-                                        >
-                                        <label for="vai_tro_{{ $vaiTro->id }}" class="ml-2 block text-sm text-gray-700">
-                                            @switch($vaiTro->ten)
-                                                @case('quan_tri_vien')
-                                                    Quản trị viên
-                                                    @break
-                                                @case('giao_vien')
-                                                    Giáo viên
-                                                    @break
-                                                @case('tro_giang')
-                                                    Trợ giảng
-                                                    @break
-                                                @case('hoc_vien')
-                                                    Học viên
-                                                    @break
-                                                @default
-                                                    {{ $vaiTro->ten }}
-                                            @endswitch
-                                        </label>
-                                    </div>
+                                    <option value="{{ $vaiTro->id }}" {{ $nguoiDungVaiTroId == $vaiTro->id ? 'selected' : '' }}>
+                                        {{ $vaiTro->ten }}
+                                    </option>
                                 @endforeach
-                            </div>
-                            @error('vai_tro_ids')
-                                <span class="text-red-500 text-xs">{{ $message }}</span>
-                            @enderror
+                            </select>
                         </div>
                     </div>
                     

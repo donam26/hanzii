@@ -4,6 +4,7 @@ namespace App\Http\Controllers\TroGiang;
 
 use App\Http\Controllers\Controller;
 use App\Models\BinhLuan;
+use App\Models\DangKyHoc;
 use App\Models\LopHoc;
 use App\Models\TroGiang;
 use Illuminate\Http\Request;
@@ -39,7 +40,20 @@ class DashboardController extends Controller
         // Kiểm tra các lớp học có bình luận cần phản hồi không
         $lopHocIdsCanPhanHoi = $this->getLopHocIdsCanPhanHoi($troGiang->id);
            
-        return view('tro-giang.dashboard', compact('lopHocs', 'lopHocIdsCanPhanHoi'));
+        // Thống kê tổng học viên đang giảng dạy
+        $lopHocIds = LopHoc::where('tro_giang_id', $troGiang->id)->pluck('id');
+        $hocVienCount = DangKyHoc::whereIn('lop_hoc_id', $lopHocIds)
+            ->where('trang_thai', 'dang_hoc')
+            ->whereHas('hocVien.nguoiDung', function ($query) {
+                $query->where('vai_tro_id', function($q) {
+                    $q->select('id')
+                      ->from('vai_tros')
+                      ->where('ten', 'hoc_vien');
+                });
+            })
+            ->count();
+            
+        return view('tro-giang.dashboard', compact('lopHocs', 'lopHocIdsCanPhanHoi', 'hocVienCount'));
     }
     
     /**
@@ -56,7 +70,7 @@ class DashboardController extends Controller
         // Lấy danh sách bình luận chưa được phản hồi của học viên trong các lớp đó
         $lopHocIdsCanPhanHoi = BinhLuan::whereIn('lop_hoc_id', $lopHocIds)
             ->where('da_phan_hoi', false)
-            ->whereHas('nguoiDung.vaiTros', function ($query) {
+            ->whereHas('nguoiDung.vaiTro', function ($query) {
                 $query->where('ten', 'hoc_vien');
             })
             ->pluck('lop_hoc_id')

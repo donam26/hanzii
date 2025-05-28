@@ -66,7 +66,7 @@ $role = 'tro_giang';
                 <div class="flex justify-between items-start">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800">Bình luận của học viên</h2>
-                        <p class="text-2xl font-bold text-blue-600">{{ $binhLuans->where('nguoiDung.vaiTros.0.ten', 'hoc_vien')->count() }}</p>
+                        <p class="text-2xl font-bold text-blue-600">{{ $binhLuans->where('nguoiDung.vaiTro.0.ten', 'hoc_vien')->count() }}</p>
                     </div>
                     <div class="rounded-full bg-blue-100 p-3">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,6 +106,36 @@ $role = 'tro_giang';
         </div>
     </div>
     
+    <!-- Thống kê -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">Tổng bình luận</dt>
+                <p class="text-2xl font-bold text-blue-600">{{ $binhLuans->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">Bình luận từ học viên</dt>
+                <p class="text-2xl font-bold text-blue-600">{{ $binhLuans->whereHas('nguoiDung', function($q) { 
+                    $q->where('vai_tro_id', function($query) {
+                        $query->select('id')->from('vai_tros')->where('ten', 'hoc_vien');
+                    });
+                })->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">Bình luận cần phản hồi</dt>
+                <p class="text-2xl font-bold text-blue-600">{{ $binhLuans->whereHas('nguoiDung', function($q) { 
+                    $q->where('vai_tro_id', function($query) {
+                        $query->select('id')->from('vai_tros')->where('ten', 'hoc_vien');
+                    });
+                })->where('da_phan_hoi', false)->count() }}</p>
+            </div>
+        </div>
+    </div>
+    
     <!-- Danh sách bình luận -->
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
@@ -130,24 +160,24 @@ $role = 'tro_giang';
             <div class="divide-y divide-gray-200">
                 @foreach($binhLuans as $binhLuan)
                     <!-- Khối bình luận -->
-                    <div class="p-4 {{ optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien' ? 'bg-blue-50' : 'bg-white' }}" id="binh-luan-{{ $binhLuan->id }}">
+                    <div class="p-4 {{ $binhLuan->nguoiDung && $binhLuan->nguoiDung->vaiTro && $binhLuan->nguoiDung->vaiTro->ten == 'hoc_vien' ? 'bg-blue-50' : 'bg-white' }}" id="binh-luan-{{ $binhLuan->id }}">
                         <!-- Thông tin người bình luận và nội dung -->
                         <div class="flex space-x-3">
                             <!-- Avatar -->
                             <div class="flex-shrink-0">
                                 <div class="h-10 w-10 rounded-full 
-                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'giao_vien')
+                                    @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'giao_vien')
                                         bg-blue-100
-                                    @elseif(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'tro_giang')
+                                    @elseif(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'tro_giang')
                                         bg-green-100
                                     @else
                                         bg-yellow-100
                                     @endif
                                     flex items-center justify-center">
                                     <span class="
-                                        @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'giao_vien')
+                                        @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'giao_vien')
                                             text-blue-600
-                                        @elseif(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'tro_giang')
+                                        @elseif(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'tro_giang')
                                             text-green-600
                                         @else
                                             text-yellow-600
@@ -165,24 +195,24 @@ $role = 'tro_giang';
                                         {{ $binhLuan->nguoiDung->ho . ' ' . $binhLuan->nguoiDung->ten }}
                                     </p>
                                     <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'giao_vien')
+                                        @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'giao_vien')
                                             bg-blue-100 text-blue-800
-                                        @elseif(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'tro_giang')
+                                        @elseif(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'tro_giang')
                                             bg-green-100 text-green-800
                                         @else
                                             bg-yellow-100 text-yellow-800
                                         @endif
                                     ">
-                                        @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'giao_vien')
+                                        @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'giao_vien')
                                             Giáo viên
-                                        @elseif(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'tro_giang')
+                                        @elseif(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'tro_giang')
                                             Trợ giảng
                                         @else
                                             Học viên
                                         @endif
                                     </span>
                                     
-                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien' && !$binhLuan->da_phan_hoi)
+                                    @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'hoc_vien' && !$binhLuan->da_phan_hoi)
                                         <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                             Cần phản hồi
                                         </span>
@@ -212,7 +242,7 @@ $role = 'tro_giang';
                                 <!-- Các nút tương tác -->
                                 <div class="mt-2 flex justify-between items-center">
                                     <!-- Nút phản hồi -->
-                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
+                                    @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'hoc_vien')
                                         @if(!$binhLuan->da_phan_hoi)
                                         <button type="button" 
                                                 class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
@@ -250,7 +280,7 @@ $role = 'tro_giang';
                                 </div>
                                 
                                 <!-- Form phản hồi -->
-                                @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
+                                @if(optional($binhLuan->nguoiDung->vaiTro->first())->ten == 'hoc_vien')
                                     <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 {{ $binhLuan->da_phan_hoi ? 'hidden' : (request('vai_tro') == 'hoc_vien' ? '' : 'hidden') }}">
                                         <div class="flex items-start space-x-3">
                                             <!-- Đường kẻ nối từ avatar tới phản hồi -->

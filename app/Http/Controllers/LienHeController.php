@@ -270,4 +270,35 @@ class LienHeController extends Controller
                 ->with('error', 'Không thể gửi email phản hồi: ' . $e->getMessage());
         }
     }
+
+    private function sendEmailToAdmins(LienHe $lienHe)
+    {
+        try {
+            // Tìm tất cả các admin
+            $admins = NguoiDung::where('vai_tro_id', function($query) {
+                $query->select('id')
+                      ->from('vai_tros')
+                      ->where('ten', 'admin');
+            })->get();
+            
+            if ($admins->isEmpty()) {
+                Log::error('Không tìm thấy admin nào để gửi email liên hệ');
+                
+                // Log thêm thông tin để debug
+                $vaiTros = DB::table('vai_tros')->pluck('ten')->toArray();
+                Log::info('Danh sách vai trò hiện có: ' . implode(', ', $vaiTros ?: ['Không có vai trò nào']));
+                
+                return;
+            }
+            
+            // Gửi email cho từng admin
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->queue(new LienHeEmail($lienHe));
+            }
+            
+            Log::info('Đã gửi email liên hệ đến ' . $admins->count() . ' admin');
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gửi email liên hệ: ' . $e->getMessage());
+        }
+    }
 } 

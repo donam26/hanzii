@@ -21,21 +21,19 @@ class NguoiDungController extends Controller
      */
     public function index(Request $request)
     {
-        // Lọc theo loại tài khoản
+        $search = $request->input('search');
         $loaiTaiKhoan = $request->input('loai_tai_khoan');
         $vaiTroId = $request->input('vai_tro_id');
-        $search = $request->input('search');
         
-        $query = NguoiDung::with('vaiTros');
+        $query = NguoiDung::with('vaiTro');
         
-        // Tìm kiếm
+        // Tìm kiếm nếu có
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('ho', 'like', "%{$search}%")
                   ->orWhere('ten', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('so_dien_thoai', 'like', "%{$search}%")
-                  ->orWhereRaw("CONCAT(ho, ' ', ten) LIKE ?", ["%{$search}%"]);
+                  ->orWhere('so_dien_thoai', 'like', "%{$search}%");
             });
         }
         
@@ -46,16 +44,8 @@ class NguoiDungController extends Controller
         
         // Lọc theo vai trò
         if ($vaiTroId) {
-            $query->whereHas('vaiTros', function ($q) use ($vaiTroId) {
-                $q->where('vai_tros.id', $vaiTroId);
-            });
+            $query->where('vai_tro_id', $vaiTroId);
         }
-        
-        // Sắp xếp
-        $sortField = $request->input('sort', 'tao_luc');
-        $sortDirection = $request->input('direction', 'desc');
-        
-        $query->orderBy($sortField, $sortDirection);
         
         $nguoiDungs = $query->paginate(10);
         $vaiTros = VaiTro::pluck('ten', 'id');
@@ -118,6 +108,7 @@ class NguoiDungController extends Controller
                 'mat_khau' => Hash::make($request->password),
                 'dia_chi' => $request->dia_chi,
                 'loai_tai_khoan' => $request->loai_tai_khoan,
+                'vai_tro_id' => $request->vai_tro_ids[0] ?? null,
             ]);
             
             // Tự động xác định vai trò nếu không có vai trò nào được chọn
@@ -141,7 +132,7 @@ class NguoiDungController extends Controller
             }
             
             // Gán vai trò
-            $nguoiDung->vaiTros()->attach($vaiTroIds);
+            $nguoiDung->vaiTro()->sync($vaiTroIds);
             
             // Tạo hồ sơ phụ tùy theo loại tài khoản
             if ($request->loai_tai_khoan == 'hoc_vien') {
@@ -183,21 +174,21 @@ class NguoiDungController extends Controller
      */
     public function show($id)
     {
-        $nguoiDung = NguoiDung::with('vaiTros')->findOrFail($id);
+        $nguoiDung = NguoiDung::with('vaiTro')->findOrFail($id);
         
-        // Lấy thông tin phụ
+        // Lấy thông tin profile tương ứng với vai trò
         if ($nguoiDung->loai_tai_khoan == 'hoc_vien') {
-            $hocVien = HocVien::where('nguoi_dung_id', $id)->first();
+            $hocVien = $nguoiDung->hocVien;
             return view('admin.nguoi-dung.show', compact('nguoiDung', 'hocVien'));
-        } elseif (in_array('giao_vien', $nguoiDung->vaiTros->pluck('ten')->toArray())) {
-            $giaoVien = GiaoVien::where('nguoi_dung_id', $id)->first();
+        } elseif ($nguoiDung->vaiTro && $nguoiDung->vaiTro->ten == 'giao_vien') {
+            $giaoVien = $nguoiDung->giaoVien;
             return view('admin.nguoi-dung.show', compact('nguoiDung', 'giaoVien'));
-        } elseif (in_array('tro_giang', $nguoiDung->vaiTros->pluck('ten')->toArray())) {
-            $troGiang = TroGiang::where('nguoi_dung_id', $id)->first();
+        } elseif ($nguoiDung->vaiTro && $nguoiDung->vaiTro->ten == 'tro_giang') {
+            $troGiang = $nguoiDung->troGiang;
             return view('admin.nguoi-dung.show', compact('nguoiDung', 'troGiang'));
-        } else {
-            return view('admin.nguoi-dung.show', compact('nguoiDung'));
         }
+        
+        return view('admin.nguoi-dung.show', compact('nguoiDung'));
     }
     
     /**
@@ -205,23 +196,23 @@ class NguoiDungController extends Controller
      */
     public function edit($id)
     {
-        $nguoiDung = NguoiDung::with('vaiTros')->findOrFail($id);
+        $nguoiDung = NguoiDung::findOrFail($id);
         $vaiTros = VaiTro::all();
-        $nguoiDungVaiTroIds = $nguoiDung->vaiTros->pluck('id')->toArray();
+        $nguoiDungVaiTroId = $nguoiDung->vai_tro_id;
         
-        // Lấy thông tin phụ
+        // Lấy thông tin profile tương ứng với vai trò
         if ($nguoiDung->loai_tai_khoan == 'hoc_vien') {
-            $hocVien = HocVien::where('nguoi_dung_id', $id)->first();
-            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroIds', 'hocVien'));
-        } elseif (in_array('giao_vien', $nguoiDung->vaiTros->pluck('ten')->toArray())) {
-            $giaoVien = GiaoVien::where('nguoi_dung_id', $id)->first();
-            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroIds', 'giaoVien'));
-        } elseif (in_array('tro_giang', $nguoiDung->vaiTros->pluck('ten')->toArray())) {
-            $troGiang = TroGiang::where('nguoi_dung_id', $id)->first();
-            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroIds', 'troGiang'));
-        } else {
-            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroIds'));
+            $hocVien = $nguoiDung->hocVien;
+            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroId', 'hocVien'));
+        } elseif ($nguoiDung->vaiTro && $nguoiDung->vaiTro->ten == 'giao_vien') {
+            $giaoVien = $nguoiDung->giaoVien;
+            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroId', 'giaoVien'));
+        } elseif ($nguoiDung->vaiTro && $nguoiDung->vaiTro->ten == 'tro_giang') {
+            $troGiang = $nguoiDung->troGiang;
+            return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroId', 'troGiang'));
         }
+        
+        return view('admin.nguoi-dung.edit', compact('nguoiDung', 'vaiTros', 'nguoiDungVaiTroId'));
     }
     
     /**
@@ -262,64 +253,54 @@ class NguoiDungController extends Controller
         try {
             DB::beginTransaction();
             
-            // Cập nhật thông tin người dùng
-            $nguoiDung->ho = $request->ho;
-            $nguoiDung->ten = $request->ten;
-            $nguoiDung->email = $request->email;
-            $nguoiDung->so_dien_thoai = $request->so_dien_thoai;
-            $nguoiDung->dia_chi = $request->dia_chi;
+            // Cập nhật thông tin cơ bản
+            $nguoiDung->update([
+                'ho' => $request->ho,
+                'ten' => $request->ten,
+                'email' => $request->email,
+                'so_dien_thoai' => $request->so_dien_thoai,
+                'dia_chi' => $request->dia_chi,
+                'loai_tai_khoan' => $request->loai_tai_khoan,
+                'vai_tro_id' => $request->vai_tro_ids[0] ?? null,
+            ]);
             
             // Cập nhật mật khẩu nếu có
             if ($request->filled('password')) {
                 $nguoiDung->mat_khau = Hash::make($request->password);
+                $nguoiDung->save();
             }
             
-            $nguoiDung->save();
+            // Cập nhật thông tin profile tương ứng với vai trò
+            $vaiTroTen = $nguoiDung->vaiTro ? $nguoiDung->vaiTro->ten : null;
             
-            // Cập nhật vai trò
-            $nguoiDung->vaiTros()->sync($request->vai_tro_ids);
-            
-            // Cập nhật thông tin phụ
-            if ($nguoiDung->loai_tai_khoan == 'hoc_vien') {
-                $hocVien = HocVien::where('nguoi_dung_id', $id)->first();
-                if ($hocVien) {
-                    $hocVien->ngay_sinh = $request->ngay_sinh;
-                    $hocVien->trinh_do_hoc_van = $request->trinh_do_hoc_van;
-                    $hocVien->save();
+            if ($vaiTroTen == 'giao_vien') {
+                $giaoVien = GiaoVien::where('nguoi_dung_id', $id)->first();
+                if (!$giaoVien) {
+                    // Tạo mới nếu chưa có
+                    $giaoVien = new GiaoVien();
+                    $giaoVien->nguoi_dung_id = $id;
                 }
-            } else {
-                // Xử lý cập nhật giáo viên hoặc trợ giảng
-                $vaiTros = $nguoiDung->vaiTros->pluck('ten')->toArray();
-                
-                if (in_array('giao_vien', $vaiTros)) {
-                    $giaoVien = GiaoVien::where('nguoi_dung_id', $id)->first();
-                    if (!$giaoVien) {
-                        // Tạo mới nếu chưa có
-                        $giaoVien = new GiaoVien();
-                        $giaoVien->nguoi_dung_id = $id;
-                    }
-                    $giaoVien->bang_cap = $request->bang_cap;
-                    $giaoVien->chuyen_mon = $request->chuyen_mon;
-                    $giaoVien->so_nam_kinh_nghiem = $request->so_nam_kinh_nghiem;
-                    $giaoVien->save();
-                } elseif (in_array('tro_giang', $vaiTros)) {
-                    $troGiang = TroGiang::where('nguoi_dung_id', $id)->first();
-                    if (!$troGiang) {
-                        // Tạo mới nếu chưa có
-                        $troGiang = new TroGiang();
-                        $troGiang->nguoi_dung_id = $id;
-                    }
-                    $troGiang->bang_cap = $request->bang_cap;
-                    $troGiang->chuyen_mon = $request->chuyen_mon;
-                    $troGiang->so_nam_kinh_nghiem = $request->so_nam_kinh_nghiem;
-                    $troGiang->save();
+                $giaoVien->bang_cap = $request->bang_cap;
+                $giaoVien->chuyen_mon = $request->chuyen_mon;
+                $giaoVien->so_nam_kinh_nghiem = $request->so_nam_kinh_nghiem;
+                $giaoVien->save();
+            } elseif ($vaiTroTen == 'tro_giang') {
+                $troGiang = TroGiang::where('nguoi_dung_id', $id)->first();
+                if (!$troGiang) {
+                    // Tạo mới nếu chưa có
+                    $troGiang = new TroGiang();
+                    $troGiang->nguoi_dung_id = $id;
                 }
+                $troGiang->bang_cap = $request->bang_cap;
+                $troGiang->chuyen_mon = $request->chuyen_mon;
+                $troGiang->so_nam_kinh_nghiem = $request->so_nam_kinh_nghiem;
+                $troGiang->save();
             }
             
             DB::commit();
             
-            return redirect()->route('admin.nguoi-dung.index')
-                    ->with('success', 'Cập nhật người dùng thành công!');
+            return redirect()->route('admin.nguoi-dung.show', $nguoiDung->id)
+                    ->with('success', 'Cập nhật thông tin người dùng thành công');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['msg' => 'Lỗi: ' . $e->getMessage()])->withInput();
@@ -333,56 +314,33 @@ class NguoiDungController extends Controller
     {
         $nguoiDung = NguoiDung::findOrFail($id);
         
-        try {
-            DB::beginTransaction();
-            
-            // Kiểm tra các ràng buộc liên quan
-            if ($nguoiDung->loai_tai_khoan == 'hoc_vien') {
-                $hocVien = HocVien::where('nguoi_dung_id', $id)->first();
-                if ($hocVien) {
-                    $dangKyCount = $hocVien->dangKyHocs()->count();
-                    if ($dangKyCount > 0) {
-                        return back()->with('error', 'Không thể xóa người dùng này vì đã có đăng ký học!');
-                    }
-                    $hocVien->delete();
+        // Xóa profile tương ứng với vai trò
+        $vaiTroTen = $nguoiDung->vaiTro ? $nguoiDung->vaiTro->ten : null;
+        
+        if ($vaiTroTen == 'giao_vien') {
+            $giaoVien = GiaoVien::where('nguoi_dung_id', $id)->first();
+            if ($giaoVien) {
+                $lopHocCount = LopHoc::where('giao_vien_id', $giaoVien->id)->count();
+                if ($lopHocCount > 0) {
+                    return back()->with('error', 'Không thể xóa người dùng này vì đã được phân công lớp học!');
                 }
-            } else {
-                $vaiTros = $nguoiDung->vaiTros->pluck('ten')->toArray();
-                
-                if (in_array('giao_vien', $vaiTros)) {
-                    $giaoVien = GiaoVien::where('nguoi_dung_id', $id)->first();
-                    if ($giaoVien) {
-                        $lopHocCount = LopHoc::where('giao_vien_id', $giaoVien->id)->count();
-                        if ($lopHocCount > 0) {
-                            return back()->with('error', 'Không thể xóa người dùng này vì đã được phân công lớp học!');
-                        }
-                        $giaoVien->delete();
-                    }
-                } elseif (in_array('tro_giang', $vaiTros)) {
-                    $troGiang = TroGiang::where('nguoi_dung_id', $id)->first();
-                    if ($troGiang) {
-                        $lopHocCount = LopHoc::where('tro_giang_id', $troGiang->id)->count();
-                        if ($lopHocCount > 0) {
-                            return back()->with('error', 'Không thể xóa người dùng này vì đã được phân công lớp học!');
-                        }
-                        $troGiang->delete();
-                    }
-                }
+                $giaoVien->delete();
             }
-            
-            // Xóa các liên kết với vai trò
-            $nguoiDung->vaiTros()->detach();
-            
-            // Xóa người dùng
-            $nguoiDung->delete();
-            
-            DB::commit();
-            
-            return redirect()->route('admin.nguoi-dung.index')
-                    ->with('success', 'Đã xóa người dùng thành công!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        } elseif ($vaiTroTen == 'tro_giang') {
+            $troGiang = TroGiang::where('nguoi_dung_id', $id)->first();
+            if ($troGiang) {
+                $lopHocCount = LopHoc::where('tro_giang_id', $troGiang->id)->count();
+                if ($lopHocCount > 0) {
+                    return back()->with('error', 'Không thể xóa người dùng này vì đã được phân công lớp học!');
+                }
+                $troGiang->delete();
+            }
         }
+        
+        // Xóa người dùng
+        $nguoiDung->delete();
+        
+        return redirect()->route('admin.nguoi-dung.index')
+            ->with('success', 'Xóa người dùng thành công');
     }
 } 

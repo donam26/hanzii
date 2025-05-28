@@ -53,13 +53,12 @@ class AuthController extends Controller
             $request->session()->put('nguoi_dung_id', $nguoiDung->id);
             $request->session()->put('loai_tai_khoan', $nguoiDung->loai_tai_khoan);
             
-            // Lấy vai trò của người dùng (nếu có)
-            $vaiTros = $nguoiDung->vaiTros->pluck('ten')->toArray();
-            $request->session()->put('vai_tros', $vaiTros);
+            // Lấy vai trò của người dùng (quan hệ 1-n mới)
+            $vaiTro = $nguoiDung->vaiTro ? $nguoiDung->vaiTro->ten : null;
+            $request->session()->put('vai_tro', $vaiTro);
             
             // Thêm thông tin cần thiết cho layout dashboard
             $request->session()->put('user_full_name', $nguoiDung->ho . ' ' . $nguoiDung->ten);
-            $request->session()->put('vai_tro', $vaiTros[0] ?? 'hoc_vien');
             
             // Thêm avatar nếu có
             if ($nguoiDung->anh_dai_dien) {
@@ -67,19 +66,19 @@ class AuthController extends Controller
             }
             
             Log::debug('Thông tin người dùng: ID=' . $nguoiDung->id . ', Loại=' . $nguoiDung->loai_tai_khoan);
-            Log::debug('Vai trò: ' . implode(', ', $vaiTros));
+            Log::debug('Vai trò: ' . ($vaiTro ?? 'không có'));
 
             // Chuyển hướng dựa trên vai trò
-            if (in_array('admin', $vaiTros)) {
+            if ($vaiTro === 'admin') {
                 Log::debug('Chuyển hướng đến trang admin');
                 return redirect()->route('admin.dashboard');
-            } elseif (in_array('giao_vien', $vaiTros)) {
+            } elseif ($vaiTro === 'giao_vien') {
                 Log::debug('Chuyển hướng đến trang giáo viên');
                 return redirect()->route('giao-vien.dashboard');
-            } elseif (in_array('tro_giang', $vaiTros)) {
+            } elseif ($vaiTro === 'tro_giang') {
                 Log::debug('Chuyển hướng đến trang trợ giảng');
                 return redirect()->route('tro-giang.dashboard');
-            } elseif (in_array('hoc_vien', $vaiTros) || $nguoiDung->loai_tai_khoan == 'hoc_vien') {
+            } elseif ($vaiTro === 'hoc_vien' || $nguoiDung->loai_tai_khoan == 'hoc_vien') {
                 Log::debug('Chuyển hướng đến trang học viên');
                 return redirect()->route('hoc-vien.lop-hoc.index');
             } else {
@@ -137,16 +136,18 @@ class AuthController extends Controller
             'trang_thai' => 'hoat_dong',
         ]);
 
-        // Gán vai trò học viên
+        // Tìm vai trò học viên
         $vaiTroHocVien = VaiTro::where('ten', 'hoc_vien')->first();
         if ($vaiTroHocVien) {
-            $nguoiDung->vaiTros()->attach($vaiTroHocVien->id);
+            // Gán vai trò học viên (quan hệ 1-n)
+            $nguoiDung->vai_tro_id = $vaiTroHocVien->id;
+            $nguoiDung->save();
         }
 
         // Đăng nhập người dùng sau khi đăng ký
         $request->session()->put('nguoi_dung_id', $nguoiDung->id);
         $request->session()->put('loai_tai_khoan', $nguoiDung->loai_tai_khoan);
-        $request->session()->put('vai_tros', ['hoc_vien']);
+        $request->session()->put('vai_tro', 'hoc_vien');
 
         return redirect()->route('hoc-vien.lop-hoc.index')->with('success', 'Đăng ký thành công!');
     }
@@ -159,9 +160,8 @@ class AuthController extends Controller
         $request->session()->forget([
             'nguoi_dung_id', 
             'loai_tai_khoan', 
-            'vai_tros', 
-            'user_full_name', 
             'vai_tro', 
+            'user_full_name', 
             'anh_dai_dien'
         ]);
         

@@ -55,28 +55,15 @@
                    
                         
                         <div class="mb-4">
-                            <h5 class="text-sm font-medium text-gray-500">Vai trò:</h5>
-                            <div class="flex flex-wrap gap-2 mt-1">
-                                @forelse($nguoiDung->vaiTros as $vaiTro)
-                                    @switch($vaiTro->ten)
-                                        @case('quan_tri_vien')
-                                            <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">Quản trị viên</span>
-                                            @break
-                                        @case('giao_vien')
-                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Giáo viên</span>
-                                            @break
-                                        @case('tro_giang')
-                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">Trợ giảng</span>
-                                            @break
-                                        @case('hoc_vien')
-                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Học viên</span>
-                                            @break
-                                        @default
-                                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">{{ $vaiTro->ten }}</span>
-                                    @endswitch
-                                @empty
-                                    <span class="text-gray-500">Chưa có vai trò</span>
-                                @endforelse
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">Vai trò</h3>
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                @if($nguoiDung->vaiTro)
+                                    <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold mr-2">
+                                        {{ $nguoiDung->vaiTro->ten }}
+                                    </span>
+                                @else
+                                    <p class="text-gray-500 italic">Chưa có vai trò</p>
+                                @endif
                             </div>
                         </div>
                     </div>

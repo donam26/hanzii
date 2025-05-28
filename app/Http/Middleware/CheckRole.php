@@ -32,27 +32,23 @@ class CheckRole
                 return $next($request);
             }
             
-            // Kiểm tra vai trò (quan hệ vaiTros)
-            $userRoles = $user->vaiTros()->pluck('ten')->toArray();
-            Log::debug('Middleware CheckRole: Vai trò từ DB: ' . implode(', ', $userRoles));
-            
-            foreach ($roles as $role) {
-                if (in_array($role, $userRoles)) {
-                    Log::debug('Middleware CheckRole: Cho phép truy cập với vai trò ' . $role);
-                    return $next($request);
-                }
+            // Kiểm tra vai trò (sử dụng phương thức hasRole mới)
+            if ($user->hasRole($roles)) {
+                $roleName = $user->vaiTro ? $user->vaiTro->ten : 'không xác định';
+                Log::debug('Middleware CheckRole: Cho phép truy cập với vai trò ' . $roleName);
+                return $next($request);
             }
         }
         
         // Kiểm tra xác thực bằng session custom
         elseif ($request->session()->has('nguoi_dung_id')) {
-            // Lấy các vai trò của người dùng từ session
+            // Lấy vai trò của người dùng từ session
             $nguoiDungId = $request->session()->get('nguoi_dung_id');
-            $userRoles = $request->session()->get('vai_tros', []);
+            $userRole = $request->session()->get('vai_tro');
             $loaiTaiKhoan = $request->session()->get('loai_tai_khoan');
             
             Log::debug('Middleware CheckRole: nguoi_dung_id=' . $nguoiDungId . ', loai_tai_khoan=' . $loaiTaiKhoan);
-            Log::debug('Middleware CheckRole: Vai trò từ session: ' . implode(', ', $userRoles));
+            Log::debug('Middleware CheckRole: Vai trò từ session: ' . $userRole);
             
             // Nếu yêu cầu role là học viên, kiểm tra loại tài khoản
             if (in_array('hoc_vien', $roles) && $loaiTaiKhoan === 'hoc_vien') {
@@ -61,11 +57,9 @@ class CheckRole
             }
             
             // Kiểm tra vai trò cụ thể (admin, giao_vien, tro_giang)
-            foreach ($roles as $role) {
-                if (in_array($role, $userRoles)) {
-                    Log::debug('Middleware CheckRole: Cho phép truy cập với vai trò ' . $role);
-                    return $next($request);
-                }
+            if (in_array($userRole, $roles)) {
+                Log::debug('Middleware CheckRole: Cho phép truy cập với vai trò ' . $userRole);
+                return $next($request);
             }
         }
 

@@ -1302,3 +1302,276 @@
 [2025-05-23 18:13:09] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
 [2025-05-23 18:13:09] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
 [2025-05-23 18:13:09] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-28 07:01:07] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-28 07:01:07] local.DEBUG: Thông tin người dùng: ID=1, Loại=giao_vien  
+[2025-05-28 07:01:07] local.DEBUG: Vai trò: admin  
+[2025-05-28 07:01:07] local.DEBUG: Chuyển hướng đến trang admin  
+[2025-05-28 07:01:07] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:01:07] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:01:07] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:01:07] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:01:17] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:01:17] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:01:17] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:01:17] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:01:19] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:01:19] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:01:19] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:01:19] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:01:19] local.INFO: SQL Query: select `lop_hocs`.*, (select count(*) from `dang_ky_hocs` where `lop_hocs`.`id` = `dang_ky_hocs`.`lop_hoc_id` and `trang_thai` = 'da_xac_nhan') as `dang_ky_hocs_count` from `lop_hocs` order by `tao_luc` desc  
+[2025-05-28 07:01:19] local.ERROR: Call to undefined method App\Models\NguoiDung::vaiTros() {"exception":"[object] (BadMethodCallException(code: 0): Call to undefined method App\\Models\\NguoiDung::vaiTros() at C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Traits\\ForwardsCalls.php:67)
+[stacktrace]
+#0 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Traits\\ForwardsCalls.php(36): Illuminate\\Database\\Eloquent\\Model::throwBadMethodCallException('vaiTros')
+#1 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(2335): Illuminate\\Database\\Eloquent\\Model->forwardCallTo(Object(Illuminate\\Database\\Eloquent\\Builder), 'vaiTros', Array)
+#2 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(876): Illuminate\\Database\\Eloquent\\Model->__call('vaiTros', Array)
+#3 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Relations\\Relation.php(110): Illuminate\\Database\\Eloquent\\Builder->Illuminate\\Database\\Eloquent\\Concerns\\{closure}()
+#4 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(875): Illuminate\\Database\\Eloquent\\Relations\\Relation::noConstraints(Object(Closure))
+#5 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(39): Illuminate\\Database\\Eloquent\\Builder->getRelationWithoutConstraints('vaiTros')
+#6 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(98): Illuminate\\Database\\Eloquent\\Builder->has('vaiTros', '>=', 1, 'and', Object(Closure))
+#7 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(1396): Illuminate\\Database\\Eloquent\\Builder->Illuminate\\Database\\Eloquent\\Concerns\\{closure}(Object(Illuminate\\Database\\Eloquent\\Builder))
+#8 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(61): Illuminate\\Database\\Eloquent\\Builder->callScope(Object(Closure))
+#9 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(101): Illuminate\\Database\\Eloquent\\Builder->has(Object(Illuminate\\Database\\Eloquent\\Relations\\BelongsTo), '>=', 1, 'and', Object(Closure))
+#10 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(36): Illuminate\\Database\\Eloquent\\Builder->hasNested(Array, '>=', 1, 'and', Object(Closure))
+#11 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(152): Illuminate\\Database\\Eloquent\\Builder->has('nguoiDung.vaiTr...', '>=', 1, 'and', Object(Closure))
+#12 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Traits\\ForwardsCalls.php(23): Illuminate\\Database\\Eloquent\\Builder->whereHas('nguoiDung.vaiTr...', Object(Closure))
+#13 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(2335): Illuminate\\Database\\Eloquent\\Model->forwardCallTo(Object(Illuminate\\Database\\Eloquent\\Builder), 'whereHas', Array)
+#14 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(2347): Illuminate\\Database\\Eloquent\\Model->__call('whereHas', Array)
+#15 C:\\Users\\PC\\hanzii\\app\\Http\\Controllers\\Admin\\LopHocController.php(73): Illuminate\\Database\\Eloquent\\Model::__callStatic('whereHas', Array)
+#16 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Controller.php(54): App\\Http\\Controllers\\Admin\\LopHocController->index(Object(Illuminate\\Http\\Request))
+#17 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('index', Array)
+#18 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\Admin\\LopHocController), 'index')
+#19 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#20 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(806): Illuminate\\Routing\\Route->run()
+#21 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#22 C:\\Users\\PC\\hanzii\\app\\Http\\Middleware\\CheckRole.php(62): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\CheckRole->handle(Object(Illuminate\\Http\\Request), Object(Closure), 'admin')
+#24 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 C:\\Users\\PC\\hanzii\\app\\Http\\Middleware\\Authenticate.php(38): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#34 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#35 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#36 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#37 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#38 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#41 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#42 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#43 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#44 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#45 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#46 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#47 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#48 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#49 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#50 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#51 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#53 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#57 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#58 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#59 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#62 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#63 C:\\Users\\PC\\hanzii\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#64 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('C:\\\\Users\\\\PC\\\\han...')
+#65 {main}
+"} 
+[2025-05-28 07:28:23] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:28:23] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:28:23] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:28:23] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:28:23] local.INFO: SQL Query: select `lop_hocs`.*, (select count(*) from `dang_ky_hocs` where `lop_hocs`.`id` = `dang_ky_hocs`.`lop_hoc_id` and `trang_thai` = 'da_xac_nhan') as `dang_ky_hocs_count` from `lop_hocs` order by `tao_luc` desc  
+[2025-05-28 07:41:51] local.ERROR: A void function must not return a value {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): A void function must not return a value at C:\\Users\\PC\\hanzii\\app\\Console\\Commands\\TestNotification.php:45)
+[stacktrace]
+#0 {main}
+"} 
+[2025-05-28 07:42:22] local.ERROR: The command defined in "App\Console\Commands\TestNotification" cannot have an empty name. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\LogicException(code: 0): The command defined in \"App\\Console\\Commands\\TestNotification\" cannot have an empty name. at C:\\Users\\PC\\hanzii\\vendor\\symfony\\console\\Application.php:564)
+[stacktrace]
+#0 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(228): Symfony\\Component\\Console\\Application->add(Object(App\\Console\\Commands\\TestNotification))
+#1 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(217): Illuminate\\Console\\Application->addToParent(Object(App\\Console\\Commands\\TestNotification))
+#2 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(251): Illuminate\\Console\\Application->add(Object(App\\Console\\Commands\\TestNotification))
+#3 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(349): Illuminate\\Console\\Application->resolve('App\\\\Console\\\\Com...')
+#4 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(130): Illuminate\\Foundation\\Console\\Kernel->Illuminate\\Foundation\\Console\\{closure}(Object(Illuminate\\Console\\Application))
+#5 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(77): Illuminate\\Console\\Application->bootstrap()
+#6 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(481): Illuminate\\Console\\Application->__construct(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Events\\Dispatcher), '10.48.29')
+#7 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(201): Illuminate\\Foundation\\Console\\Kernel->getArtisan()
+#8 C:\\Users\\PC\\hanzii\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 {main}
+"} 
+[2025-05-28 07:44:15] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:15] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:15] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:15] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:17] local.INFO: SQL Query: select `lop_hocs`.*, (select count(*) from `dang_ky_hocs` where `lop_hocs`.`id` = `dang_ky_hocs`.`lop_hoc_id` and `trang_thai` = 'da_xac_nhan') as `dang_ky_hocs_count` from `lop_hocs` order by `tao_luc` desc  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:17] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:18] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:18] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:18] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:18] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:19] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:19] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:19] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:19] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:20] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:20] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:20] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:20] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:21] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:21] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:21] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:21] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:23] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:23] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:23] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:23] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:44:26] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-28 07:44:26] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-28 07:44:26] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-28 07:44:26] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-28 07:45:03] local.DEBUG: Kiểm tra mật khẩu: Sai  
+[2025-05-28 07:45:07] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-28 07:45:07] local.DEBUG: Thông tin người dùng: ID=3, Loại=giao_vien  
+[2025-05-28 07:45:07] local.DEBUG: Vai trò: giao_vien  
+[2025-05-28 07:45:07] local.DEBUG: Chuyển hướng đến trang giáo viên  
+[2025-05-28 07:45:07] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-28 07:45:07] local.DEBUG: Middleware CheckRole: nguoi_dung_id=3, loai_tai_khoan=giao_vien  
+[2025-05-28 07:45:07] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-28 07:45:07] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-28 07:45:08] local.INFO: Chi tiết đăng ký học chờ xác nhận:  {"so_luong":0,"trang_thai":"cho_xac_nhan","giao_vien_id":2} 
+[2025-05-28 07:45:09] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-28 07:45:09] local.DEBUG: Middleware CheckRole: nguoi_dung_id=3, loai_tai_khoan=giao_vien  
+[2025-05-28 07:45:09] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-28 07:45:09] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-28 07:45:10] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-28 07:45:10] local.DEBUG: Middleware CheckRole: nguoi_dung_id=3, loai_tai_khoan=giao_vien  
+[2025-05-28 07:45:10] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-28 07:45:10] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-28 07:45:32] local.DEBUG: Kiểm tra mật khẩu: Sai  
+[2025-05-28 07:45:36] local.DEBUG: Kiểm tra mật khẩu: Sai  
+[2025-05-28 07:45:42] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-28 07:45:42] local.DEBUG: Thông tin người dùng: ID=8, Loại=tro_giang  
+[2025-05-28 07:45:42] local.DEBUG: Vai trò: tro_giang  
+[2025-05-28 07:45:42] local.DEBUG: Chuyển hướng đến trang trợ giảng  
+[2025-05-28 07:45:42] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: tro_giang  
+[2025-05-28 07:45:42] local.DEBUG: Middleware CheckRole: nguoi_dung_id=8, loai_tai_khoan=tro_giang  
+[2025-05-28 07:45:42] local.DEBUG: Middleware CheckRole: Vai trò từ session: tro_giang  
+[2025-05-28 07:45:42] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò tro_giang  
+[2025-05-28 07:45:42] local.ERROR: Call to undefined method App\Models\NguoiDung::vaiTros() {"exception":"[object] (BadMethodCallException(code: 0): Call to undefined method App\\Models\\NguoiDung::vaiTros() at C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Traits\\ForwardsCalls.php:67)
+[stacktrace]
+#0 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Support\\Traits\\ForwardsCalls.php(36): Illuminate\\Database\\Eloquent\\Model::throwBadMethodCallException('vaiTros')
+#1 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Model.php(2335): Illuminate\\Database\\Eloquent\\Model->forwardCallTo(Object(Illuminate\\Database\\Eloquent\\Builder), 'vaiTros', Array)
+#2 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(876): Illuminate\\Database\\Eloquent\\Model->__call('vaiTros', Array)
+#3 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Relations\\Relation.php(110): Illuminate\\Database\\Eloquent\\Builder->Illuminate\\Database\\Eloquent\\Concerns\\{closure}()
+#4 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(875): Illuminate\\Database\\Eloquent\\Relations\\Relation::noConstraints(Object(Closure))
+#5 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(39): Illuminate\\Database\\Eloquent\\Builder->getRelationWithoutConstraints('vaiTros')
+#6 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(98): Illuminate\\Database\\Eloquent\\Builder->has('vaiTros', '>=', 1, 'and', Object(Closure))
+#7 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Builder.php(1396): Illuminate\\Database\\Eloquent\\Builder->Illuminate\\Database\\Eloquent\\Concerns\\{closure}(Object(Illuminate\\Database\\Eloquent\\Builder))
+#8 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(61): Illuminate\\Database\\Eloquent\\Builder->callScope(Object(Closure))
+#9 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(101): Illuminate\\Database\\Eloquent\\Builder->has(Object(Illuminate\\Database\\Eloquent\\Relations\\BelongsTo), '>=', 1, 'and', Object(Closure))
+#10 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(36): Illuminate\\Database\\Eloquent\\Builder->hasNested(Array, '>=', 1, 'and', Object(Closure))
+#11 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Database\\Eloquent\\Concerns\\QueriesRelationships.php(152): Illuminate\\Database\\Eloquent\\Builder->has('nguoiDung.vaiTr...', '>=', 1, 'and', Object(Closure))
+#12 C:\\Users\\PC\\hanzii\\app\\Http\\Controllers\\TroGiang\\DashboardController.php(73): Illuminate\\Database\\Eloquent\\Builder->whereHas('nguoiDung.vaiTr...', Object(Closure))
+#13 C:\\Users\\PC\\hanzii\\app\\Http\\Controllers\\TroGiang\\DashboardController.php(41): App\\Http\\Controllers\\TroGiang\\DashboardController->getLopHocIdsCanPhanHoi(2)
+#14 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Controller.php(54): App\\Http\\Controllers\\TroGiang\\DashboardController->index()
+#15 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('index', Array)
+#16 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(259): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\TroGiang\\DashboardController), 'index')
+#17 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php(205): Illuminate\\Routing\\Route->runController()
+#18 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(806): Illuminate\\Routing\\Route->run()
+#19 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#20 C:\\Users\\PC\\hanzii\\app\\Http\\Middleware\\CheckRole.php(62): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\CheckRole->handle(Object(Illuminate\\Http\\Request), Object(Closure), 'tro_giang')
+#22 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 C:\\Users\\PC\\hanzii\\app\\Http\\Middleware\\Authenticate.php(38): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): App\\Http\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(78): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#32 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#33 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#34 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#35 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#36 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#37 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#38 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(805): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#39 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#40 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#41 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#42 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#43 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#44 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#45 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#46 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#47 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#48 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(40): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#49 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#50 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#53 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(39): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#57 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(183): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#58 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#59 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#60 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#61 C:\\Users\\PC\\hanzii\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#62 C:\\Users\\PC\\hanzii\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('C:\\\\Users\\\\PC\\\\han...')
+#63 {main}
+"} 
+[2025-05-28 10:37:36] local.DEBUG: Kiểm tra mật khẩu: Sai  
+[2025-05-28 10:37:41] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-28 10:37:41] local.DEBUG: Thông tin người dùng: ID=7, Loại=tro_giang  
+[2025-05-28 10:37:41] local.DEBUG: Vai trò: tro_giang  
+[2025-05-28 10:37:41] local.DEBUG: Chuyển hướng đến trang trợ giảng  
+[2025-05-28 10:37:41] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: tro_giang  
+[2025-05-28 10:37:41] local.DEBUG: Middleware CheckRole: nguoi_dung_id=7, loai_tai_khoan=tro_giang  
+[2025-05-28 10:37:41] local.DEBUG: Middleware CheckRole: Vai trò từ session: tro_giang  
+[2025-05-28 10:37:41] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò tro_giang  
+[2025-05-28 10:37:44] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: tro_giang  
+[2025-05-28 10:37:44] local.DEBUG: Middleware CheckRole: nguoi_dung_id=7, loai_tai_khoan=tro_giang  
+[2025-05-28 10:37:44] local.DEBUG: Middleware CheckRole: Vai trò từ session: tro_giang  
+[2025-05-28 10:37:44] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò tro_giang  
+[2025-05-28 10:38:04] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-28 10:38:04] local.DEBUG: Thông tin người dùng: ID=11, Loại=hoc_vien  
+[2025-05-28 10:38:04] local.DEBUG: Vai trò: hoc_vien  
+[2025-05-28 10:38:04] local.DEBUG: Chuyển hướng đến trang học viên  
+[2025-05-28 10:38:04] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-28 10:38:04] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-28 10:38:04] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-28 10:38:04] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-28 10:38:04] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-28 10:38:04] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-28 10:38:06] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-28 10:38:06] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-28 10:38:06] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-28 10:38:06] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-28 10:38:06] local.INFO: Lớp học IDs: 18, 10, 15, 12, 20  
+[2025-05-28 10:38:06] local.INFO: Số lượng bài tập đã nộp: 0  
+[2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  

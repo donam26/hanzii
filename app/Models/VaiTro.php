@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VaiTro extends Model
 {
@@ -37,12 +38,11 @@ class VaiTro extends Model
     const UPDATED_AT = 'cap_nhat_luc';
 
     /**
-     * Quan hệ n-n với người dùng
+     * Quan hệ 1-n với người dùng (một vai trò có nhiều người dùng)
      */
-    public function nguoiDungs(): BelongsToMany
+    public function nguoiDungs(): HasMany
     {
-        return $this->belongsToMany(NguoiDung::class, 'vai_tro_nguoi_dungs', 'vai_tro_id', 'nguoi_dung_id')
-            ->withTimestamps('tao_luc', 'cap_nhat_luc');
+        return $this->hasMany(NguoiDung::class, 'vai_tro_id');
     }
 
     /**

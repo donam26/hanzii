@@ -29,28 +29,35 @@ class BinhLuanController extends Controller
         // Lấy danh sách lớp học mà trợ giảng phụ trách
         $lopHocIds = LopHoc::where('tro_giang_id', $troGiang->id)->pluck('id')->toArray();
         
-        // Tạo query base
-        $query = BinhLuan::with(['nguoiDung', 'baiHoc', 'lopHoc', 'phanHois'])
-            ->whereIn('lop_hoc_id', $lopHocIds)
-            ->orderBy('tao_luc', 'desc');
-            
+        $vaiTro = $request->input('vai_tro', '');
+        $baiHocId = $request->input('bai_hoc_id', '');
+        $lopHocId = $request->input('lop_hoc_id', '');
+        
+        $query = BinhLuan::with(['nguoiDung.vaiTro', 'baiHoc'])
+                ->orderBy('tao_luc', 'desc');
+        
+        // Lọc theo vai trò
+        if ($vaiTro) {
+            $query->whereHas('nguoiDung', function($q) use ($vaiTro) {
+                $q->where('vai_tro_id', function($q2) use ($vaiTro) {
+                    $q2->select('id')
+                      ->from('vai_tros')
+                      ->where('ten', $vaiTro);
+                });
+            });
+        }
+        
         // Filter theo lớp học nếu có
-        $lopHocId = $request->input('lop_hoc_id');
         if ($lopHocId && in_array($lopHocId, $lopHocIds)) {
             $query->where('lop_hoc_id', $lopHocId);
         }
         
         // Filter theo vai trò người dùng nếu có
-        $vaiTro = $request->input('vai_tro');
         if ($vaiTro == 'hoc_vien') {
-            $query->whereHas('nguoiDung.vaiTros', function($q) {
+            $query->whereHas('nguoiDung.vaiTro', function($q) {
                 $q->where('ten', 'hoc_vien');
             })->where('da_phan_hoi', false)
               ->whereNull('binh_luan_goc_id');
-        } elseif ($vaiTro) {
-            $query->whereHas('nguoiDung.vaiTros', function($q) use ($vaiTro) {
-                $q->where('ten', $vaiTro);
-            });
         }
         
         $binhLuans = $query->paginate(20);

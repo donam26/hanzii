@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NguoiDung extends Authenticatable
 {
@@ -32,6 +32,7 @@ class NguoiDung extends Authenticatable
         'so_dien_thoai',
         'mat_khau',
         'loai_tai_khoan',
+        'vai_tro_id',
         'dia_chi',
         'anh_dai_dien',
     ];
@@ -79,12 +80,30 @@ class NguoiDung extends Authenticatable
     }
 
     /**
-     * Quan hệ n-n với vai trò
+     * Quan hệ với vai trò (1-n: một người dùng thuộc về một vai trò)
      */
-    public function vaiTros(): BelongsToMany
+    public function vaiTro(): BelongsTo
     {
-        return $this->belongsToMany(VaiTro::class, 'vai_tro_nguoi_dungs', 'nguoi_dung_id', 'vai_tro_id')
-            ->withTimestamps('tao_luc', 'cap_nhat_luc');
+        return $this->belongsTo(VaiTro::class, 'vai_tro_id');
+    }
+
+    /**
+     * Kiểm tra người dùng có vai trò cụ thể không
+     *
+     * @param string|array $roles
+     * @return bool
+     */
+    public function hasRole($roles): bool
+    {
+        if (!$this->vaiTro) {
+            return false;
+        }
+        
+        if (is_array($roles)) {
+            return in_array($this->vaiTro->ten, $roles);
+        }
+        
+        return $this->vaiTro->ten === $roles;
     }
 
     /**

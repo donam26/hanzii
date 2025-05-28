@@ -17,11 +17,15 @@ class GiaoVienController extends Controller
      */
     public function index(Request $request)
     {
-        $vaiTroGiaoVien = VaiTro::where('ten', 'giao_vien')->first();
+        $search = $request->input('search');
         
-        $query = GiaoVien::with('nguoiDung')
-            ->whereHas('nguoiDung.vaiTros', function($q) {
-                $q->where('ten', 'giao_vien');
+        $query = GiaoVien::with(['nguoiDung.vaiTro'])
+            ->whereHas('nguoiDung', function($query) {
+                $query->where('vai_tro_id', function($q) {
+                    $q->select('id')
+                      ->from('vai_tros')
+                      ->where('ten', 'giao_vien');
+                });
             });
         
         // Xử lý tìm kiếm

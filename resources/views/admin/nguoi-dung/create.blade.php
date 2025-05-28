@@ -102,11 +102,14 @@
                                 @enderror
                             </div>
                             
-                            <!-- Ẩn phần chọn vai trò và sử dụng input hidden thay thế -->
-                            <div class="hidden">
-                                @foreach($vaiTros as $vaiTro)
-                                    <input type="checkbox" name="vai_tro_ids[]" id="vai_tro_{{ $vaiTro->id }}" value="{{ $vaiTro->id }}" class="hidden-checkbox" data-vai-tro="{{ $vaiTro->ten }}">
-                                @endforeach
+                            <div>
+                                <label for="vai_tro_ids" class="block text-sm font-medium text-gray-700">Vai trò</label>
+                                <select name="vai_tro_ids[]" id="vai_tro_ids" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">-- Chọn vai trò --</option>
+                                    @foreach($vaiTros as $vaiTro)
+                                        <option value="{{ $vaiTro->id }}">{{ $vaiTro->ten }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             
                             @error('vai_tro_ids')

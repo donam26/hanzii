@@ -17,11 +17,15 @@ class TroGiangController extends Controller
      */
     public function index(Request $request)
     {
-        $vaiTroTroGiang = VaiTro::where('ten', 'tro_giang')->first();
+        $search = $request->input('search');
         
-        $query = TroGiang::with('nguoiDung')
-            ->whereHas('nguoiDung.vaiTros', function($q) {
-                $q->where('ten', 'tro_giang');
+        $query = TroGiang::with(['nguoiDung.vaiTro'])
+            ->whereHas('nguoiDung', function($query) {
+                $query->where('vai_tro_id', function($q) {
+                    $q->select('id')
+                      ->from('vai_tros')
+                      ->where('ten', 'tro_giang');
+                });
             });
         
         // Xử lý tìm kiếm

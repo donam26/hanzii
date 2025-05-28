@@ -42,113 +42,68 @@
                 <div class="flex justify-between items-start">
                     <div class="flex items-start space-x-3">
                         <div class="flex-shrink-0">
-                            <div class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100">
-                                <span class="font-medium text-gray-600 leading-none">
-                                    {{ strtoupper(substr($binhLuan->nguoiDung->ho, 0, 1)) . strtoupper(substr($binhLuan->nguoiDung->ten, 0, 1)) }}
-                                </span>
+                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                                @if($binhLuan->nguoiDung && $binhLuan->nguoiDung->anh_dai_dien)
+                                    <img src="{{ asset('storage/' . $binhLuan->nguoiDung->anh_dai_dien) }}" alt="Avatar" class="h-10 w-10 rounded-full">
+                                @else
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                @endif
                             </div>
                         </div>
-                        <div>
-                            <div class="flex items-center space-x-2">
-                                <h4 class="text-sm font-medium text-gray-900">{{ $binhLuan->nguoiDung->ho . ' ' . $binhLuan->nguoiDung->ten }}</h4>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'giao_vien')
-                                        bg-blue-100 text-blue-800
-                                    @elseif(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'tro_giang')
-                                        bg-green-100 text-green-800
-                                    @else
-                                        bg-gray-100 text-gray-800
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {{ $binhLuan->nguoiDung ? $binhLuan->nguoiDung->ho_ten : 'Người dùng không tồn tại' }}
+                                </p>
+                                
+                                @if($binhLuan->nguoiDung && $binhLuan->nguoiDung->vaiTro)
+                                    @if($binhLuan->nguoiDung->vaiTro->ten == 'giao_vien')
+                                        <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">Giáo viên</span>
+                                    @elseif($binhLuan->nguoiDung->vaiTro->ten == 'tro_giang')
+                                        <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded-full text-xs font-medium">Trợ giảng</span>
                                     @endif
-                                ">
-                                    @if(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'giao_vien')
-                                        Giáo viên
-                                    @elseif(optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'tro_giang')
-                                        Trợ giảng
-                                    @else
-                                        Học viên
-                                    @endif
-                                </span>
+                                @endif
+                                
+                                <span class="ml-2 text-xs text-gray-500">{{ $binhLuan->tao_luc->diffForHumans() }}</span>
                             </div>
+
+                            <!-- Nội dung bình luận -->
                             <div class="mt-1 text-sm text-gray-700">
                                 <p>{{ $binhLuan->noi_dung }}</p>
                             </div>
-                            <div class="mt-2 text-xs text-gray-500">
-                                <time datetime="{{ $binhLuan->tao_luc }}">{{ \Carbon\Carbon::parse($binhLuan->tao_luc)->format('d/m/Y H:i') }}</time>
-                            </div>
-                            
-                            <!-- Nút phản hồi -->
-                            @if($role == 'tro-giang' && optional($binhLuan->nguoiDung->vaiTros->first())->ten == 'hoc_vien')
-                                <div class="mt-2">
-                                    @if(!$binhLuan->da_phan_hoi)
-                                        <button type="button" 
-                                                class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
-                                                onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                                            </svg>
-                                            Phản hồi
-                                        </button>
-                                    @else
-                                        <span class="text-sm text-green-600 flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            Đã phản hồi
-                                        </span>
-                                    @endif
+
+                            <!-- Chức năng dành cho trợ giảng trả lời học viên -->
+                            @if($role == 'tro-giang' && $binhLuan->nguoiDung && $binhLuan->nguoiDung->vaiTro && $binhLuan->nguoiDung->vaiTro->ten == 'hoc_vien')
+                                <div class="mt-2 flex items-center space-x-2">
+                                    <button type="button" class="reply-button text-xs text-blue-600 hover:text-blue-800" data-binh-luan-id="{{ $binhLuan->id }}">
+                                        Trả lời
+                                    </button>
                                 </div>
                                 
-                                <!-- Form phản hồi (ẩn mặc định) -->
-                                <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 pl-4 border-l-2 border-gray-200 {{ $binhLuan->da_phan_hoi ? 'hidden' : (request('vai_tro') == 'hoc_vien' ? '' : 'hidden') }}">
-                                    <form action="{{ route('tro-giang.binh-luan.phan-hoi') }}" method="POST" class="flex flex-col space-y-3">
+                                <!-- Form trả lời -->
+                                <div id="reply-form-{{ $binhLuan->id }}" class="mt-2 hidden">
+                                    <form action="{{ route('tro-giang.binh-luan.store') }}" method="POST" class="space-y-2">
                                         @csrf
-                                        <input type="hidden" name="bai_hoc_id" value="{{ $baiHocId }}">
-                                        <input type="hidden" name="lop_hoc_id" value="{{ $lopHocId }}">
+                                        <input type="hidden" name="bai_hoc_id" value="{{ $binhLuan->bai_hoc_id }}">
+                                        <input type="hidden" name="lop_hoc_id" value="{{ $binhLuan->lop_hoc_id }}">
                                         <input type="hidden" name="binh_luan_goc_id" value="{{ $binhLuan->id }}">
                                         
                                         <div>
-                                            <textarea name="noi_dung" rows="2" required 
-                                                    class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                                    placeholder="Viết phản hồi của bạn..."></textarea>
+                                            <textarea name="noi_dung" rows="2" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Nhập trả lời của bạn..."></textarea>
                                         </div>
                                         
-                                        <div class="flex justify-end space-x-2">
-                                            <button type="button" 
-                                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                                    onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
+                                        <div class="flex justify-end">
+                                            <button type="button" class="cancel-reply text-xs mr-2 py-1 px-3 border border-gray-300 rounded-md hover:bg-gray-50" data-binh-luan-id="{{ $binhLuan->id }}">
                                                 Hủy
                                             </button>
-                                            <button type="submit" 
-                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                                Gửi phản hồi
+                                            <button type="submit" class="text-xs py-1 px-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                                Gửi trả lời
                                             </button>
                                         </div>
                                     </form>
                                 </div>
-                                
-                                <!-- Hiển thị phản hồi -->
-                                @if($binhLuan->da_phan_hoi)
-                                    @foreach($binhLuan->phanHois as $phanHoi)
-                                    <div class="mt-3 pl-4 border-l-2 border-gray-200">
-                                        <div class="flex items-start space-x-3">
-                                            <div class="flex-shrink-0">
-                                                <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                                                    <span class="text-xs font-medium text-green-600">
-                                                        {{ strtoupper(substr($phanHoi->nguoiDung->ho, 0, 1)) . strtoupper(substr($phanHoi->nguoiDung->ten, 0, 1)) }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-900">{{ $phanHoi->nguoiDung->ho . ' ' . $phanHoi->nguoiDung->ten }}</p>
-                                                <div class="mt-1 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
-                                                    <p>{{ $phanHoi->noi_dung }}</p>
-                                                </div>
-                                                <p class="mt-1 text-xs text-gray-500">{{ \Carbon\Carbon::parse($phanHoi->tao_luc)->format('d/m/Y H:i') }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                @endif
                             @endif
                         </div>
                     </div>

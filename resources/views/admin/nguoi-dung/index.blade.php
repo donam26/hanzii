@@ -105,16 +105,14 @@
                                 </div>
                             </td>
                           
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-wrap gap-1">
-                                    @forelse ($user->vaiTros as $vaiTro)
-                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                            {{ $vaiTro->ten }}
-                                        </span>
-                                    @empty
-                                        <span class="text-gray-400">Chưa có vai trò</span>
-                                    @endforelse
-                                </div>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if($user->vaiTro)
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {{ $user->vaiTro->ten }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex space-x-2 justify-end">

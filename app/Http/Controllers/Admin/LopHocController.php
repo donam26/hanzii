@@ -70,8 +70,12 @@ class LopHocController extends Controller
         
         // Thống kê thêm
         $tong_hoc_vien = HocVien::count();
-        $tong_giao_vien = GiaoVien::whereHas('nguoiDung.vaiTros', function($query) {
-            $query->where('ten', 'giao_vien');
+        $tong_giao_vien = GiaoVien::whereHas('nguoiDung', function($query) {
+            $query->where('vai_tro_id', function($q) {
+                $q->select('id')
+                  ->from('vai_tros')
+                  ->where('ten', 'giao_vien');
+            });
         })->count();
         
         return view('admin.lop-hoc.index', compact(
@@ -99,20 +103,26 @@ class LopHocController extends Controller
         $firstKhoaHoc = KhoaHoc::first();
         
         // Lấy danh sách giáo viên
-        $giaoViens = GiaoVien::whereHas('nguoiDung.vaiTros', function ($query) {
-                        $query->where('ten', 'giao_vien');
-                    })
-                    ->with('nguoiDung')
-                    ->get()
-                    ->pluck('nguoiDung.ho_ten', 'id');
+        $giaoViens = GiaoVien::whereHas('nguoiDung', function ($query) {
+            $query->where('vai_tro_id', function($q) {
+                $q->select('id')
+                  ->from('vai_tros')
+                  ->where('ten', 'giao_vien');
+            });
+        })->with('nguoiDung')
+          ->get()
+          ->pluck('nguoiDung.ho_ten', 'id');
         
         // Lấy danh sách trợ giảng
-        $troGiangs = TroGiang::whereHas('nguoiDung.vaiTros', function ($query) {
-                        $query->where('ten', 'tro_giang');
-                    })
-                    ->with('nguoiDung')
-                    ->get()
-                    ->pluck('nguoiDung.ho_ten', 'id');
+        $troGiangs = TroGiang::whereHas('nguoiDung', function ($query) {
+            $query->where('vai_tro_id', function($q) {
+                $q->select('id')
+                  ->from('vai_tros')
+                  ->where('ten', 'tro_giang');
+            });
+        })->with('nguoiDung')
+          ->get()
+          ->pluck('nguoiDung.ho_ten', 'id');
         
         // Nếu có khóa học được chọn trước
         $selectedKhoaHoc = null;
@@ -199,20 +209,26 @@ class LopHocController extends Controller
         $countKhoaHoc = KhoaHoc::count();
         
         // Lấy danh sách giáo viên
-        $giaoViens = GiaoVien::whereHas('nguoiDung.vaiTros', function ($query) {
-                        $query->where('ten', 'giao_vien');
-                    })
-                    ->with('nguoiDung')
-                    ->get()
-                    ->pluck('nguoiDung.ho_ten', 'id');
+        $giaoViens = GiaoVien::whereHas('nguoiDung', function ($query) {
+            $query->where('vai_tro_id', function($q) {
+                $q->select('id')
+                  ->from('vai_tros')
+                  ->where('ten', 'giao_vien');
+            });
+        })->with('nguoiDung')
+          ->get()
+          ->pluck('nguoiDung.ho_ten', 'id');
         
         // Lấy danh sách trợ giảng
-        $troGiangs = TroGiang::whereHas('nguoiDung.vaiTros', function ($query) {
-                        $query->where('ten', 'tro_giang');
-                    })
-                    ->with('nguoiDung')
-                    ->get()
-                    ->pluck('nguoiDung.ho_ten', 'id');
+        $troGiangs = TroGiang::whereHas('nguoiDung', function ($query) {
+            $query->where('vai_tro_id', function($q) {
+                $q->select('id')
+                  ->from('vai_tros')
+                  ->where('ten', 'tro_giang');
+            });
+        })->with('nguoiDung')
+          ->get()
+          ->pluck('nguoiDung.ho_ten', 'id');
         
         return view('admin.lop-hoc.edit', compact('lopHoc', 'khoaHocs', 'giaoViens', 'troGiangs', 'countKhoaHoc'));
     }

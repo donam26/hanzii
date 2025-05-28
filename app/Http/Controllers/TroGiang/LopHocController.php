@@ -70,7 +70,7 @@ class LopHocController extends Controller
         // Lấy danh sách bình luận chưa được phản hồi của học viên trong các lớp đó
         $lopHocIdsCanPhanHoi = BinhLuan::whereIn('lop_hoc_id', $lopHocIds)
             ->where('da_phan_hoi', false)
-            ->whereHas('nguoiDung.vaiTros', function ($query) {
+            ->whereHas('nguoiDung.vaiTro', function ($query) {
                 $query->where('ten', 'hoc_vien');
             })
             ->pluck('lop_hoc_id')
@@ -197,23 +197,22 @@ class LopHocController extends Controller
      */
     public function danhSachHocVien($id)
     {
-        // Lấy ID người dùng từ session
-        $nguoiDungId = session('nguoi_dung_id');
-        $troGiang = TroGiang::where('nguoi_dung_id', $nguoiDungId)->first();
-        
-        if (!$troGiang) {
-            return redirect()->route('login')
-                ->with('error', 'Không tìm thấy thông tin trợ giảng');
-        }
-        
-        
-        // Lấy thông tin lớp học
-        $lopHoc = LopHoc::with(['khoaHoc', 'giaoVien.nguoiDung'])->findOrFail($id);
+        $troGiang = auth()->user()->troGiang;
+        $lopHoc = LopHoc::where('id', $id)
+            ->where('tro_giang_id', $troGiang->id)
+            ->firstOrFail();
         
         // Lấy danh sách học viên của lớp
         $hocViens = DangKyHoc::where('lop_hoc_id', $id)
-            ->whereIn('trang_thai', ['dang_hoc', 'da_duyet'])
-            ->with('hocVien.nguoiDung')
+            ->where('trang_thai', 'dang_hoc')
+            ->whereHas('hocVien.nguoiDung', function ($query) {
+                $query->where('vai_tro_id', function($q) {
+                    $q->select('id')
+                      ->from('vai_tros')
+                      ->where('ten', 'hoc_vien');
+                });
+            })
+            ->with(['hocVien.nguoiDung'])
             ->get();
         
         // Lấy thống kê tiến độ học tập
