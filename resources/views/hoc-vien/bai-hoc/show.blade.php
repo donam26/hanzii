@@ -309,7 +309,7 @@
                                                 Làm bài
                                             </a>
                                         @elseif($daNop)
-                                            <a href="{{ route('hoc-vien.bai-hoc.form-nop-bai-tap', ['lopHocId' => $lopHoc->id, 'baiHocId' => $baiHoc->id, 'baiTapId' => $baiTap->id]) }}" 
+                                            <a href="{{ route('hoc-vien.bai-tap.ket-qua', $baiTapDaNop[$baiTap->id]->id) }}" 
                                                class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

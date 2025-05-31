@@ -79,7 +79,7 @@ class ProfileController extends Controller
         $nguoiDung->so_dien_thoai = $request->so_dien_thoai;
         $nguoiDung->dia_chi = $request->dia_chi;
         
-        // Xử lý upload ảnh đại diện
+        // Xử lý avatar nếu có
         if ($request->hasFile('anh_dai_dien')) {
             // Xóa ảnh cũ nếu có
             if ($nguoiDung->anh_dai_dien) {
@@ -94,6 +94,9 @@ class ProfileController extends Controller
             $fileName = 'avatars/' . time() . '_' . $anhDaiDien->getClientOriginalName();
             $anhDaiDien->storeAs('public', $fileName);
             $nguoiDung->anh_dai_dien = $fileName;
+            
+            // Cập nhật ảnh đại diện trong session
+            $request->session()->put('anh_dai_dien', asset('storage/' . $fileName));
         }
         
         $nguoiDung->save();

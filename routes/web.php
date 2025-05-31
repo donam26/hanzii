@@ -251,8 +251,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     
     // Quản lý thanh toán học phí
     Route::resource('thanh-toan-hoc-phi', App\Http\Controllers\Admin\ThanhToanHocPhiController::class);
-    Route::post('/thanh-toan-hoc-phi/{thanhToanHocPhi}/update-status', [App\Http\Controllers\Admin\ThanhToanHocPhiController::class, 'updateStatus'])->name('thanh-toan-hoc-phi.update-status');
-    Route::post('/thanh-toan-hoc-phi/{thanhToanHocPhi}/cancel-status', [App\Http\Controllers\Admin\ThanhToanHocPhiController::class, 'cancelStatus'])->name('thanh-toan-hoc-phi.cancel-status');
+    Route::post('thanh-toan-hoc-phi/{id}/update-status', [App\Http\Controllers\Admin\ThanhToanHocPhiController::class, 'updateStatus'])->name('thanh-toan-hoc-phi.update-status');
+    Route::post('thanh-toan-hoc-phi/{id}/cancel-status', [App\Http\Controllers\Admin\ThanhToanHocPhiController::class, 'cancelStatus'])->name('thanh-toan-hoc-phi.cancel-status');
+    Route::get('thanh-toan-hoc-phi/{id}/get-details', [App\Http\Controllers\Admin\ThanhToanHocPhiController::class, 'getDetails'])->name('thanh-toan-hoc-phi.get-details');
     
     // Quản lý thanh toán lương
     Route::get('/thanh-toan-luong', [App\Http\Controllers\Admin\ThanhToanLuongController::class, 'index'])->name('thanh-toan-luong.index');

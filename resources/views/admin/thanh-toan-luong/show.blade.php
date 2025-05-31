@@ -107,11 +107,6 @@
                             @method('PUT')
                             
                             <div class="mb-3">
-                                <label for="ma_giao_dich_giao_vien" class="block text-sm font-medium text-gray-700 mb-1">Mã giao dịch</label>
-                                <input type="text" name="ma_giao_dich_giao_vien" id="ma_giao_dich_giao_vien" value="{{ $thanhToanLuong->ma_giao_dich_giao_vien }}" class="border-gray-300 focus:ring-red-500 focus:border-red-500 block w-full sm:text-sm rounded-md">
-                            </div>
-                            
-                            <div class="mb-3">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái thanh toán</label>
                                 <div class="mt-2 space-x-2">
                                     <div class="flex items-center">
@@ -158,11 +153,6 @@
                         <form action="{{ route('admin.thanh-toan-luong.update-tro-giang-status', $thanhToanLuong->id) }}" method="POST">
                             @csrf
                             @method('PUT')
-                            
-                            <div class="mb-3">
-                                <label for="ma_giao_dich_tro_giang" class="block text-sm font-medium text-gray-700 mb-1">Mã giao dịch</label>
-                                <input type="text" name="ma_giao_dich_tro_giang" id="ma_giao_dich_tro_giang" value="{{ $thanhToanLuong->ma_giao_dich_tro_giang }}" class="border-gray-300 focus:ring-red-500 focus:border-red-500 block w-full sm:text-sm rounded-md">
-                            </div>
                             
                             <div class="mb-3">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái thanh toán</label>

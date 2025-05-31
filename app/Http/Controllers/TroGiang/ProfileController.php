@@ -107,6 +107,9 @@ class ProfileController extends Controller
             $fileName = 'avatars/' . time() . '_' . $anhDaiDien->getClientOriginalName();
             $anhDaiDien->storeAs('public', $fileName);
             $nguoiDung->anh_dai_dien = $fileName;
+            
+            // Cập nhật ảnh đại diện trong session
+            $request->session()->put('anh_dai_dien', asset('storage/' . $fileName));
         }
 
         $nguoiDung->save();

@@ -15,9 +15,21 @@ class ThanhToanHocPhiController extends Controller
     /**
      * Hiển thị danh sách lớp học để quản lý thanh toán học phí.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $lopHocs = LopHoc::orderBy('tao_luc', 'desc')->get();
+        $query = LopHoc::query();
+        
+        // Áp dụng bộ lọc tìm kiếm
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('ten', 'like', "%{$search}%")
+                  ->orWhere('ma_lop', 'like', "%{$search}%");
+            });
+        }
+        
+        // Lấy danh sách lớp học
+        $lopHocs = $query->orderBy('tao_luc', 'desc')->get();
         
         // Thống kê tổng quan
         $tongLopHoc = $lopHocs->count();
@@ -33,6 +45,7 @@ class ThanhToanHocPhiController extends Controller
             $hocViens = $lopHoc->hocViens;
             $tongHocVienLop = $hocViens->count();
             $daThanhToanDayDu = 0;
+            $daThanhToanMotPhan = 0;
             
             // Đếm số học viên đã thanh toán đầy đủ
             foreach ($hocViens as $hocVien) {
@@ -46,8 +59,30 @@ class ThanhToanHocPhiController extends Controller
                 }
             }
             
-            // Đánh dấu lớp học đã thanh toán đầy đủ nếu tất cả học viên đã thanh toán
+            // Đánh dấu trạng thái thanh toán của lớp học
             $lopHoc->da_thanh_toan_day_du = ($tongHocVienLop > 0 && $daThanhToanDayDu == $tongHocVienLop);
+            $lopHoc->da_thanh_toan_mot_phan = ($daThanhToanDayDu > 0 && $daThanhToanDayDu < $tongHocVienLop);
+            $lopHoc->chua_thanh_toan = ($daThanhToanDayDu == 0);
+            $lopHoc->trang_thai_thanh_toan = $lopHoc->da_thanh_toan_day_du ? 'da_thanh_toan' : 
+                                             ($lopHoc->da_thanh_toan_mot_phan ? 'thanh_toan_mot_phan' : 'chua_thanh_toan');
+        }
+        
+        // Lọc theo trạng thái thanh toán nếu có
+        if ($request->filled('trang_thai_thanh_toan')) {
+            $trangThaiThanhToan = $request->trang_thai_thanh_toan;
+            if ($trangThaiThanhToan == 'da_thanh_toan') {
+                $lopHocs = $lopHocs->filter(function($lopHoc) {
+                    return $lopHoc->da_thanh_toan_day_du;
+                });
+            } elseif ($trangThaiThanhToan == 'thanh_toan_mot_phan') {
+                $lopHocs = $lopHocs->filter(function($lopHoc) {
+                    return $lopHoc->da_thanh_toan_mot_phan;
+                });
+            } elseif ($trangThaiThanhToan == 'chua_thanh_toan') {
+                $lopHocs = $lopHocs->filter(function($lopHoc) {
+                    return $lopHoc->chua_thanh_toan;
+                });
+            }
         }
         
         return view('admin.thanh-toan-hoc-phi.index', compact(
@@ -76,7 +111,12 @@ class ThanhToanHocPhiController extends Controller
             ->get()
             ->keyBy('hoc_vien_id');
         
-        return view('admin.thanh-toan-hoc-phi.show', compact('lopHoc', 'hocViens', 'thanhToanHocPhis'));
+        // Tính tổng tiền đã thu từ lớp học
+        $tongTienDaThu = ThanhToanHocPhi::where('lop_hoc_id', $id)
+            ->where('trang_thai', 'da_thanh_toan')
+            ->sum('so_tien');
+        
+        return view('admin.thanh-toan-hoc-phi.show', compact('lopHoc', 'hocViens', 'thanhToanHocPhis', 'tongTienDaThu'));
     }
 
     /**
@@ -102,7 +142,6 @@ class ThanhToanHocPhiController extends Controller
             'phuong_thuc_thanh_toan' => 'required|in:tien_mat,chuyen_khoan',
             'trang_thai' => 'required|in:chua_thanh_toan,da_thanh_toan,da_huy',
             'ngay_thanh_toan' => 'nullable|date',
-            'ma_giao_dich' => 'nullable|string|max:255',
             'ghi_chu' => 'nullable|string',
         ]);
         
@@ -147,7 +186,6 @@ class ThanhToanHocPhiController extends Controller
             'phuong_thuc_thanh_toan' => 'required|in:tien_mat,chuyen_khoan',
             'trang_thai' => 'required|in:chua_thanh_toan,da_thanh_toan,da_huy',
             'ngay_thanh_toan' => 'nullable|date',
-            'ma_giao_dich' => 'nullable|string|max:255',
             'ghi_chu' => 'nullable|string',
         ]);
         
@@ -245,6 +283,33 @@ class ThanhToanHocPhiController extends Controller
             Log::error('Lỗi khi hủy thanh toán học phí: ' . $e->getMessage());
             
             return back()->with('error', 'Có lỗi xảy ra khi hủy thanh toán học phí');
+        }
+    }
+
+    /**
+     * Lấy thông tin chi tiết thanh toán học phí qua API.
+     */
+    public function getDetails($id)
+    {
+        try {
+            $thanhToanHocPhi = ThanhToanHocPhi::with(['hocVien.nguoiDung', 'lopHoc'])->findOrFail($id);
+            
+            return response()->json([
+                'id' => $thanhToanHocPhi->id,
+                'hoc_vien_id' => $thanhToanHocPhi->hoc_vien_id,
+                'hoc_vien_name' => $thanhToanHocPhi->hocVien->hoTen,
+                'lop_hoc_id' => $thanhToanHocPhi->lop_hoc_id,
+                'lop_hoc_name' => $thanhToanHocPhi->lopHoc->ten,
+                'so_tien' => $thanhToanHocPhi->so_tien,
+                'phuong_thuc_thanh_toan' => $thanhToanHocPhi->phuong_thuc_thanh_toan,
+                'trang_thai' => $thanhToanHocPhi->trang_thai,
+                'ngay_thanh_toan' => $thanhToanHocPhi->ngay_thanh_toan ? \Carbon\Carbon::parse($thanhToanHocPhi->ngay_thanh_toan)->format('d/m/Y') : null,
+                'ghi_chu' => $thanhToanHocPhi->ghi_chu,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi lấy chi tiết thanh toán học phí: ' . $e->getMessage());
+            
+            return response()->json(['error' => 'Có lỗi xảy ra khi lấy thông tin chi tiết'], 500);
         }
     }
 }

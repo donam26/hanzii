@@ -1575,3 +1575,442 @@
 [2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
 [2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
 [2025-05-28 10:38:08] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:22:46] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-31 02:22:46] local.DEBUG: Thông tin người dùng: ID=11, Loại=hoc_vien  
+[2025-05-31 02:22:46] local.DEBUG: Vai trò: hoc_vien  
+[2025-05-31 02:22:46] local.DEBUG: Chuyển hướng đến trang học viên  
+[2025-05-31 02:22:46] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:22:46] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:22:46] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:22:46] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:22:46] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 02:22:46] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 02:22:56] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:22:56] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:22:56] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:22:56] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:10] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:10] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:10] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:10] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:12] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:12] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:12] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:12] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:13] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:13] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:13] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:13] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:13] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 02:23:13] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 02:23:16] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:16] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:16] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:16] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:20] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:20] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:20] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:20] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:20] local.INFO: Dữ liệu bài tập: ID=126, Ten=Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2), TieuDe=Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2), BaiHocID=86  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:24] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:27] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:27] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:27] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:27] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:34] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:34] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:34] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:34] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:36] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:36] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:36] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:36] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:39] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:39] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:39] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:39] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:39] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 02:23:39] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 02:23:42] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:42] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:42] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:42] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:51] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:51] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:51] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:51] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:51] local.INFO: Đang lấy tài liệu cho bài học #86 lớp #10  
+[2025-05-31 02:23:51] local.INFO: Số lượng tài liệu tìm thấy: 0  
+[2025-05-31 02:23:51] local.INFO: Tổng số tài liệu cho bài học này (bất kể lớp nào): 2  
+[2025-05-31 02:23:51] local.INFO: Đã gán lại tài liệu từ truy vấn đơn giản hơn  
+[2025-05-31 02:23:54] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:23:54] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:23:54] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:23:54] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:23:54] local.INFO: Dữ liệu bài tập: ID=126, Ten=Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2), TieuDe=Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2), BaiHocID=86  
+[2025-05-31 02:24:12] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:24:12] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:24:12] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:24:12] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:24:12] local.INFO: Dữ liệu bài tập: ID=126, Ten=Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2), TieuDe=Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2), BaiHocID=86  
+[2025-05-31 02:32:46] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:32:46] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:32:46] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:32:46] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:32:46] local.INFO: Đang lấy tài liệu cho bài học #86 lớp #10  
+[2025-05-31 02:32:46] local.INFO: Số lượng tài liệu tìm thấy: 0  
+[2025-05-31 02:32:46] local.INFO: Tổng số tài liệu cho bài học này (bất kể lớp nào): 2  
+[2025-05-31 02:32:46] local.INFO: Đã gán lại tài liệu từ truy vấn đơn giản hơn  
+[2025-05-31 02:32:49] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:32:49] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:32:49] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:32:49] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:33:03] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:33:03] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:33:03] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:33:03] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:33:03] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 02:33:03] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 02:33:04] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:33:04] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:33:04] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:33:04] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:33:10] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:33:10] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:33:10] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:33:10] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:33:10] local.INFO: Đang lấy tài liệu cho bài học #86 lớp #10  
+[2025-05-31 02:33:10] local.INFO: Số lượng tài liệu tìm thấy: 0  
+[2025-05-31 02:33:10] local.INFO: Tổng số tài liệu cho bài học này (bất kể lớp nào): 2  
+[2025-05-31 02:33:10] local.INFO: Đã gán lại tài liệu từ truy vấn đơn giản hơn  
+[2025-05-31 02:36:09] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:36:09] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:36:09] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:36:09] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:36:31] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-31 02:36:31] local.DEBUG: Thông tin người dùng: ID=11, Loại=hoc_vien  
+[2025-05-31 02:36:31] local.DEBUG: Vai trò: hoc_vien  
+[2025-05-31 02:36:31] local.DEBUG: Chuyển hướng đến trang học viên  
+[2025-05-31 02:36:31] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:36:31] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:36:31] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:36:31] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:36:31] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 02:36:31] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 02:36:33] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:36:33] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:36:33] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:36:33] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:36:35] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 02:36:35] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 02:36:35] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 02:36:35] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 02:36:35] local.INFO: Đang lấy tài liệu cho bài học #86 lớp #10  
+[2025-05-31 02:36:35] local.INFO: Số lượng tài liệu tìm thấy: 0  
+[2025-05-31 02:36:35] local.INFO: Tổng số tài liệu cho bài học này (bất kể lớp nào): 2  
+[2025-05-31 02:36:35] local.INFO: Đã gán lại tài liệu từ truy vấn đơn giản hơn  
+[2025-05-31 02:36:47] local.DEBUG: Kiểm tra mật khẩu: Sai  
+[2025-05-31 02:36:54] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-31 02:36:54] local.DEBUG: Thông tin người dùng: ID=3, Loại=giao_vien  
+[2025-05-31 02:36:54] local.DEBUG: Vai trò: giao_vien  
+[2025-05-31 02:36:54] local.DEBUG: Chuyển hướng đến trang giáo viên  
+[2025-05-31 02:36:54] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 02:36:54] local.DEBUG: Middleware CheckRole: nguoi_dung_id=3, loai_tai_khoan=giao_vien  
+[2025-05-31 02:36:54] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 02:36:54] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 02:36:54] local.INFO: Chi tiết đăng ký học chờ xác nhận:  {"so_luong":0,"trang_thai":"cho_xac_nhan","giao_vien_id":2} 
+[2025-05-31 02:36:57] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 02:36:57] local.DEBUG: Middleware CheckRole: nguoi_dung_id=3, loai_tai_khoan=giao_vien  
+[2025-05-31 02:36:57] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 02:36:57] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 02:36:59] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 02:36:59] local.DEBUG: Middleware CheckRole: nguoi_dung_id=3, loai_tai_khoan=giao_vien  
+[2025-05-31 02:36:59] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 02:36:59] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 02:37:31] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-31 02:37:31] local.DEBUG: Thông tin người dùng: ID=5, Loại=giao_vien  
+[2025-05-31 02:37:31] local.DEBUG: Vai trò: giao_vien  
+[2025-05-31 02:37:31] local.DEBUG: Chuyển hướng đến trang giáo viên  
+[2025-05-31 02:37:31] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 02:37:31] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 02:37:31] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 02:37:31] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 02:37:31] local.INFO: Chi tiết đăng ký học chờ xác nhận:  {"so_luong":2,"trang_thai":"cho_xac_nhan","giao_vien_id":4} 
+[2025-05-31 02:37:34] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 02:37:34] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 02:37:34] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 02:37:34] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 02:38:14] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-31 02:38:14] local.DEBUG: Thông tin người dùng: ID=1, Loại=giao_vien  
+[2025-05-31 02:38:14] local.DEBUG: Vai trò: admin  
+[2025-05-31 02:38:14] local.DEBUG: Chuyển hướng đến trang admin  
+[2025-05-31 02:38:14] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:38:14] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:38:14] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:38:14] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:38:18] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:38:18] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:38:18] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:38:18] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:44:18] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:44:18] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:44:18] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:44:18] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:44:24] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:44:24] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:44:24] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:44:24] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:44:27] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:44:27] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:44:27] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:44:27] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:44:30] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:44:30] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:44:30] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:44:30] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:44:31] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:44:31] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:44:31] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:44:31] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:44:49] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:44:49] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:44:49] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:44:49] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:46:01] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:46:01] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:46:01] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:46:01] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:52:17] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:52:17] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:52:17] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:52:17] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:54:39] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:54:39] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:54:39] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:54:39] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:54:40] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:54:40] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:54:40] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:54:40] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 02:54:49] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 02:54:49] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 02:54:49] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 02:54:49] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:02:10] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:02:10] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:02:10] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:02:10] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:02:14] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:02:14] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:02:14] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:02:14] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:02:18] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:02:18] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:02:18] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:02:18] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:08:00] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:08:00] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:08:00] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:08:00] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:08:30] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:08:30] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:08:30] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:08:30] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:15:43] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:15:43] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:15:43] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:15:43] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:15:51] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:15:51] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:15:51] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:15:51] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:15:52] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:15:52] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:15:52] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:15:52] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:15:54] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:15:54] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:15:54] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:15:54] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:15:56] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:15:56] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:15:56] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:15:56] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:16:02] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:16:02] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:16:02] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:16:02] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:16:03] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:16:03] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:16:03] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:16:03] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:16:07] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:16:07] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:16:07] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:16:07] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 03:16:08] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 03:16:08] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 03:16:08] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 03:16:08] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 05:30:56] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:30:56] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:30:56] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:30:56] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:31:01] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:31:01] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:01] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:31:01] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:31:05] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:31:05] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:05] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:31:05] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:31:16] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:31:16] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:16] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:31:16] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:31:17] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:31:17] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:17] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:31:17] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:31:23] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 05:31:23] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:23] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 05:31:23] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 05:31:25] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 05:31:25] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:25] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 05:31:25] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: nguoi_dung_id=1, loai_tai_khoan=giao_vien  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: Vai trò từ session: admin  
+[2025-05-31 05:31:30] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-05-31 05:37:58] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:37:58] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:37:58] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:37:58] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:17] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:17] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:17] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:17] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:24] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:24] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:24] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:24] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:28] local.ERROR: Lỗi tạo thông báo: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' (Connection: mysql, SQL: insert into `thong_baos` (`nguoi_dung_id`, `tieu_de`, `noi_dung`, `loai`, `da_doc`, `url`, `updated_at`, `created_at`) values (11, Bài tập đã được chấm điểm, Bài tập 'Bài tập 1 - Bài 1 - Tiếng Trung nâng cao (N2)' của bạn đã được chấm điểm. Điểm số: 3, cham_diem, 0, http://127.0.0.1:8000/hoc-vien/bai-tap/ket-qua/4, 2025-05-31 05:38:28, 2025-05-31 05:38:28))  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:28] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:49] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:49] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:49] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:49] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:52] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:52] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:52] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:52] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:55] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:55] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:55] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:55] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:38:57] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: giao_vien  
+[2025-05-31 05:38:57] local.DEBUG: Middleware CheckRole: nguoi_dung_id=5, loai_tai_khoan=giao_vien  
+[2025-05-31 05:38:57] local.DEBUG: Middleware CheckRole: Vai trò từ session: giao_vien  
+[2025-05-31 05:38:57] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò giao_vien  
+[2025-05-31 05:39:39] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-05-31 05:39:39] local.DEBUG: Thông tin người dùng: ID=11, Loại=hoc_vien  
+[2025-05-31 05:39:39] local.DEBUG: Vai trò: hoc_vien  
+[2025-05-31 05:39:39] local.DEBUG: Chuyển hướng đến trang học viên  
+[2025-05-31 05:39:39] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:39:39] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:39:39] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:39:39] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:39:39] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 05:39:39] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 05:39:45] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:39:45] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:39:45] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:39:45] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:39:54] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:39:54] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:39:54] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:39:54] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:40:32] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:40:32] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:40:32] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:40:32] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:43:35] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:43:35] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:43:35] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:43:35] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:53:58] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:53:58] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:53:58] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:53:58] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:54:52] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:54:52] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:54:52] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:54:52] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:54:52] local.INFO: Lớp học IDs: 18, 10, 15, 12, 20  
+[2025-05-31 05:54:52] local.INFO: Số lượng bài tập đã nộp: 1  
+[2025-05-31 05:54:58] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:54:58] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:54:58] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:54:58] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:55:02] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:55:02] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:55:02] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:55:02] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:55:02] local.INFO: Lớp học IDs: 18, 10, 15, 12, 20  
+[2025-05-31 05:55:02] local.INFO: Số lượng bài tập đã nộp: 1  
+[2025-05-31 05:55:13] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:55:13] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:55:13] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:55:13] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:55:45] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:55:45] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:55:45] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:55:45] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:55:53] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:55:53] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:55:53] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:55:53] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:55:53] local.INFO: Lớp học IDs: 18, 10, 15, 12, 20  
+[2025-05-31 05:55:53] local.INFO: Số lượng bài tập đã nộp: 1  
+[2025-05-31 05:55:59] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:55:59] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:55:59] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:55:59] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:55:59] local.INFO: Học viên 2 có 5 lớp học  
+[2025-05-31 05:55:59] local.INFO: Số lớp học lấy được sau khi lọc: 5  
+[2025-05-31 05:56:00] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:56:00] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:56:00] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:56:00] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:56:03] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:56:03] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:56:03] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:56:03] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:56:12] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:56:12] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:56:12] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:56:12] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  
+[2025-05-31 05:56:13] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: hoc_vien  
+[2025-05-31 05:56:13] local.DEBUG: Middleware CheckRole: nguoi_dung_id=11, loai_tai_khoan=hoc_vien  
+[2025-05-31 05:56:13] local.DEBUG: Middleware CheckRole: Vai trò từ session: hoc_vien  
+[2025-05-31 05:56:13] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò học viên  

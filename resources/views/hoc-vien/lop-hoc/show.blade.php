@@ -283,8 +283,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if(isset($baiTap->loai) && $baiTap->loai == 'tu_luan')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Tự luận</span>
-                                    @elseif(isset($baiTap->loai) && $baiTap->loai == 'upload')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Nộp file</span>
+                                    @elseif(isset($baiTap->loai) && $baiTap->loai == 'file')
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">File</span>
                                     @else
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Bài tập</span>
                                     @endif
@@ -296,7 +296,7 @@
                                             <span class="ml-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Điểm: {{ $baiTap->diem }}</span>
                                         @endif
                                     @elseif($baiTap->trang_thai == 'da_cham')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Đang chấm</span>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Đã chấm</span>
                                     @elseif($baiTap->trang_thai == 'qua_han')
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Quá hạn</span>
                                     @else

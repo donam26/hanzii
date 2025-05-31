@@ -15,12 +15,22 @@ class ThanhToanLuongController extends Controller
     /**
      * Hiển thị danh sách lớp học đã kết thúc để quản lý thanh toán lương.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Lấy danh sách lớp học đã kết thúc
-        $lopHocs = LopHoc::where('trang_thai', 'da_ket_thuc')
-            ->orderBy('tao_luc', 'desc')
-            ->get();
+        // Xây dựng query
+        $query = LopHoc::where('trang_thai', 'da_ket_thuc');
+        
+        // Lọc theo tên lớp hoặc mã lớp
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('ten', 'like', "%{$search}%")
+                  ->orWhere('ma_lop', 'like', "%{$search}%");
+            });
+        }
+        
+        // Lấy danh sách lớp học
+        $lopHocs = $query->orderBy('tao_luc', 'desc')->get();
             
         // Lấy thông tin thanh toán lương cho từng lớp
         foreach ($lopHocs as $lopHoc) {
@@ -42,6 +52,21 @@ class ThanhToanLuongController extends Controller
             }
             
             $lopHoc->thanhToanLuong = $thanhToanLuong;
+        }
+        
+        // Lọc theo trạng thái thanh toán
+        if ($request->filled('trang_thai')) {
+            $trangThai = $request->trang_thai;
+            
+            if ($trangThai === 'da_thanh_toan') {
+                $lopHocs = $lopHocs->filter(function($lopHoc) {
+                    return $lopHoc->thanhToanLuong && $lopHoc->thanhToanLuong->daThanhToanDayDu();
+                });
+            } else if ($trangThai === 'chua_thanh_toan') {
+                $lopHocs = $lopHocs->filter(function($lopHoc) {
+                    return !($lopHoc->thanhToanLuong && $lopHoc->thanhToanLuong->daThanhToanDayDu());
+                });
+            }
         }
         
         // Thống kê tổng quan
@@ -131,7 +156,6 @@ class ThanhToanLuongController extends Controller
     {
         $request->validate([
             'trang_thai_giao_vien' => 'required|in:chua_thanh_toan,da_thanh_toan',
-            'ma_giao_dich_giao_vien' => 'nullable|string|max:255',
         ]);
         
         try {
@@ -139,7 +163,6 @@ class ThanhToanLuongController extends Controller
             
             $thanhToanLuong = ThanhToanLuong::findOrFail($id);
             $thanhToanLuong->trang_thai_giao_vien = $request->trang_thai_giao_vien;
-            $thanhToanLuong->ma_giao_dich_giao_vien = $request->ma_giao_dich_giao_vien;
             
             if ($request->trang_thai_giao_vien == 'da_thanh_toan' && !$thanhToanLuong->ngay_thanh_toan_giao_vien) {
                 $thanhToanLuong->ngay_thanh_toan_giao_vien = now();
@@ -165,7 +188,6 @@ class ThanhToanLuongController extends Controller
     {
         $request->validate([
             'trang_thai_tro_giang' => 'required|in:chua_thanh_toan,da_thanh_toan',
-            'ma_giao_dich_tro_giang' => 'nullable|string|max:255',
         ]);
         
         try {
@@ -173,7 +195,6 @@ class ThanhToanLuongController extends Controller
             
             $thanhToanLuong = ThanhToanLuong::findOrFail($id);
             $thanhToanLuong->trang_thai_tro_giang = $request->trang_thai_tro_giang;
-            $thanhToanLuong->ma_giao_dich_tro_giang = $request->ma_giao_dich_tro_giang;
             
             if ($request->trang_thai_tro_giang == 'da_thanh_toan' && !$thanhToanLuong->ngay_thanh_toan_tro_giang) {
                 $thanhToanLuong->ngay_thanh_toan_tro_giang = now();

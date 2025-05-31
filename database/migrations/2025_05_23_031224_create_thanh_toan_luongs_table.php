@@ -25,8 +25,6 @@ return new class extends Migration
             $table->enum('trang_thai_tro_giang', ['chua_thanh_toan', 'da_thanh_toan'])->default('chua_thanh_toan');
             $table->date('ngay_thanh_toan_giao_vien')->nullable();
             $table->date('ngay_thanh_toan_tro_giang')->nullable();
-            $table->string('ma_giao_dich_giao_vien')->nullable();
-            $table->string('ma_giao_dich_tro_giang')->nullable();
             $table->text('ghi_chu')->nullable();
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();

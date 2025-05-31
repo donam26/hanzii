@@ -35,8 +35,6 @@ class ThanhToanLuong extends Model
         'trang_thai_tro_giang',
         'ngay_thanh_toan_giao_vien',
         'ngay_thanh_toan_tro_giang',
-        'ma_giao_dich_giao_vien',
-        'ma_giao_dich_tro_giang',
         'ghi_chu',
     ];
 

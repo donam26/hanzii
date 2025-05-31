@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('phuong_thuc_thanh_toan')->comment('tien_mat, chuyen_khoan');
             $table->string('trang_thai')->default('chua_thanh_toan')->comment('chua_thanh_toan, da_thanh_toan, da_huy');
             $table->date('ngay_thanh_toan')->nullable();
-            $table->string('ma_giao_dich')->nullable();
             $table->text('ghi_chu')->nullable();
             $table->timestamp('tao_luc')->useCurrent();
             $table->timestamp('cap_nhat_luc')->useCurrentOnUpdate()->nullable();

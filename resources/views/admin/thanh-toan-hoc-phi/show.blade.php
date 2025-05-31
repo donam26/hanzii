@@ -77,7 +77,7 @@
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Thống kê thanh toán</h3>
             </div>
             <div class="p-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <!-- Đã thanh toán -->
                     <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                         <div class="flex items-center">
@@ -122,6 +122,19 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Tổng tiền đã thu -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 flex-shrink-0 bg-blue-500 flex items-center justify-center rounded-full">
+                                <i class="fas fa-money-bill-wave text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-blue-800">Tổng tiền đã thu</p>
+                                <p class="text-lg font-semibold text-blue-900">{{ number_format($tongTienDaThu, 0, ',', '.') }} VND</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,6 +154,8 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số điện thoại</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái thanh toán</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phương thức</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày thanh toán</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số tiền</th>
                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                     </tr>
@@ -172,6 +187,28 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
+                                @if($thanhToan)
+                                    @if($thanhToan->phuong_thuc_thanh_toan == 'tien_mat')
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Tiền mặt</span>
+                                    @elseif($thanhToan->phuong_thuc_thanh_toan == 'chuyen_khoan')
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Chuyển khoản</span>
+                                    @endif
+                                @else
+                                    <span class="text-gray-500">-</span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
+                                @if($thanhToan && $thanhToan->ngay_thanh_toan)
+                                    {{ \Carbon\Carbon::parse($thanhToan->ngay_thanh_toan)->format('d/m/Y') }}
+                                @else
+                                    <span class="text-gray-500">-</span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">
                                 @if($thanhToan)
                                     {{ number_format($thanhToan->so_tien, 0, ',', '.') }} VND
@@ -182,11 +219,19 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             @if($thanhToan)
+                                <a href="#" onclick="openDetailModal('{{ $thanhToan->id }}')" class="text-blue-600 hover:text-blue-900 mr-2">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                
+                                <a href="{{ route('admin.thanh-toan-hoc-phi.edit', $thanhToan->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                
                                 @if($thanhToan && $thanhToan->trang_thai != 'da_thanh_toan')
                                     <form action="{{ route('admin.thanh-toan-hoc-phi.update-status', $thanhToan->id) }}" method="POST" class="inline">
                                         @csrf
                                         <input type="hidden" name="trang_thai" value="da_thanh_toan">
-                                        <button type="submit" class="text-green-600 hover:text-green-900 mr-3" onclick="return confirm('Xác nhận đã thanh toán?')">
+                                        <button type="submit" class="text-green-600 hover:text-green-900 mr-2" onclick="return confirm('Xác nhận đã thanh toán?')">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
@@ -259,11 +304,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Ngày thanh toán</label>
                             <input type="date" name="ngay_thanh_toan" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                         </div>
-                        
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mã giao dịch</label>
-                            <input type="text" name="ma_giao_dich" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                        </div>
+                    
                         
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Ghi chú</label>
@@ -276,6 +317,52 @@
                     <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Đóng</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xem chi tiết thanh toán -->
+<div id="modalChiTiet" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modalChiTietLabel" aria-modal="true" role="dialog">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modalChiTietLabel">Chi tiết thanh toán học phí</h3>
+                <div id="chiTietContent" class="mt-4 space-y-4">
+                    <div class="border-b pb-3">
+                        <p class="text-sm font-medium text-gray-500">Học viên:</p>
+                        <p class="text-base font-medium text-gray-900" id="detail_hoc_vien"></p>
+                    </div>
+                    <div class="border-b pb-3">
+                        <p class="text-sm font-medium text-gray-500">Lớp học:</p>
+                        <p class="text-base font-medium text-gray-900" id="detail_lop_hoc"></p>
+                    </div>
+                    <div class="border-b pb-3">
+                        <p class="text-sm font-medium text-gray-500">Số tiền:</p>
+                        <p class="text-base font-medium text-gray-900" id="detail_so_tien"></p>
+                    </div>
+                    <div class="border-b pb-3">
+                        <p class="text-sm font-medium text-gray-500">Phương thức thanh toán:</p>
+                        <p class="text-base font-medium text-gray-900" id="detail_phuong_thuc"></p>
+                    </div>
+                    <div class="border-b pb-3">
+                        <p class="text-sm font-medium text-gray-500">Trạng thái:</p>
+                        <p class="text-base font-medium" id="detail_trang_thai"></p>
+                    </div>
+                    <div class="border-b pb-3">
+                        <p class="text-sm font-medium text-gray-500">Ngày thanh toán:</p>
+                        <p class="text-base font-medium text-gray-900" id="detail_ngay_thanh_toan"></p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Ghi chú:</p>
+                        <p class="text-base font-medium text-gray-900" id="detail_ghi_chu"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="closeDetailModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">Đóng</button>
+            </div>
         </div>
     </div>
 </div>
@@ -296,6 +383,47 @@
         document.getElementById('modalThanhToan').classList.add('hidden');
     }
     
+    // Chi tiết thanh toán
+    function openDetailModal(id) {
+        // Lấy thông tin chi tiết từ server bằng AJAX
+        fetch(`/admin/thanh-toan-hoc-phi/${id}/get-details`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('detail_hoc_vien').textContent = data.hoc_vien_name;
+                document.getElementById('detail_lop_hoc').textContent = data.lop_hoc_name;
+                document.getElementById('detail_so_tien').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data.so_tien);
+                
+                let phuongThuc = data.phuong_thuc_thanh_toan === 'tien_mat' ? 'Tiền mặt' : 'Chuyển khoản';
+                document.getElementById('detail_phuong_thuc').textContent = phuongThuc;
+                
+                let trangThai = 'Chưa thanh toán';
+                let trangThaiClass = 'text-red-600';
+                if (data.trang_thai === 'da_thanh_toan') {
+                    trangThai = 'Đã thanh toán';
+                    trangThaiClass = 'text-green-600';
+                } else if (data.trang_thai === 'da_huy') {
+                    trangThai = 'Đã hủy';
+                    trangThaiClass = 'text-gray-600';
+                }
+                
+                document.getElementById('detail_trang_thai').textContent = trangThai;
+                document.getElementById('detail_trang_thai').className = `text-base font-medium ${trangThaiClass}`;
+                
+                document.getElementById('detail_ngay_thanh_toan').textContent = data.ngay_thanh_toan || '-';
+                document.getElementById('detail_ghi_chu').textContent = data.ghi_chu || '-';
+                
+                document.getElementById('modalChiTiet').classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tải thông tin chi tiết');
+            });
+    }
+    
+    function closeDetailModal() {
+        document.getElementById('modalChiTiet').classList.add('hidden');
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize DataTables
         if (typeof($.fn.dataTable) !== 'undefined') {
@@ -311,6 +439,11 @@
             const modal = document.getElementById('modalThanhToan');
             if (event.target === modal) {
                 closeModal();
+            }
+            
+            const modalChiTiet = document.getElementById('modalChiTiet');
+            if (event.target === modalChiTiet) {
+                closeDetailModal();
             }
         });
     });
