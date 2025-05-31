@@ -105,7 +105,7 @@ class BaiHocController extends Controller
                 'thu_tu' => 'required|integer|min:1',
                 'thoi_luong' => 'required|integer|min:1',
                 'loai' => 'required|in:video,van_ban',
-                'video_url' => 'nullable|string|max:255',
+                'url_video' => 'nullable|string|max:255',
                 'files.*' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar|max:2048',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -144,7 +144,7 @@ class BaiHocController extends Controller
             $baiHoc->so_thu_tu = $validated['thu_tu']; // Sử dụng tên cột đúng
             $baiHoc->thoi_luong = $validated['thoi_luong'];
             $baiHoc->loai = $validated['loai'];
-            $baiHoc->url_video = $validated['video_url'] ?? null;
+            $baiHoc->url_video = $validated['url_video'] ?? null;
             $baiHoc->save();
             
             // Tạo liên kết trong bảng trung gian bai_hoc_lops
@@ -218,7 +218,7 @@ class BaiHocController extends Controller
         $baiHoc = BaiHoc::with([
             'baiHocLops.lopHoc.khoaHoc',
             'baiTaps',
-            'binhLuans.nguoiDung.vaiTros',
+            'binhLuans.nguoiDung.vaiTro',
             'taiLieuBoTros'
         ])
         ->whereHas('baiHocLops.lopHoc', function($query) use ($giaoVien) {

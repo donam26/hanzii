@@ -35,7 +35,11 @@ class BaiHocController extends Controller
         
         // Lấy thông tin bài học chi tiết với quan hệ liên quan
         $baiHoc = BaiHoc::with([
-            'binhLuans.nguoiDung.vaiTros'
+            'lopHoc' => function ($query) use ($lopHocId) {
+                $query->where('lop_hoc_id', $lopHocId);
+            },
+            'baiTaps',
+            'binhLuans.nguoiDung.vaiTro'
         ])->findOrFail($baiHocId);
         
         // Kiểm tra bài học có thuộc lớp này không

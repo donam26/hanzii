@@ -80,7 +80,7 @@ class LienHeController extends Controller
         Log::info('Bắt đầu gửi thông báo cho admin về liên hệ ID: ' . $lienHe->id);
         
         // Kiểm tra cả hai loại vai trò (quan_tri và admin) để đảm bảo tìm đúng người dùng
-        $admins = NguoiDung::whereHas('vaiTros', function($query) {
+        $admins = NguoiDung::whereHas('vaiTro', function($query) {
             $query->whereIn('ten', ['quan_tri', 'admin']);
         })->get();
         

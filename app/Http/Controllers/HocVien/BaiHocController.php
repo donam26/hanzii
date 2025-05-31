@@ -76,7 +76,7 @@ class BaiHocController extends Controller
             'baiTaps.baiTapDaNops' => function ($query) use ($hocVien) {
                 $query->where('hoc_vien_id', $hocVien->id);
             },
-            'binhLuans.nguoiDung.vaiTros', // Thêm quan hệ bình luận và người dùng
+            'binhLuans.nguoiDung.vaiTro', // Thêm quan hệ bình luận và người dùng
         ])->findOrFail($baiHocId);
         
         // Lấy danh sách tài liệu bổ trợ của bài học
