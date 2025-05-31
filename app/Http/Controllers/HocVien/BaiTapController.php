@@ -277,4 +277,52 @@ class BaiTapController extends Controller
         
         return view('hoc-vien.bai-tap.ket-qua', compact('baiTapDaNop', 'baiTap', 'lopHoc'));
     }
+    
+    /**
+     * Tải xuống file bài tập đã nộp
+     *
+     * @param int $id ID của bài tập đã nộp
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadFile($id)
+    {
+        // Kiểm tra quyền truy cập
+        $nguoiDungId = session('nguoi_dung_id');
+        if (!$nguoiDungId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tiếp tục');
+        }
+        
+        $hocVien = HocVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        if (!$hocVien) {
+            return redirect()->route('home')->with('error', 'Không tìm thấy thông tin học viên');
+        }
+
+        // Lấy thông tin bài tập đã nộp
+        $baiTapDaNop = BaiTapDaNop::findOrFail($id);
+        
+        // Kiểm tra quyền truy cập (chỉ học viên nộp bài hoặc giáo viên của lớp mới có quyền tải)
+        if ($baiTapDaNop->hoc_vien_id != $hocVien->id) {
+            $baiTap = BaiTap::find($baiTapDaNop->bai_tap_id);
+            
+            // Kiểm tra xem bài tập có thuộc lớp học của học viên không
+            $lopHocIds = $hocVien->dangKyHocs->pluck('lop_hoc_id')->toArray();
+            $baiHocLopIds = $baiTap->baiHoc->baiHocLops->pluck('lop_hoc_id')->toArray();
+            
+            if (!array_intersect($lopHocIds, $baiHocLopIds)) {
+                return redirect()->route('hoc-vien.lop-hoc.index')
+                    ->with('error', 'Bạn không có quyền tải file này');
+            }
+        }
+        
+        // Kiểm tra file tồn tại
+        if (!$baiTapDaNop->file_path || !Storage::disk('public')->exists($baiTapDaNop->file_path)) {
+            return back()->with('error', 'File không tồn tại hoặc đã bị xóa');
+        }
+        
+        // Trả về file để tải xuống
+        return Storage::disk('public')->download(
+            $baiTapDaNop->file_path, 
+            $baiTapDaNop->ten_file ?? 'bai-tap-' . $id . '.file'
+        );
+    }
 } 
