@@ -33,8 +33,11 @@ class BinhLuanController extends Controller
         $baiHocId = $request->input('bai_hoc_id', '');
         $lopHocId = $request->input('lop_hoc_id', '');
         
-        $query = BinhLuan::with(['nguoiDung.vaiTro', 'baiHoc'])
-                ->orderBy('tao_luc', 'desc');
+        $query = BinhLuan::with(['nguoiDung.vaiTro', 'baiHoc', 'phanHois' => function($q) {
+                    $q->with('nguoiDung.vaiTro')->orderBy('tao_luc', 'asc');
+                }])
+                ->whereNull('binh_luan_goc_id')
+                ->orderBy('tao_luc', 'asc');
         
         // Lọc theo vai trò
         if ($vaiTro) {
@@ -56,8 +59,7 @@ class BinhLuanController extends Controller
         if ($vaiTro == 'hoc_vien') {
             $query->whereHas('nguoiDung.vaiTro', function($q) {
                 $q->where('ten', 'hoc_vien');
-            })->where('da_phan_hoi', false)
-              ->whereNull('binh_luan_goc_id');
+            });
         }
         
         $binhLuans = $query->paginate(20);

@@ -239,23 +239,18 @@ $role = 'tro_giang';
                                 <div class="mt-2 flex justify-between items-center">
                                     <!-- Nút phản hồi -->
                                     @if(optional($binhLuan->nguoiDung->vaiTro)->ten == 'hoc_vien')
-                                        @if(!$binhLuan->da_phan_hoi)
                                         <button type="button" 
                                                 class="text-sm text-blue-600 hover:text-blue-800 flex items-center"
                                                 onclick="togglePhanHoiForm('phan-hoi-form-{{ $binhLuan->id }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                                             </svg>
-                                            Phản hồi
+                                            @if($binhLuan->da_phan_hoi)
+                                                Phản hồi thêm
+                                            @else
+                                                Phản hồi
+                                            @endif
                                         </button>
-                                        @else
-                                        <span class="text-sm text-green-600 flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            Đã phản hồi
-                                        </span>
-                                        @endif
                                     @else
                                         <span></span>
                                     @endif
@@ -277,7 +272,7 @@ $role = 'tro_giang';
                                 
                                 <!-- Form phản hồi -->
                                 @if(optional($binhLuan->nguoiDung->vaiTro)->ten == 'hoc_vien')
-                                    <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 {{ $binhLuan->da_phan_hoi ? 'hidden' : (request('vai_tro') == 'hoc_vien' ? '' : 'hidden') }}">
+                                    <div id="phan-hoi-form-{{ $binhLuan->id }}" class="mt-3 hidden">
                                         <div class="flex items-start space-x-3">
                                             <!-- Đường kẻ nối từ avatar tới phản hồi -->
                                             <div class="flex flex-col items-center">
@@ -325,7 +320,7 @@ $role = 'tro_giang';
                                 @endif
                                 
                                 <!-- Hiển thị phản hồi -->
-                                @if($binhLuan->da_phan_hoi && $binhLuan->phanHois->count() > 0)
+                                @if($binhLuan->phanHois->count() > 0)
                                     @foreach($binhLuan->phanHois as $phanHoi)
                                     <div class="mt-3 pl-4 border-l-2 border-gray-200">
                                         <div class="flex items-start space-x-3">
