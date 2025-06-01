@@ -89,8 +89,6 @@ Route::prefix('hoc-vien')->name('hoc-vien.')->middleware(['auth', 'role:hoc_vien
     // Bài tập
     Route::prefix('bai-tap')->name('bai-tap.')->group(function () {
         Route::get('/{id}', [App\Http\Controllers\HocVien\BaiTapController::class, 'show'])->name('show');
-        Route::get('/{id}/lam-bai-trac-nghiem', [App\Http\Controllers\HocVien\BaiTapController::class, 'lamBaiTracNghiem'])->name('lam-bai-trac-nghiem');
-        Route::post('/{id}/lam-bai-trac-nghiem', [App\Http\Controllers\HocVien\BaiTapController::class, 'xuLyLamBaiTracNghiem'])->name('xu-ly-lam-bai-trac-nghiem');
         Route::get('/{id}/nop-bai', [App\Http\Controllers\HocVien\BaiTapController::class, 'formNopBai'])->name('form-nop-bai');
         Route::post('/{id}/nop-bai', [App\Http\Controllers\HocVien\BaiTapController::class, 'nopBai'])->name('nop-bai');
         Route::get('/ket-qua/{id}', [App\Http\Controllers\HocVien\BaiTapController::class, 'ketQua'])->name('ket-qua');

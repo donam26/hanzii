@@ -22,7 +22,6 @@ class NguoiDungController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $loaiTaiKhoan = $request->input('loai_tai_khoan');
         $vaiTroId = $request->input('vai_tro_id');
         
         $query = NguoiDung::with('vaiTro');
@@ -37,10 +36,7 @@ class NguoiDungController extends Controller
             });
         }
         
-        // Lọc theo loại tài khoản
-        if ($loaiTaiKhoan) {
-            $query->where('loai_tai_khoan', $loaiTaiKhoan);
-        }
+
         
         // Lọc theo vai trò
         if ($vaiTroId) {
@@ -50,7 +46,7 @@ class NguoiDungController extends Controller
         $nguoiDungs = $query->paginate(10);
         $vaiTros = VaiTro::pluck('ten', 'id');
         
-        return view('admin.nguoi-dung.index', compact('nguoiDungs', 'vaiTros', 'loaiTaiKhoan', 'vaiTroId', 'search'));
+        return view('admin.nguoi-dung.index', compact('nguoiDungs', 'vaiTros',  'vaiTroId', 'search'));
     }
     
     /**

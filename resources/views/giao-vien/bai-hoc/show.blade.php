@@ -216,9 +216,7 @@
                                                         {{ $baiTap->loai == 'trac_nghiem' ? 'bg-blue-100 text-blue-800' : 
                                                         ($baiTap->loai == 'tu_luan' ? 'bg-green-100 text-green-800' : 
                                                         'bg-yellow-100 text-yellow-800') }}">
-                                                        @if($baiTap->loai == 'trac_nghiem')
-                                                            <i class="fas fa-list-ul mr-1"></i> Trắc nghiệm
-                                                        @elseif($baiTap->loai == 'tu_luan')
+                                                        @if($baiTap->loai == 'tu_luan')
                                                             <i class="fas fa-pen-fancy mr-1"></i> Tự luận
                                                         @elseif($baiTap->loai == 'upload')
                                                             <i class="fas fa-upload mr-1"></i> Upload

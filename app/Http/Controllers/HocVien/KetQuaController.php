@@ -5,14 +5,9 @@ namespace App\Http\Controllers\HocVien;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BaiTapDaNop;
-use App\Models\KetQuaBaiKiemTra;
-use App\Models\ChiTietKetQua;
-use App\Models\DapAnTracNghiem;
 use App\Models\LopHoc;
 use App\Models\HocVien;
 use App\Models\DangKyHoc;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class KetQuaController extends Controller

@@ -83,40 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Thông tin vai trò -->
-                    <div class="col-span-2 bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium text-lg mb-4 text-gray-700">Thông tin vai trò</h4>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="loai_tai_khoan" class="block text-sm font-medium text-gray-700">Loại tài khoản</label>
-                                <select name="loai_tai_khoan" id="loai_tai_khoan" class="mt-1 focus:ring-red-500 focus:border-red-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <option value="">-- Chọn loại tài khoản --</option>
-                                    <option value="giao_vien" {{ old('loai_tai_khoan') == 'giao_vien' ? 'selected' : '' }}>Giáo viên</option>
-                                    <option value="tro_giang" {{ old('loai_tai_khoan') == 'tro_giang' ? 'selected' : '' }}>Trợ giảng</option>
-                                    <option value="hoc_vien" {{ old('loai_tai_khoan') == 'hoc_vien' ? 'selected' : '' }}>Học viên</option>
-                                </select>
-                                @error('loai_tai_khoan')
-                                    <span class="text-red-500 text-xs">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            
-                            <div>
-                                <label for="vai_tro_ids" class="block text-sm font-medium text-gray-700">Vai trò</label>
-                                <select name="vai_tro_ids[]" id="vai_tro_ids" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                    <option value="">-- Chọn vai trò --</option>
-                                    @foreach($vaiTros as $vaiTro)
-                                        <option value="{{ $vaiTro->id }}">{{ $vaiTro->ten }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            
-                            @error('vai_tro_ids')
-                                <span class="text-red-500 text-xs">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                   
                     
                     <!-- Thông tin học viên (hiển thị/ẩn dựa vào loại tài khoản) -->
                     <div id="hoc_vien_info" class="col-span-2 bg-gray-50 p-4 rounded-lg" style="display: none;">
@@ -222,25 +189,11 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const loaiTaiKhoanSelect = document.getElementById('loai_tai_khoan');
         const hocVienInfo = document.getElementById('hoc_vien_info');
         const giaoVienTroGiangInfo = document.getElementById('giao_vien_tro_giang_info');
         
         // Checkboxes vai trò
         const checkboxes = document.querySelectorAll('.hidden-checkbox');
-        
-        // Map các loại tài khoản với vai trò tương ứng
-        const vaiTroMap = {
-            'hoc_vien': 'hoc_vien',
-            'giao_vien': 'giao_vien',
-            'tro_giang': 'tro_giang'
-        };
-        
-        // Kiểm tra trạng thái ban đầu
-        checkTaiKhoanType();
-        
-        // Bắt sự kiện thay đổi
-        loaiTaiKhoanSelect.addEventListener('change', checkTaiKhoanType);
         
         // Thiết lập sự kiện cho các checkbox chuyên môn để cập nhật ngay khi chọn/bỏ chọn
         const chuyenMonCheckboxes = document.querySelectorAll('input[id^="chuyen_mon_hsk"]');
@@ -277,51 +230,9 @@
             // Cập nhật giá trị cho input chuyen_mon
             chuyenMonInput.value = selectedChuyenMon.join(',');
             
-            // Đặt giá trị mặc định nếu không có gì được chọn và loại tài khoản là giáo viên/trợ giảng
-            if (selectedChuyenMon.length === 0 && 
-                (loaiTaiKhoanSelect.value === 'giao_vien' || loaiTaiKhoanSelect.value === 'tro_giang')) {
-                // Đặt giá trị mặc định là HSK 1 nếu không có gì được chọn
-                document.getElementById('chuyen_mon_hsk1').checked = true;
-                chuyenMonInput.value = 'hsk1';
-            }
+           
         }
         
-        function checkTaiKhoanType() {
-            const selectedValue = loaiTaiKhoanSelect.value;
-            
-            // Bỏ chọn tất cả các vai trò
-            checkboxes.forEach(cb => {
-                cb.checked = false;
-            });
-            
-            // Chọn vai trò tương ứng nếu có
-            if (selectedValue) {
-                const vaiTroTen = vaiTroMap[selectedValue];
-                checkboxes.forEach(cb => {
-                    if (cb.dataset.vaiTro === vaiTroTen) {
-                        cb.checked = true;
-                    }
-                });
-            }
-            
-            // Ẩn hiện phần thông tin học viên
-            if (selectedValue === 'hoc_vien') {
-                hocVienInfo.style.display = 'block';
-                giaoVienTroGiangInfo.style.display = 'none';
-            } 
-            // Ẩn hiện phần thông tin giáo viên/trợ giảng
-            else if (selectedValue === 'giao_vien' || selectedValue === 'tro_giang') {
-                hocVienInfo.style.display = 'none';
-                giaoVienTroGiangInfo.style.display = 'block';
-                // Cập nhật chuyên môn ngay khi loại tài khoản thay đổi
-                updateChuyenMon();
-            } 
-            // Ẩn cả hai nếu không chọn hoặc chọn khác
-            else {
-                hocVienInfo.style.display = 'none';
-                giaoVienTroGiangInfo.style.display = 'none';
-            }
-        }
     });
 </script>
 @endpush 

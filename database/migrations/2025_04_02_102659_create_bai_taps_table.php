@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('bai_hoc_id')->constrained('bai_hocs')->onDelete('cascade');
             $table->string('tieu_de');
-            $table->string('loai')->comment('trac_nghiem, tu_luan, file');
+            $table->string('loai')->comment('tu_luan, file');
             $table->text('noi_dung')->nullable();
             $table->float('diem_toi_da')->default(10);
             $table->timestamp('han_nop')->nullable();

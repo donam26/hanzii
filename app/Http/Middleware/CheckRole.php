@@ -45,16 +45,6 @@ class CheckRole
             // Lấy vai trò của người dùng từ session
             $nguoiDungId = $request->session()->get('nguoi_dung_id');
             $userRole = $request->session()->get('vai_tro');
-            $loaiTaiKhoan = $request->session()->get('loai_tai_khoan');
-            
-            Log::debug('Middleware CheckRole: nguoi_dung_id=' . $nguoiDungId . ', loai_tai_khoan=' . $loaiTaiKhoan);
-            Log::debug('Middleware CheckRole: Vai trò từ session: ' . $userRole);
-            
-            // Nếu yêu cầu role là học viên, kiểm tra loại tài khoản
-            if (in_array('hoc_vien', $roles) && $loaiTaiKhoan === 'hoc_vien') {
-                Log::debug('Middleware CheckRole: Cho phép truy cập với vai trò học viên');
-                return $next($request);
-            }
             
             // Kiểm tra vai trò cụ thể (admin, giao_vien, tro_giang)
             if (in_array($userRole, $roles)) {
