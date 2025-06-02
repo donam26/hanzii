@@ -108,20 +108,62 @@
                         </div>
                     </div>
                     
-                    @if($binhLuan->nguoi_dung_id == session('nguoi_dung_id'))
+                    @if($binhLuan->nguoi_dung_id == session('nguoi_dung_id') || $role == 'giao-vien')
                         <div>
                             <form action="{{ route($role.'.binh-luan.destroy', $binhLuan->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-sm text-red-600 hover:text-red-900">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </button>
                             </form>
                         </div>
                     @endif
                 </div>
+                
+                <!-- Hiển thị phản hồi bình luận nếu có -->
+                @if(isset($binhLuan->phanHois) && $binhLuan->phanHois->count() > 0)
+                    @foreach($binhLuan->phanHois as $phanHoi)
+                    <div class="mt-3 pl-4 border-l-2 border-gray-200">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0">
+                                    <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                        <span class="text-xs font-medium text-green-600">
+                                            {{ strtoupper(substr($phanHoi->nguoiDung->ho, 0, 1)) . strtoupper(substr($phanHoi->nguoiDung->ten, 0, 1)) }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">{{ $phanHoi->nguoiDung->ho . ' ' . $phanHoi->nguoiDung->ten }}</p>
+                                    <div class="mt-1 text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
+                                        <p>{{ $phanHoi->noi_dung }}</p>
+                                    </div>
+                                    <div class="mt-1 flex justify-between items-center">
+                                        <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($phanHoi->tao_luc)->format('d/m/Y H:i') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            @if($phanHoi->nguoi_dung_id == session('nguoi_dung_id') || $role == 'giao-vien')
+                                <div>
+                                    <form action="{{ route($role.'.binh-luan.destroy', $phanHoi->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phản hồi này?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-xs text-red-600 hover:text-red-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                @endif
             </div>
         @empty
             <div class="px-4 py-12 text-center text-gray-500">

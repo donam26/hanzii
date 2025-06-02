@@ -89,10 +89,23 @@ class BinhLuanController extends Controller
     {
         // Lấy ID người dùng hiện tại
         $nguoiDungId = session('nguoi_dung_id');
+        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        if (!$giaoVien) {
+            return redirect()->back()->with('error', 'Không tìm thấy thông tin giáo viên.');
+        }
+        
+        // Lấy các lớp giáo viên dạy
+        $lopHocIds = LopHoc::where('giao_vien_id', $giaoVien->id)->pluck('id')->toArray();
         
         // Tìm bình luận
         $binhLuan = BinhLuan::where('id', $id)
-            ->where('nguoi_dung_id', $nguoiDungId)
+            ->where(function ($query) use ($nguoiDungId, $lopHocIds) {
+                // Hoặc là bình luận của chính giáo viên
+                $query->where('nguoi_dung_id', $nguoiDungId)
+                // Hoặc là bình luận trong lớp học mà giáo viên dạy
+                ->orWhereIn('lop_hoc_id', $lopHocIds);
+            })
             ->first();
             
         if (!$binhLuan) {
