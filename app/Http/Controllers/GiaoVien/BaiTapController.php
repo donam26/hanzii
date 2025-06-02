@@ -365,4 +365,52 @@ class BaiTapController extends Controller
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Xóa file đính kèm của bài tập
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteFile($id)
+    {
+        // Lấy ID người dùng từ session
+        $nguoiDungId = session('nguoi_dung_id');
+        $giaoVien = GiaoVien::where('nguoi_dung_id', $nguoiDungId)->first();
+        
+        // Lấy thông tin bài tập và kiểm tra quyền truy cập
+        $baiTap = BaiTap::whereHas('baiHoc.baiHocLops.lopHoc', function($query) use ($giaoVien) {
+                $query->where('giao_vien_id', $giaoVien->id);
+            })
+            ->findOrFail($id);
+            
+        // Nếu đã có học viên nộp bài, không cho phép xóa file
+        $soLuongDaNop = BaiTapDaNop::where('bai_tap_id', $id)->count();
+        if ($soLuongDaNop > 0) {
+            return redirect()->route('giao-vien.bai-tap.edit', $id)
+                ->with('error', 'Không thể xóa file vì đã có học viên nộp bài');
+        }
+        
+        try {
+            DB::beginTransaction();
+            
+            // Xóa file đính kèm nếu có
+            if ($baiTap->file_dinh_kem) {
+                Storage::disk('public')->delete($baiTap->file_dinh_kem);
+                
+                // Cập nhật thông tin bài tập
+                $baiTap->file_dinh_kem = null;
+                $baiTap->ten_file = null;
+                $baiTap->save();
+            }
+            
+            DB::commit();
+            
+            return redirect()->route('giao-vien.bai-tap.edit', $id)
+                ->with('success', 'Đã xóa file đính kèm thành công');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
+    }
 } 

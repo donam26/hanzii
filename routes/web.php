@@ -167,6 +167,7 @@ Route::prefix('giao-vien')->name('giao-vien.')->middleware(['auth', 'role:giao_v
     
     // Quản lý bài tập
     Route::resource('bai-tap', 'App\Http\Controllers\GiaoVien\BaiTapController');
+    Route::get('/bai-tap/{id}/delete-file', 'App\Http\Controllers\GiaoVien\BaiTapController@deleteFile')->name('bai-tap.delete-file');
     
     // Quản lý chấm điểm
     Route::get('/cham-diem', 'App\Http\Controllers\GiaoVien\ChamDiemController@index')->name('cham-diem.index');
