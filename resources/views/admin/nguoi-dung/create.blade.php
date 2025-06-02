@@ -84,6 +84,28 @@
                         </div>
                     </div>
                    
+                    <!-- Thông tin vai trò -->
+                    <div class="col-span-2 bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-lg mb-4 text-gray-700">Thông tin vai trò</h4>
+                        
+                        <div class="mb-4">
+                            <label for="vai_tro_ids" class="block text-sm font-medium text-gray-700">Vai trò</label>
+                            <select name="vai_tro_ids[]" id="vai_tro_ids" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="toggleRoleFields()">
+                                <option value="">-- Chọn vai trò --</option>
+                                @foreach(\App\Models\VaiTro::all() as $vaiTro)
+                                    <option value="{{ $vaiTro->id }}" data-role-name="{{ $vaiTro->ten }}">
+                                        {{ $vaiTro->ten }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="mt-2 text-sm text-gray-500">
+                                <i class="fas fa-info-circle mr-1"></i> Lưu ý: Loại tài khoản sẽ được tự động xác định dựa trên vai trò
+                            </p>
+                            @error('vai_tro_ids')
+                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
                     
                     <!-- Thông tin học viên (hiển thị/ẩn dựa vào loại tài khoản) -->
                     <div id="hoc_vien_info" class="col-span-2 bg-gray-50 p-4 rounded-lg" style="display: none;">
@@ -192,9 +214,6 @@
         const hocVienInfo = document.getElementById('hoc_vien_info');
         const giaoVienTroGiangInfo = document.getElementById('giao_vien_tro_giang_info');
         
-        // Checkboxes vai trò
-        const checkboxes = document.querySelectorAll('.hidden-checkbox');
-        
         // Thiết lập sự kiện cho các checkbox chuyên môn để cập nhật ngay khi chọn/bỏ chọn
         const chuyenMonCheckboxes = document.querySelectorAll('input[id^="chuyen_mon_hsk"]');
         chuyenMonCheckboxes.forEach(function(checkbox) {
@@ -215,24 +234,45 @@
             this.submit();
         });
         
-        // Hàm cập nhật giá trị chuyên môn
-        function updateChuyenMon() {
-            const chuyenMonCheckboxes = ['chuyen_mon_hsk1', 'chuyen_mon_hsk2', 'chuyen_mon_hsk3', 'chuyen_mon_hsk4', 'chuyen_mon_hsk5'];
-            const chuyenMonInput = document.getElementById('chuyen_mon');
-            
-            const selectedChuyenMon = [];
-            chuyenMonCheckboxes.forEach(function(id) {
-                if (document.getElementById(id) && document.getElementById(id).checked) {
-                    selectedChuyenMon.push(document.getElementById(id).value);
-                }
-            });
-            
-            // Cập nhật giá trị cho input chuyen_mon
-            chuyenMonInput.value = selectedChuyenMon.join(',');
-            
-           
-        }
-        
+        // Gọi hàm hiển thị form tương ứng với vai trò khi trang được tải
+        toggleRoleFields();
     });
+    
+    // Hàm hiển thị form tương ứng với vai trò được chọn
+    function toggleRoleFields() {
+        const selectElement = document.getElementById('vai_tro_ids');
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const roleName = selectedOption?.getAttribute('data-role-name');
+        
+        const hocVienInfo = document.getElementById('hoc_vien_info');
+        const giaoVienTroGiangInfo = document.getElementById('giao_vien_tro_giang_info');
+        
+        // Ẩn tất cả các form
+        hocVienInfo.style.display = 'none';
+        giaoVienTroGiangInfo.style.display = 'none';
+        
+        // Hiển thị form tương ứng với vai trò
+        if (roleName === 'hoc_vien') {
+            hocVienInfo.style.display = 'block';
+        } else if (roleName === 'giao_vien' || roleName === 'tro_giang') {
+            giaoVienTroGiangInfo.style.display = 'block';
+        }
+    }
+    
+    // Hàm cập nhật giá trị chuyên môn
+    function updateChuyenMon() {
+        const chuyenMonCheckboxes = ['chuyen_mon_hsk1', 'chuyen_mon_hsk2', 'chuyen_mon_hsk3', 'chuyen_mon_hsk4', 'chuyen_mon_hsk5'];
+        const chuyenMonInput = document.getElementById('chuyen_mon');
+        
+        const selectedChuyenMon = [];
+        chuyenMonCheckboxes.forEach(function(id) {
+            if (document.getElementById(id) && document.getElementById(id).checked) {
+                selectedChuyenMon.push(document.getElementById(id).value);
+            }
+        });
+        
+        // Cập nhật giá trị cho input chuyen_mon
+        chuyenMonInput.value = selectedChuyenMon.join(',');
+    }
 </script>
 @endpush 

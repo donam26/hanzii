@@ -1,0 +1,19 @@
+[2025-06-02 09:55:48] local.DEBUG: Kiểm tra mật khẩu: Đúng  
+[2025-06-02 09:55:48] local.DEBUG: Thông tin người dùng: ID=1, Loại=giao_vien  
+[2025-06-02 09:55:48] local.DEBUG: Vai trò: admin  
+[2025-06-02 09:55:48] local.DEBUG: Chuyển hướng đến trang admin  
+[2025-06-02 09:55:49] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:55:49] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-06-02 09:55:51] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:55:51] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-06-02 09:55:51] local.INFO: SQL Query: select `lop_hocs`.*, (select count(*) from `dang_ky_hocs` where `lop_hocs`.`id` = `dang_ky_hocs`.`lop_hoc_id` and `trang_thai` = 'da_xac_nhan') as `dang_ky_hocs_count` from `lop_hocs` order by `tao_luc` desc  
+[2025-06-02 09:55:52] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:55:52] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-06-02 09:55:54] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:55:54] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-06-02 09:55:57] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:55:57] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-06-02 09:56:30] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:56:30] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  
+[2025-06-02 09:56:31] local.DEBUG: Middleware CheckRole: Yêu cầu vai trò: admin  
+[2025-06-02 09:56:31] local.DEBUG: Middleware CheckRole: Cho phép truy cập với vai trò admin  

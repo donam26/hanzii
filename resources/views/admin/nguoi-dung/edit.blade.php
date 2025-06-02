@@ -96,10 +96,10 @@
                         
                         <div class="mb-4">
                             <label for="vai_tro_ids" class="block text-sm font-medium text-gray-700">Vai trò</label>
-                            <select name="vai_tro_ids[]" id="vai_tro_ids" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <select name="vai_tro_ids[]" id="vai_tro_ids" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="toggleRoleFields()">
                                 <option value="">-- Chọn vai trò --</option>
                                 @foreach($vaiTros as $vaiTro)
-                                    <option value="{{ $vaiTro->id }}" {{ $nguoiDungVaiTroId == $vaiTro->id ? 'selected' : '' }}>
+                                    <option value="{{ $vaiTro->id }}" data-role-name="{{ $vaiTro->ten }}" {{ $nguoiDungVaiTroId == $vaiTro->id ? 'selected' : '' }}>
                                         {{ $vaiTro->ten }}
                                     </option>
                                 @endforeach
@@ -271,9 +271,12 @@
                     @endif
                 </div>
                 
-                <div class="mt-6">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        <i class="fas fa-save mr-2"></i> Lưu thay đổi
+                <div class="flex justify-center mt-6">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Lưu thay đổi
                     </button>
                 </div>
             </form>
@@ -282,33 +285,49 @@
     
     @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Xử lý chuyên môn
-            function updateChuyenMon() {
-                let chuyenMon = [];
-                
-                if (document.getElementById('chuyen_mon_hsk1').checked) chuyenMon.push('hsk1');
-                if (document.getElementById('chuyen_mon_hsk2').checked) chuyenMon.push('hsk2');
-                if (document.getElementById('chuyen_mon_hsk3').checked) chuyenMon.push('hsk3');
-                if (document.getElementById('chuyen_mon_hsk4').checked) chuyenMon.push('hsk4');
-                if (document.getElementById('chuyen_mon_hsk5').checked) chuyenMon.push('hsk5');
-                
-                document.getElementById('chuyen_mon').value = chuyenMon.join(',');
-            }
+        // Hàm hiển thị form tương ứng với vai trò
+        function toggleRoleFields() {
+            const selectElement = document.getElementById('vai_tro_ids');
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const roleName = selectedOption.getAttribute('data-role-name');
             
-            // Event listeners cho các checkbox chuyên môn
-            document.querySelectorAll('[id^="chuyen_mon_hsk"]').forEach(checkbox => {
+            // Ẩn tất cả các form thông tin vai trò
+            document.getElementById('hoc_vien_info')?.classList.add('hidden');
+            document.getElementById('giao_vien_info')?.classList.add('hidden');
+            document.getElementById('tro_giang_info')?.classList.add('hidden');
+            
+            // Hiển thị form tương ứng
+            if (roleName === 'hoc_vien') {
+                document.getElementById('hoc_vien_info')?.classList.remove('hidden');
+            } else if (roleName === 'giao_vien') {
+                document.getElementById('giao_vien_info')?.classList.remove('hidden');
+            } else if (roleName === 'tro_giang') {
+                document.getElementById('tro_giang_info')?.classList.remove('hidden');
+            }
+        }
+        
+        // Gọi hàm khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleRoleFields();
+            
+            // Cập nhật chuyên môn khi checkbox thay đổi
+            const chuyenMonCheckboxes = document.querySelectorAll('[name^="chuyen_mon_"]');
+            chuyenMonCheckboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', updateChuyenMon);
             });
-            
-            // Cập nhật khi trang tải xong
-            updateChuyenMon();
-            
-            // Xử lý submit form
-            document.querySelector('form').addEventListener('submit', function() {
-                updateChuyenMon();
-            });
         });
+        
+        // Cập nhật giá trị chuyên môn từ các checkbox
+        function updateChuyenMon() {
+            const chuyenMonValues = [];
+            const chuyenMonCheckboxes = document.querySelectorAll('[name^="chuyen_mon_"]:checked');
+            
+            chuyenMonCheckboxes.forEach(function(checkbox) {
+                chuyenMonValues.push(checkbox.value);
+            });
+            
+            document.getElementById('chuyen_mon').value = chuyenMonValues.join(',');
+        }
     </script>
     @endpush
 @endsection 
